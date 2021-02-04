@@ -34,3 +34,7 @@
 
 ## 챌린지 항목
 - 추천 알고리즘을 적용한 상품추천 기능 완성
+
+## ERD 설계
+- URL : https://aquerytool.com:443/aquerymain/index/?rurl=ed56e538-7bed-4856-8800-d5c796163a0f
+- password : z585md
