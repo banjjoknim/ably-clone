@@ -26,7 +26,7 @@ public class AdvertisementSelectRepository extends QuerydslRepositorySupport{
     public List<GetAdRes> findByOnBoard(){
         QAdvertisement advertisement = QAdvertisement.advertisement;
         return queryFactory.select((Projections.constructor(GetAdRes.class,
-                advertisement.adCode, advertisement.adImg, advertisement.adIndex)))
+                advertisement.adCode, advertisement.adImg)))
                 .from(advertisement)
                 .where(advertisement.isDeleted.eq(0), advertisement.isBoard.eq(1))
                 .fetch();

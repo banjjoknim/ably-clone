@@ -8,5 +8,4 @@ import lombok.Getter;
 public class GetAd {
     private long adCode;
     private String adImg;
-    private int adIndex;
 }

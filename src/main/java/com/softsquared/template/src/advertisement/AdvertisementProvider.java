@@ -34,17 +34,17 @@ public class AdvertisementProvider {
             throw new BaseException(BaseResponseStatus.FAILED_TO_GET_ADS);
         }
 
-        //adIndex(화면에 나타낼 광고들의 순서) 대로 정렬해서 넘겨주기
-        //뽀 클라이언트의 편의....
-        Collections.sort(getAdResList, new Comparator<GetAdRes>() {
-            @Override
-            public int compare(GetAdRes o1, GetAdRes o2) {
-                if(o1.getAdIndex()<o2.getAdIndex())
-                    return -1;
-                else
-                    return 1;
-            }
-        });
+//        //adIndex(화면에 나타낼 광고들의 순서) 대로 정렬해서 넘겨주기
+//        //뽀 클라이언트의 편의....
+//        Collections.sort(getAdResList, new Comparator<GetAdRes>() {
+//            @Override
+//            public int compare(GetAdRes o1, GetAdRes o2) {
+//                if(o1.getAdIndex()<o2.getAdIndex())
+//                    return -1;
+//                else
+//                    return 1;
+//            }
+//        });
         return getAdResList;
     }
 

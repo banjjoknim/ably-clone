@@ -35,25 +35,19 @@ public class Advertisement {
     @Column(name = "dateCreated", nullable = false)
     private String dateCreated;
 
-    //화면에 표시될 때의 index
-    //ex) 1/6, 3/6
-    @Column(name = "adIndex", nullable = true)
-    private int adIndex;
-
     //화면에 표시될 것인지 아닌지
     //모든 광고를 표시하는 것이 아니니까
     @Column(name = "isBoard", nullable = false)
     private int isBoard;
 
     public Advertisement(long adCode, String adName, String adImg, int isDeleted, String dateUpdated,
-                         String dateCreated, int adIndex, int isBoard){
+                         String dateCreated, int isBoard){
         this.adCode = adCode;
         this.adName = adName;
         this.adImg = adImg;
         this.isDeleted = isDeleted;
         this.dateUpdated = dateUpdated;
         this.dateCreated = dateCreated;
-        this.adIndex = adIndex;
         this.isBoard = isBoard;
 
     }
