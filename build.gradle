@@ -1,6 +1,10 @@
 plugins {
     id 'org.springframework.boot' version '2.4.0'
     id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+
+    //for querydsl
+    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
+
     id 'java'
 }
 
@@ -40,8 +44,40 @@ dependencies {
     // Security, Authentication
     implementation 'org.springframework.boot:spring-boot-starter-security'
     compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.7.0'
+
+    //gson
+    implementation 'com.google.code.gson:gson'
+
+    //querydsl
+    implementation 'com.querydsl:querydsl-jpa'
+
+    //hibernate-validator
+    compile group: 'org.hibernate.validator', name: 'hibernate-validator', version: '7.0.0.Final'
+
 }
 
 test {
     useJUnitPlatform()
+}
+
+
+//querydsl설정
+
+def querydslDir = "$buildDir/generated/querydsl"
+
+querydsl {
+    jpa = true
+    querydslSourcesDir = querydslDir
+}
+
+sourceSets {
+    main.java.srcDir querydslDir
+}
+
+configurations {
+    querydsl.extendsFrom compileClasspath
+}
+
+compileQuerydsl {
+    options.annotationProcessorPath = configurations.querydsl
 }
