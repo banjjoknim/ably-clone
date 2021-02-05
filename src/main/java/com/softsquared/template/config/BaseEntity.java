@@ -18,15 +18,15 @@ public abstract class BaseEntity {
 //    @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", insertable = false, updatable = false)
 //    @Temporal(TIMESTAMP)
     @CreationTimestamp
-    @Column(name = "createdAt", nullable = false, updatable = false)
-    private Date createdAt;
+    @Column(name = "dateCreated", nullable = false, updatable = false)
+    private Date dateCreated;
 
 //    @Getter
 //    @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP", insertable = false, updatable = false)
 //    @Temporal(TIMESTAMP)
     @UpdateTimestamp
-    @Column(name = "updatedAt", nullable = false)
-    private Date updatedAt;
+    @Column(name = "dateUpdated", nullable = false)
+    private Date dateUpdated;
 
 //    @PrePersist
 //    void prePersist() {
