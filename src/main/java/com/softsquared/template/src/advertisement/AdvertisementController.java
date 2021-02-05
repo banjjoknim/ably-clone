@@ -1,5 +1,6 @@
 package com.softsquared.template.src.advertisement;
 
+import com.softsquared.template.config.AdResponse;
 import com.softsquared.template.config.BaseException;
 import com.softsquared.template.config.BaseResponse;
 import com.softsquared.template.config.BaseResponseStatus;
@@ -23,14 +24,15 @@ public class AdvertisementController {
     //홈 화면에 띄울 광고 가져오기
     @ResponseBody
     @GetMapping("")
-    public BaseResponse<List<GetAdRes>> getAds(@RequestParam(required = false) String word){
+    public AdResponse<List<GetAdRes>,Integer> getAds(@RequestParam(required = false) String word){
         List<GetAdRes> getAdResList;
         try{
             getAdResList = advertisementProvider.retrieveAd(word);
-            return new BaseResponse<>(BaseResponseStatus.SUCCESS,getAdResList);
+            Integer size = getAdResList.size();
+            return new AdResponse<>(BaseResponseStatus.SUCCESS,getAdResList,size);
         }catch (BaseException e){
             e.printStackTrace();
-            return new BaseResponse<>(e.getStatus());
+            return new AdResponse<>(BaseResponseStatus.FAILED_TO_GET_ADS);
         }
     }
 }
