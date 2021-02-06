@@ -1,7 +1,5 @@
 package com.softsquared.template.DBmodel;
 
-
-import com.softsquared.template.config.BaseEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,21 +10,25 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @Getter
 @Entity
-@Table(name = "Category")
-public class Category extends BaseEntity {
+@Table(name = "DetailCategory")
+public class DetailCategory {
 
-    @Id // PK를 의미하는 어노테이션
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+
+    @NotNull
+    @Column(name = "categoryId")
+    private Long categoryId;
 
     @NotNull
     @Column(name = "name")
     private String name;
 
     @Builder
-    public Category(String name) {
+    public DetailCategory(Long categoryId, String name) {
+        this.categoryId = categoryId;
         this.name = name;
     }
-  
 }

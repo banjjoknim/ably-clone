@@ -50,6 +50,10 @@ dependencies {
 
     //querydsl
     implementation 'com.querydsl:querydsl-jpa'
+
+    //hibernate-validator
+    compile group: 'org.hibernate.validator', name: 'hibernate-validator', version: '7.0.0.Final'
+
 }
 
 test {

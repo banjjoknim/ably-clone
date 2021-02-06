@@ -1,21 +1,21 @@
 package com.softsquared.template.DBmodel;
 
-
-import com.softsquared.template.config.BaseEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @NoArgsConstructor
 @Getter
+@DynamicInsert
 @Entity
-@Table(name = "Category")
-public class Category extends BaseEntity {
+@Table(name = "CelebTag")
+public class CelebTag {
 
-    @Id // PK를 의미하는 어노테이션
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
@@ -25,8 +25,7 @@ public class Category extends BaseEntity {
     private String name;
 
     @Builder
-    public Category(String name) {
+    public CelebTag(String name) {
         this.name = name;
     }
-  
 }
