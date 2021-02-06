@@ -26,8 +26,7 @@ public class ProductController {
     }
 
     @GetMapping("")
-    public BaseResponse<List<GetProductsRes>> getProducts() {
+    public BaseResponse<List<GetProductsRes>> getProducts() { // todo: RequestParam 추가해서 필터링 진행할 것.
         return new BaseResponse<>(SUCCESS, productProvider.retrieveProducts());
     }
-
 }
