@@ -14,6 +14,7 @@ import com.softsquared.template.src.product.models.QProductsInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 import static com.softsquared.template.DBmodel.QCeleb.celeb;
@@ -26,13 +27,15 @@ import static java.util.stream.Collectors.toList;
 public class ProductProvider {
 
     private final JPAQueryFactory jpaQueryFactory;
+    private final ProductRepository productRepository;
     private final ProductImageRepository productImageRepository;
     private final CategoryRepository categoryRepository;
     private final DetailCategoryRepository detailCategoryRepository;
 
     @Autowired
-    public ProductProvider(JPAQueryFactory jpaQueryFactory, ProductImageRepository productImageRepository, CategoryRepository categoryRepository, DetailCategoryRepository detailCategoryRepository) {
+    public ProductProvider(JPAQueryFactory jpaQueryFactory, ProductRepository productRepository, ProductImageRepository productImageRepository, CategoryRepository categoryRepository, DetailCategoryRepository detailCategoryRepository) {
         this.jpaQueryFactory = jpaQueryFactory;
+        this.productRepository = productRepository;
         this.productImageRepository = productImageRepository;
         this.categoryRepository = categoryRepository;
         this.detailCategoryRepository = detailCategoryRepository;
@@ -61,11 +64,15 @@ public class ProductProvider {
                 ))
                 .from(product)
                 .innerJoin(celeb).on(product.celebId.eq(celeb.id))
-                .where(filterCategory(categoryId, detailCategoryId)) // 카테고리 필터링 조건 추가
+                .where(filterCategory(categoryId, detailCategoryId)) // 카테고리 필터링 조건
                 .fetch();
 
         return productInfos.stream()
-                .map(productsInfo -> new GetProductsRes(productsInfo, productImageRepository.findProductImageByProductId(productsInfo.getProductId()), true))
+                .map(productsInfo -> {
+                    Long productId = productsInfo.getProductId();
+                    boolean isNew = (new Date().getTime() - productRepository.findById(productId).get().getDateCreated().getTime()) <= 1000 * 60 * 60 * 24; // 등록된지 하루 이내이면 true
+                    return new GetProductsRes(productsInfo, productImageRepository.findProductImageByProductId(productsInfo.getProductId()), true, isNew);
+                })
                 .collect(toList());
     }
 
