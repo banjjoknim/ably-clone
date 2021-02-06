@@ -24,10 +24,10 @@ public class AdvertisementController {
     //홈 화면에 띄울 광고 가져오기
     @ResponseBody
     @GetMapping("")
-    public AdResponse<List<GetAdRes>,Integer> getAds(@RequestParam(required = false) String word){
+    public AdResponse<List<GetAdRes>,Integer> getAds(){
         List<GetAdRes> getAdResList;
         try{
-            getAdResList = advertisementProvider.retrieveAd(word);
+            getAdResList = advertisementProvider.retrieveAd();
             Integer size = getAdResList.size();
             return new AdResponse<>(BaseResponseStatus.SUCCESS,getAdResList,size);
         }catch (BaseException e){

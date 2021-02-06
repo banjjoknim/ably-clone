@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -39,9 +40,9 @@ public class CategoryProvider {
         changedList = list.stream().map(GetCategory ->{
             long id = GetCategory.getCategoryCode();
             String name= GetCategory.getCategoryName();
-            String dateCreated = GetCategory.getDateCreated();
-
-            boolean isNew = isNewCategory(dateCreated);
+            Date dateCreated = GetCategory.getDateCreated();
+            String date= dateCreated.toString();
+            boolean isNew = isNewCategory(date);
             return new GetCategoryRes(id,name,isNew);
         }).collect(Collectors.toList());
 
