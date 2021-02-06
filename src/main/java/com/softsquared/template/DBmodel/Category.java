@@ -1,5 +1,6 @@
 package com.softsquared.template.DBmodel;
 
+
 import com.softsquared.template.config.BaseEntity;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,7 +15,7 @@ import javax.validation.constraints.NotNull;
 @Table(name = "Category")
 public class Category extends BaseEntity {
 
-    @Id
+    @Id // PK를 의미하는 어노테이션
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
@@ -27,4 +28,5 @@ public class Category extends BaseEntity {
     public Category(String name) {
         this.name = name;
     }
+  
 }
