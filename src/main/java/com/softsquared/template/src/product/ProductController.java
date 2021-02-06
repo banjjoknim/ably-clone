@@ -2,11 +2,9 @@ package com.softsquared.template.src.product;
 
 import com.softsquared.template.config.BaseResponse;
 import com.softsquared.template.src.product.models.GetProductsRes;
+import com.softsquared.template.src.product.models.ProductFilterReq;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,10 +25,9 @@ public class ProductController {
     }
 
     @GetMapping("")
-    public BaseResponse<List<GetProductsRes>> getProducts(@RequestParam(value = "categoryId", required = false) Long categoryId,
-                                                          @RequestParam(value = "detailCategoryId", required = false) Long detailCategoryId) { // todo: RequestParam 추가해서 필터링 진행할 것.
+    public BaseResponse<List<GetProductsRes>> getProducts(@ModelAttribute ProductFilterReq request) {
         try {
-            return new BaseResponse<>(SUCCESS, productProvider.retrieveProducts(categoryId, detailCategoryId));
+            return new BaseResponse<>(SUCCESS, productProvider.retrieveProducts(request.getCategoryId(), request.getDetailCategoryId()));
         } catch (IllegalArgumentException e) {
             if (e.getMessage().equals(NOT_FOUND_CATEGORY.getMessage())) {
                 return new BaseResponse<>(NOT_FOUND_CATEGORY);

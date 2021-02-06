@@ -12,4 +12,5 @@ public class GetProductsRes {
     private ProductsInfo productInfo;
     private List<String> thumbnails;
     private Boolean liked;
+    private Boolean isNew;
 }
