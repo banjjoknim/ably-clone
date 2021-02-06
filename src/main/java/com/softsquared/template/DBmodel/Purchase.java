@@ -1,58 +1,59 @@
 package com.softsquared.template.DBmodel;
 
 import com.softsquared.template.config.BaseEntity;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 
-@NoArgsConstructor
-@Getter
-@DynamicInsert
-@Entity
-@Table(name = "Purchase")
+@NoArgsConstructor(access = AccessLevel.PUBLIC) // Unit Test 를 위해 PUBLIC
+@EqualsAndHashCode(callSuper = false)
+@Data // from lombok
+@Entity // 필수, Class 를 Database Table화 해주는 것이다
+@Table(name = "Purchase") // Table 이름을 명시해주지 않으면 class 이름을 Table 이름으로 대체한다.
 public class Purchase extends BaseEntity {
-
-    @Id
+    @Id // PK를 의미하는 어노테이션
+    @Column(name = "purCode", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "purCode")
-    private Long purCode;
+    private long purCode;
 
-    @Column(name = "purState")
-    private String purState;
+    //배송 상태
+    //R - 배송 준비  C-배송 완
+    @Column(name = "purState", nullable = false)
+    private char purState;
 
     @Column(name = "coupon")
-    private Integer coupon;
+    private int coupon;
 
     @Column(name = "point")
-    private Integer point;
+    private int point;
 
-    @Column(name = "price")
-    private Integer price;
+    @Column(name = "price", nullable = false)
+    private int price;
 
-    @Column(name = "desCode")
-    private Integer desCode;
+    //배송지 코드 (여러 배송지 수단중 고른 코드)
+    //DeliveryDestination table과 연
+    @Column(name = "desCode", nullable = false)
+    private long desCode;
 
-    @Column(name = "payment")
-    private String payment;
+    //결제 수단 코드
+    //Payment table과 연관
+    @Column(name = "paymentCode", nullable = false)
+    private long paymentCode;
 
-    @Column(name = "purProductCode")
-    private Long purProductCode;
+    //구매 상품 코드
+    //PurchaseProduct table과 연관
+    @Column(name = "purProductCode", nullable = false)
+    private long purProductCode;
 
-    @Column(name = "isDeleted")
-    private Integer isDeleted;
 
-    @Builder
-    public Purchase(String purState, Integer coupon, Integer point, Integer price, Integer desCode, String payment, Long purProductCode, Integer isDeleted) {
-        this.purState = purState;
-        this.coupon = coupon;
-        this.point = point;
-        this.price = price;
-        this.desCode = desCode;
-        this.payment = payment;
-        this.purProductCode = purProductCode;
-        this.isDeleted = isDeleted;
-    }
+    @Column(name = "isDeleted", nullable = false)
+    private int isDeleted;
+
+
+    @Column(name = "userCode", nullable = false)
+    private long userCode;
+
 }
