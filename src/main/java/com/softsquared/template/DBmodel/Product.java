@@ -34,6 +34,14 @@ public class Product extends BaseEntity {
     private Long celebId;
 
     @NotNull
+    @Column(name = "categoryId")
+    private Long categoryId;
+
+    @NotNull
+    @Column(name = "detailCategoryId")
+    private Long detailCategoryId;
+
+    @NotNull
     @Column(name = "price")
     private Integer price;
 
@@ -42,10 +50,12 @@ public class Product extends BaseEntity {
     private Integer discountRate;
 
     @Builder
-    public Product(String code, String name, Long celebId, Integer price, Integer discountRate) {
+    public Product(String code, String name, Long celebId, Long categoryId, Long detailCategoryId, Integer price, Integer discountRate) {
         this.code = code;
         this.name = name;
         this.celebId = celebId;
+        this.categoryId = categoryId;
+        this.detailCategoryId = detailCategoryId;
         this.price = price;
         this.discountRate = discountRate;
     }

@@ -46,7 +46,6 @@ public class Review extends BaseEntity {
     private ColorComment colorComment;
 
     @NotNull
-    @Enumerated(value = EnumType.STRING)
     @Column(name = "likesCount")
     private Long likesCount;
 
