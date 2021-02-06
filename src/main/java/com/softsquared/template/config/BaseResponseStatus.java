@@ -31,6 +31,10 @@ public enum BaseResponseStatus {
     DO_NOT_MATCH_PASSWORD(false, 2033, "비밀번호와 비밀번호확인 값이 일치하지 않습니다."),
     EMPTY_NICKNAME(false, 2040, "닉네임을 입력해주세요."),
 
+    // colt
+    NOT_FOUND_CATEGORY(false, 2050, "존재하지 않는 상위 카테고리입니다."),
+    NOT_FOUND_DETAIL_CATEGORY(false, 2051, "존재하지 않는 하위 카테고리입니다."),
+    NOT_FOUND_DETAIL_CATEGORY_BELONGED_CATEGORY(false, 2052, "해당 하위 카테고리의 상위 카테고리가 아닙니다."),
 
 
     // 3000 : Response 오류
