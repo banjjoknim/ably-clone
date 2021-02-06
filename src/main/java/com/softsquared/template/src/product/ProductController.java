@@ -25,17 +25,18 @@ public class ProductController {
     }
 
     @GetMapping("")
-    public BaseResponse<List<GetProductsRes>> getProducts(@ModelAttribute ProductFilterReq request) {
+    public BaseResponse<List<GetProductsRes>> getProducts(ProductFilterReq request) {
+
         try {
-            return new BaseResponse<>(SUCCESS, productProvider.retrieveProducts(request.getCategoryId(), request.getDetailCategoryId()));
+            return new BaseResponse<>(SUCCESS, productProvider.retrieveProducts(request));
         } catch (IllegalArgumentException e) {
             if (e.getMessage().equals(NOT_FOUND_CATEGORY.getMessage())) {
                 return new BaseResponse<>(NOT_FOUND_CATEGORY);
             }
-            if (e.getMessage().equals(NOT_FOUND_DETAIL_CATEGORY_BELONGED_CATEGORY.getMessage())) {
-                return new BaseResponse<>(NOT_FOUND_DETAIL_CATEGORY_BELONGED_CATEGORY);
+            if (e.getMessage().equals(NOT_FOUND_DETAIL_CATEGORY.getMessage())) {
+                return new BaseResponse<>(NOT_FOUND_DETAIL_CATEGORY);
             }
-            return new BaseResponse<>(NOT_FOUND_DETAIL_CATEGORY);
+            return new BaseResponse<>(NOT_FOUND_DETAIL_CATEGORY_BELONGED_CATEGORY);
         }
     }
 }

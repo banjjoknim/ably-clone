@@ -42,6 +42,34 @@ public class Product extends BaseEntity {
     private Long detailCategoryId;
 
     @NotNull
+    @Column(name = "ageGroupId")
+    private Long ageGroupId;
+
+    @NotNull
+    @Column(name = "clothLengthId")
+    private Long clothLengthId;
+
+    @NotNull
+    @Column(name = "colorId")
+    private Long colorId;
+
+    @NotNull
+    @Column(name = "fabricId")
+    private Long fabricId;
+
+    @NotNull
+    @Column(name = "tall")
+    private Integer tall;
+
+    @NotNull
+    @Column(name = "fitId")
+    private Long fitId;
+
+    @NotNull
+    @Column(name = "printId")
+    private Long printId;
+
+    @NotNull
     @Column(name = "price")
     private Integer price;
 
@@ -50,12 +78,19 @@ public class Product extends BaseEntity {
     private Integer discountRate;
 
     @Builder
-    public Product(String code, String name, Long celebId, Long categoryId, Long detailCategoryId, Integer price, Integer discountRate) {
+    public Product(@NotNull String code, @NotNull String name, @NotNull Long celebId, @NotNull Long categoryId, @NotNull Long detailCategoryId, @NotNull Long ageGroupId, @NotNull Long clothLengthId, @NotNull Long colorId, @NotNull Long fabricId, @NotNull Integer tall, @NotNull Long fitId, @NotNull Long printId, @NotNull Integer price, @NotNull Integer discountRate) {
         this.code = code;
         this.name = name;
         this.celebId = celebId;
         this.categoryId = categoryId;
         this.detailCategoryId = detailCategoryId;
+        this.ageGroupId = ageGroupId;
+        this.clothLengthId = clothLengthId;
+        this.colorId = colorId;
+        this.fabricId = fabricId;
+        this.tall = tall;
+        this.fitId = fitId;
+        this.printId = printId;
         this.price = price;
         this.discountRate = discountRate;
     }
