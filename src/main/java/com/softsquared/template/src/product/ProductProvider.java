@@ -169,7 +169,7 @@ public class ProductProvider {
             builder.and(product.tall.goe(request.getMinimumTall()));
         }
         if (request.getMaximumTall() != null) {
-            if (request.getMinimumTall() < 0) {
+            if (request.getMaximumTall() < 0) {
                 throw new IllegalArgumentException(FILTER_PRICE_MUST_BE_POSITIVE.getMessage());
             }
             builder.and(product.tall.loe(request.getMaximumTall()));
