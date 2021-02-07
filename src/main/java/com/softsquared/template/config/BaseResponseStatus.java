@@ -35,7 +35,8 @@ public enum BaseResponseStatus {
     NOT_FOUND_CATEGORY(false, 2050, "존재하지 않는 상위 카테고리입니다."),
     NOT_FOUND_DETAIL_CATEGORY(false, 2051, "존재하지 않는 하위 카테고리입니다."),
     NOT_FOUND_DETAIL_CATEGORY_BELONGED_CATEGORY(false, 2052, "해당 하위 카테고리의 상위 카테고리가 아닙니다."),
-
+    FILTER_PRICE_MUST_BE_POSITIVE(false, 2053, "필터 설정 가격은 0보다 큰 정수여야 합니다."),
+    FILTER_TALL_MUST_BE_POSITIVE(false, 2054, "필터 설정 키는 0보다 큰 정수여야 합니다."),
 
     // 3000 : Response 오류
     RESPONSE_ERROR(false, 3000, "값을 불러오는데 실패하였습니다."),
