@@ -12,4 +12,5 @@ public class GetCategory {
     private String categoryName;
     private Date dateCreated;
     private Date dateUpdated;
+
 }
