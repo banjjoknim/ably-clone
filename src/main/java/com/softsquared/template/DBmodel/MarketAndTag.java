@@ -3,17 +3,15 @@ package com.softsquared.template.DBmodel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @NoArgsConstructor
 @Getter
-@DynamicInsert
 @Entity
-@Table(name = "MacketTag")
-public class MacketTag {
+@Table(name = "MarketAndTag")
+public class MarketAndTag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,11 +19,16 @@ public class MacketTag {
     private Long id;
 
     @NotNull
-    @Column(name = "name")
-    private String name;
+    @Column(name = "marketId")
+    private Long marketId;
+
+    @NotNull
+    @Column(name = "marketTagId")
+    private Long marketTagId;
 
     @Builder
-    public MacketTag(String name) {
-        this.name = name;
+    public MarketAndTag(Long marketId, Long marketTagId) {
+        this.marketId = marketId;
+        this.marketTagId = marketTagId;
     }
 }

@@ -12,8 +12,8 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @Getter
 @Entity
-@Table(name = "Macket")
-public class Macket extends BaseEntity {
+@Table(name = "Market")
+public class Market extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,24 +38,24 @@ public class Macket extends BaseEntity {
     private DeliveryType deliveryType;
 
     @NotNull
-    @Column(name = "macketType")
+    @Column(name = "marketType")
     @Enumerated(value = EnumType.STRING)
-    private MacketType macketType;
+    private MarketType marketType;
 
     public enum DeliveryType {
         MARKET, ABLY,
     }
 
-    public enum MacketType {
+    public enum MarketType {
         CELEB, SHOPPINGMOLL, BRAND
     }
 
     @Builder
-    public Macket(@NotNull String name, @NotNull String image, @NotNull String instagram, @NotNull DeliveryType deliveryType, @NotNull MacketType macketType) {
+    public Market(@NotNull String name, @NotNull String image, @NotNull String instagram, @NotNull DeliveryType deliveryType, @NotNull MarketType marketType) {
         this.name = name;
         this.image = image;
         this.instagram = instagram;
         this.deliveryType = deliveryType;
-        this.macketType = macketType;
+        this.marketType = marketType;
     }
 }
