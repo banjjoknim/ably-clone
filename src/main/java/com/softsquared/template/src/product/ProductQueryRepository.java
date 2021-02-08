@@ -101,8 +101,8 @@ public class ProductQueryRepository {
 
         request.getMinimumTall().ifPresent(minimumTall -> builder.and(product.tall.goe(minimumTall)));
         request.getMaximumTall().ifPresent(maximumTall -> builder.and(product.tall.loe(maximumTall)));
-        request.getAgeGroupIds().ifPresent(ageGroupIds -> ageGroupIds.stream().forEach(ageGroupId -> builder.or(product.fabricId.eq(ageGroupId))));
-        request.getClothLengthIds().ifPresent(clothLengthIds -> clothLengthIds.stream().forEach(clothLengthId -> builder.or(product.fabricId.eq(clothLengthId))));
+        request.getAgeGroupIds().ifPresent(ageGroupIds -> ageGroupIds.stream().forEach(ageGroupId -> builder.or(product.ageGroupId.eq(ageGroupId))));
+        request.getClothLengthIds().ifPresent(clothLengthIds -> clothLengthIds.stream().forEach(clothLengthId -> builder.or(product.clothLengthId.eq(clothLengthId))));
 
         return builder;
     }
