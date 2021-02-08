@@ -3,6 +3,7 @@ package com.softsquared.template.src.product;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -17,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -31,7 +31,6 @@ import static java.util.stream.Collectors.toList;
 public class ProductProvider {
 
     private static final Integer HUNDRED = 100;
-    private static final Integer EMPTY_SIZE = 0;
 
     private final JPAQueryFactory jpaQueryFactory;
     private final ProductRepository productRepository;
@@ -56,7 +55,9 @@ public class ProductProvider {
 
         List<ProductsInfo> productInfos = getProductInfosQuery()
                 .where(filterProductCategory(request)) // 카테고리 필터
-                .where(filterProductDetail(request)) // 카테고리 필터 진행시, 상세 필터
+                .where(filterProductPrice(request)) // 가격 필터
+                .where(filterProductColor(request)) // 색상 필터
+                .where(filterProductTallAndAgeGroup(request)) // 키 - 연령 필터
                 .fetch();
 
         return productInfos.stream()
@@ -93,11 +94,11 @@ public class ProductProvider {
     // 카테고리 필터 유효성 검증
     private void validateCategoryFilter(ProductFilterReq request) {
 
-        if (request.getCategoryId() != null) {
-            categoryRepository.findById(request.getCategoryId())
-                    .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_CATEGORY.getMessage()));
-        }
-        if (request.getCategoryId() != null && request.getDetailCategoryId() != null) {
+        request.getCategoryId()
+                .ifPresent(categoryId -> categoryRepository.findById(categoryId)
+                        .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_CATEGORY.getMessage())));
+
+        if (request.getCategoryId().isPresent() && request.getDetailCategoryId().isPresent()) {
             validateCategoryAndDetailCategory(request);
         }
     }
@@ -106,82 +107,96 @@ public class ProductProvider {
     // 카테고리 필터 유효성 검증
     private void validateCategoryAndDetailCategory(ProductFilterReq request) {
 
-        if (detailCategoryRepository.findById(request.getDetailCategoryId()).isEmpty()) {
-            throw new IllegalArgumentException(NOT_FOUND_DETAIL_CATEGORY.getMessage());
-        }
-        if (detailCategoryRepository.findByIdAndCategoryId(request.getDetailCategoryId(), request.getCategoryId()).isEmpty()) {
-            throw new IllegalArgumentException(NOT_FOUND_DETAIL_CATEGORY_BELONGED_CATEGORY.getMessage());
-        }
+        request.getDetailCategoryId()
+                .ifPresent(detailCategoryId -> detailCategoryRepository.findById(detailCategoryId)
+                        .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_DETAIL_CATEGORY.getMessage())));
+
+        detailCategoryRepository.findByIdAndCategoryId(request.getDetailCategoryId().get(), request.getCategoryId().get())
+                .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_DETAIL_CATEGORY_BELONGED_CATEGORY.getMessage()));
     }
 
     // 카테고리 필터 적용
     public Predicate filterProductCategory(ProductFilterReq request) {
 
         BooleanBuilder builder = new BooleanBuilder();
-        if (request.getCategoryId() != null) {
-            builder.and(product.categoryId.eq(request.getCategoryId()));
-        }
-        if (request.getDetailCategoryId() != null) {
-            builder.and(product.detailCategoryId.eq(request.getDetailCategoryId()));
-        }
+
+        request.getCategoryId().ifPresent(categoryId -> builder.and(product.categoryId.eq(categoryId)));
+        request.getCategoryId().ifPresent(detailCategoryId -> builder.and(product.categoryId.eq(detailCategoryId)));
+
+        return builder;
+    }
+
+    // 가격 필터 적용
+    public Predicate filterProductPrice(ProductFilterReq request) {
+
+        BooleanBuilder builder = new BooleanBuilder();
+
+        request.getMinimumPrice().ifPresent(minimumPrice -> {
+            if (minimumPrice < 0) {
+                throw new IllegalArgumentException(FILTER_PRICE_MUST_BE_POSITIVE.getMessage());
+            }
+            builder.and(applyGoeOnMinimumPrice(minimumPrice));
+        });
+
+        request.getMaximumPrice().ifPresent(maximumPrice -> {
+            if (maximumPrice < 0) {
+                throw new IllegalArgumentException(FILTER_PRICE_MUST_BE_POSITIVE.getMessage());
+            }
+            builder.and(applyLoeOnMaximumPrice(maximumPrice));
+        });
+
+        return builder;
+    }
+    
+    // 색상 필터 적용
+    private Predicate filterProductColor(ProductFilterReq request) {
+
+        BooleanBuilder builder = new BooleanBuilder();
+
+        request.getColorIds().ifPresent(colorIds -> colorIds.stream().forEach(colorId -> builder.or(product.colorId.eq(colorId))));
+        request.getPrintIds().ifPresent(printIds -> printIds.stream().forEach(printId -> builder.or(product.printId.eq(printId))));
+        request.getPrintIds().ifPresent(fabricIds -> fabricIds.stream().forEach(fabricId -> builder.or(product.fabricId.eq(fabricId))));
+
         return builder;
     }
 
     // todo : 스타일 별 필터링 추가해야함
     // 카테고리 내의 상품 상세 필터링, null일경우 필터링 조건에서 제외됨
-    public Predicate filterProductDetail(ProductFilterReq request) {
+    public Predicate filterProductTallAndAgeGroup(ProductFilterReq request) {
 
         BooleanBuilder builder = new BooleanBuilder();
-        if (request.getMinimumPrice() != null) {
-            if (request.getMinimumPrice() < 0) {
-                throw new IllegalArgumentException(FILTER_PRICE_MUST_BE_POSITIVE.getMessage());
+
+        request.getMinimumTall().ifPresent(minimumTall -> {
+            if (minimumTall < 0) {
+                throw new IllegalArgumentException(FILTER_TALL_MUST_BE_POSITIVE.getMessage());
             }
-            builder.and(product.price
-                    .divide(HUNDRED)
-                    .multiply(Expressions.asNumber(HUNDRED).subtract(product.discountRate))
-                    .goe(request.getMinimumPrice()));
-        }
-        if (request.getMaximumPrice() != null) {
-            if (request.getMaximumPrice() < 0) {
-                throw new IllegalArgumentException(FILTER_PRICE_MUST_BE_POSITIVE.getMessage());
+            builder.and(product.tall.goe(minimumTall));
+        });
+
+        request.getMaximumTall().ifPresent(maximumTall -> {
+            if (maximumTall < 0) {
+                throw new IllegalArgumentException(FILTER_TALL_MUST_BE_POSITIVE.getMessage());
             }
-            builder.and(product.price
-                    .divide(HUNDRED)
-                    .multiply(Expressions.asNumber(HUNDRED).subtract(product.discountRate))
-                    .loe(request.getMaximumPrice()));
-        }
-        if (request.getColorIds().length != EMPTY_SIZE) {
-            Arrays.stream(request.getColorIds())
-                    .forEach(colorId -> builder.or(product.colorId.eq(colorId)));
-        }
-        if (request.getPrintIds().length != EMPTY_SIZE) {
-            Arrays.stream(request.getPrintIds())
-                    .forEach(printId -> builder.or(product.printId.eq(printId)));
-        }
-        if (request.getFabricIds().length != EMPTY_SIZE) {
-            Arrays.stream(request.getFabricIds())
-                    .forEach(fabricId -> builder.or(product.fabricId.eq(fabricId)));
-        }
-        if (request.getMinimumTall() != null) {
-            if (request.getMinimumTall() < 0) {
-                throw new IllegalArgumentException(FILTER_PRICE_MUST_BE_POSITIVE.getMessage());
-            }
-            builder.and(product.tall.goe(request.getMinimumTall()));
-        }
-        if (request.getMaximumTall() != null) {
-            if (request.getMaximumTall() < 0) {
-                throw new IllegalArgumentException(FILTER_PRICE_MUST_BE_POSITIVE.getMessage());
-            }
-            builder.and(product.tall.loe(request.getMaximumTall()));
-        }
-        if (request.getAgeGroupIds().length != EMPTY_SIZE) {
-            Arrays.stream(request.getAgeGroupIds())
-                    .forEach(ageGroupId -> builder.or(product.ageGroupId.eq(ageGroupId)));
-        }
-        if (request.getClothLengthIds().length != EMPTY_SIZE) {
-            Arrays.stream(request.getClothLengthIds())
-                    .forEach(clothLengthId -> builder.or(product.clothLengthId.eq(clothLengthId)));
-        }
+            builder.and(product.tall.loe(maximumTall));
+        });
+
+        request.getAgeGroupIds().ifPresent(ageGroupIds -> ageGroupIds.stream().forEach(ageGroupId -> builder.or(product.fabricId.eq(ageGroupId))));
+        request.getClothLengthIds().ifPresent(clothLengthIds -> clothLengthIds.stream().forEach(clothLengthId -> builder.or(product.fabricId.eq(clothLengthId))));
+
         return builder;
+    }
+
+    private BooleanExpression applyLoeOnMaximumPrice(Integer maximumPrice) {
+        return product.price
+                .divide(HUNDRED)
+                .multiply(Expressions.asNumber(HUNDRED).subtract(product.discountRate))
+                .loe(maximumPrice);
+    }
+
+    private BooleanExpression applyGoeOnMinimumPrice(Integer minimumPrice) {
+        return product.price
+                .divide(HUNDRED)
+                .multiply(Expressions.asNumber(HUNDRED).subtract(product.discountRate))
+                .goe(minimumPrice);
     }
 }
