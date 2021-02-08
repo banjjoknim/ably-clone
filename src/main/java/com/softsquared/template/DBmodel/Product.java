@@ -30,8 +30,8 @@ public class Product extends BaseEntity {
     private String name;
 
     @NotNull
-    @Column(name = "celebId")
-    private Long celebId;
+    @Column(name = "marketId")
+    private Long marketId;
 
     @NotNull
     @Column(name = "categoryId")
@@ -78,10 +78,10 @@ public class Product extends BaseEntity {
     private Integer discountRate;
 
     @Builder
-    public Product(@NotNull String code, @NotNull String name, @NotNull Long celebId, @NotNull Long categoryId, @NotNull Long detailCategoryId, @NotNull Long ageGroupId, @NotNull Long clothLengthId, @NotNull Long colorId, @NotNull Long fabricId, @NotNull Integer tall, @NotNull Long fitId, @NotNull Long printId, @NotNull Integer price, @NotNull Integer discountRate) {
+    public Product(@NotNull String code, @NotNull String name, @NotNull Long marketId, @NotNull Long categoryId, @NotNull Long detailCategoryId, @NotNull Long ageGroupId, @NotNull Long clothLengthId, @NotNull Long colorId, @NotNull Long fabricId, @NotNull Integer tall, @NotNull Long fitId, @NotNull Long printId, @NotNull Integer price, @NotNull Integer discountRate) {
         this.code = code;
         this.name = name;
-        this.celebId = celebId;
+        this.marketId = marketId;
         this.categoryId = categoryId;
         this.detailCategoryId = detailCategoryId;
         this.ageGroupId = ageGroupId;
