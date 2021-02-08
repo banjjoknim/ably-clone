@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.softsquared.template.DBmodel.QCeleb.celeb;
+import static com.softsquared.template.DBmodel.QMacket.macket;
 import static com.softsquared.template.DBmodel.QProduct.product;
 import static com.softsquared.template.DBmodel.QPurchase.purchase;
 
@@ -42,7 +42,7 @@ public class ProductQueryRepository {
                         product.price
                                 .divide(HUNDRED)
                                 .multiply(Expressions.asNumber(HUNDRED).subtract(product.discountRate)),
-                        celeb.name,
+                        macket.name,
                         product.name,
                         JPAExpressions
                                 .select(ExpressionUtils.count(purchase))
@@ -50,7 +50,7 @@ public class ProductQueryRepository {
                                 .where(purchase.purProductCode.eq(product.id))
                 ))
                 .from(product)
-                .innerJoin(celeb).on(product.celebId.eq(celeb.id))
+                .innerJoin(macket).on(product.celebId.eq(macket.id))
                 .where(filterProductCategory(request)) // 카테고리 필터
                 .where(filterProductPrice(request)) // 가격 필터
                 .where(filterProductColor(request)) // 색상 필터

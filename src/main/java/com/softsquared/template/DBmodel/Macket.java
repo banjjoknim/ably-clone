@@ -1,11 +1,9 @@
 package com.softsquared.template.DBmodel;
 
 import com.softsquared.template.config.BaseEntity;
-import com.softsquared.template.config.Constant;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -14,8 +12,8 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @Getter
 @Entity
-@Table(name = "Celeb")
-public class Celeb extends BaseEntity {
+@Table(name = "Macket")
+public class Macket extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,15 +37,25 @@ public class Celeb extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private DeliveryType deliveryType;
 
-    public enum DeliveryType{
-        MARKET, ABLY
+    @NotNull
+    @Column(name = "macketType")
+    @Enumerated(value = EnumType.STRING)
+    private MacketType macketType;
+
+    public enum DeliveryType {
+        MARKET, ABLY,
+    }
+
+    public enum MacketType {
+        CELEB, SHOPPINGMOLL, BRAND
     }
 
     @Builder
-    public Celeb(String name, String image, String instagram, DeliveryType deliveryType) {
+    public Macket(@NotNull String name, @NotNull String image, @NotNull String instagram, @NotNull DeliveryType deliveryType, @NotNull MacketType macketType) {
         this.name = name;
         this.image = image;
         this.instagram = instagram;
         this.deliveryType = deliveryType;
+        this.macketType = macketType;
     }
 }
