@@ -1,5 +1,6 @@
 package com.softsquared.template.src.product;
 
+import com.softsquared.template.config.BaseException;
 import com.softsquared.template.config.BaseResponse;
 import com.softsquared.template.src.product.models.GetProductsRes;
 import com.softsquared.template.src.product.models.ProductFilterReq;
@@ -51,17 +52,17 @@ public class ProductController {
 
         try {
             return new BaseResponse<>(SUCCESS, productProvider.retrieveProducts(request));
-        } catch (IllegalArgumentException e) {
-            if (e.getMessage().equals(NOT_FOUND_CATEGORY.getMessage())) {
+        } catch (BaseException e) {
+            if (e.getStatus().equals(NOT_FOUND_CATEGORY)) {
                 return new BaseResponse<>(NOT_FOUND_CATEGORY);
             }
-            if (e.getMessage().equals(NOT_FOUND_DETAIL_CATEGORY.getMessage())) {
+            if (e.getStatus().equals(NOT_FOUND_DETAIL_CATEGORY)) {
                 return new BaseResponse<>(NOT_FOUND_DETAIL_CATEGORY);
             }
-            if (e.getMessage().equals(NOT_FOUND_DETAIL_CATEGORY_BELONGED_CATEGORY.getMessage())) {
+            if (e.getStatus().equals(NOT_FOUND_DETAIL_CATEGORY_BELONGED_CATEGORY)) {
                 return new BaseResponse<>(NOT_FOUND_DETAIL_CATEGORY_BELONGED_CATEGORY);
             }
-            if (e.getMessage().equals(FILTER_TALL_MUST_BE_POSITIVE.getMessage())) {
+            if (e.getStatus().equals(FILTER_PRICE_MUST_BE_POSITIVE)) {
                 return new BaseResponse<>(FILTER_PRICE_MUST_BE_POSITIVE);
             }
             return new BaseResponse<>(FILTER_TALL_MUST_BE_POSITIVE);

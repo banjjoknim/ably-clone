@@ -18,8 +18,6 @@ import java.util.List;
 import static com.softsquared.template.DBmodel.QCeleb.celeb;
 import static com.softsquared.template.DBmodel.QProduct.product;
 import static com.softsquared.template.DBmodel.QPurchase.purchase;
-import static com.softsquared.template.config.BaseResponseStatus.FILTER_PRICE_MUST_BE_POSITIVE;
-import static com.softsquared.template.config.BaseResponseStatus.FILTER_TALL_MUST_BE_POSITIVE;
 
 @Repository
 public class ProductQueryRepository {
@@ -77,19 +75,8 @@ public class ProductQueryRepository {
 
         BooleanBuilder builder = new BooleanBuilder();
 
-        request.getMinimumPrice().ifPresent(minimumPrice -> {
-            if (minimumPrice < 0) {
-                throw new IllegalArgumentException(FILTER_PRICE_MUST_BE_POSITIVE.getMessage());
-            }
-            builder.and(applyGoeOnMinimumPrice(minimumPrice));
-        });
-
-        request.getMaximumPrice().ifPresent(maximumPrice -> {
-            if (maximumPrice < 0) {
-                throw new IllegalArgumentException(FILTER_PRICE_MUST_BE_POSITIVE.getMessage());
-            }
-            builder.and(applyLoeOnMaximumPrice(maximumPrice));
-        });
+        request.getMinimumPrice().ifPresent(minimumPrice -> builder.and(applyGoeOnMinimumPrice(minimumPrice)));
+        request.getMaximumPrice().ifPresent(maximumPrice -> builder.and(applyLoeOnMaximumPrice(maximumPrice)));
 
         return builder;
     }
@@ -112,20 +99,8 @@ public class ProductQueryRepository {
 
         BooleanBuilder builder = new BooleanBuilder();
 
-        request.getMinimumTall().ifPresent(minimumTall -> {
-            if (minimumTall < 0) {
-                throw new IllegalArgumentException(FILTER_TALL_MUST_BE_POSITIVE.getMessage());
-            }
-            builder.and(product.tall.goe(minimumTall));
-        });
-
-        request.getMaximumTall().ifPresent(maximumTall -> {
-            if (maximumTall < 0) {
-                throw new IllegalArgumentException(FILTER_TALL_MUST_BE_POSITIVE.getMessage());
-            }
-            builder.and(product.tall.loe(maximumTall));
-        });
-
+        request.getMinimumTall().ifPresent(minimumTall -> builder.and(product.tall.goe(minimumTall)));
+        request.getMaximumTall().ifPresent(maximumTall -> builder.and(product.tall.loe(maximumTall)));
         request.getAgeGroupIds().ifPresent(ageGroupIds -> ageGroupIds.stream().forEach(ageGroupId -> builder.or(product.fabricId.eq(ageGroupId))));
         request.getClothLengthIds().ifPresent(clothLengthIds -> clothLengthIds.stream().forEach(clothLengthId -> builder.or(product.fabricId.eq(clothLengthId))));
 
