@@ -1,13 +1,19 @@
 package com.softsquared.template.src.product;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.alias.Alias;
 import com.querydsl.core.types.ExpressionUtils;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.softsquared.template.src.product.models.ProductFilterReq;
+import com.softsquared.template.src.product.models.ProductOrderType;
 import com.softsquared.template.src.product.models.ProductsInfo;
 import com.softsquared.template.src.product.models.QProductsInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +21,12 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.softsquared.template.DBmodel.QMacket.macket;
+import static com.querydsl.core.types.ExpressionUtils.count;
+import static com.softsquared.template.DBmodel.QMarket.market;
 import static com.softsquared.template.DBmodel.QProduct.product;
 import static com.softsquared.template.DBmodel.QPurchase.purchase;
+import static com.softsquared.template.DBmodel.QReview.review;
+import static com.softsquared.template.src.product.models.ProductOrderType.*;
 
 @Repository
 public class ProductQueryRepository {
@@ -31,9 +40,16 @@ public class ProductQueryRepository {
         this.jpaQueryFactory = jpaQueryFactory;
     }
 
+    // 상품 조회
+    public List<ProductsInfo> getProductsInfos(ProductFilterReq filterRequest, ProductOrderType orderType) {
+
+        JPAQuery<ProductsInfo> infosFilterQuery = productsInfosFilterQuery(getProductsInfosQuery(), filterRequest);
+        return productsInfosOrderByQuery(infosFilterQuery, orderType).fetch();
+    }
+
     // todo : 상품 목록 조회시 유저 별 찜 반영 쿼리 로직 추가해야 함.
     // 상품 조회 쿼리
-    public List<ProductsInfo> getProductsInfos(ProductFilterReq request) {
+    public JPAQuery<ProductsInfo> getProductsInfosQuery() {
 
         return jpaQueryFactory
                 .select(new QProductsInfo(
@@ -42,21 +58,44 @@ public class ProductQueryRepository {
                         product.price
                                 .divide(HUNDRED)
                                 .multiply(Expressions.asNumber(HUNDRED).subtract(product.discountRate)),
-                        macket.name,
+                        market.name,
                         product.name,
                         JPAExpressions
-                                .select(ExpressionUtils.count(purchase))
+                                .select(count(purchase))
                                 .from(purchase)
-                                .where(purchase.purProductCode.eq(product.id))
+                                .where(purchase.purProductCode.eq(product.id)),
+                        ExpressionUtils.as(
+                                JPAExpressions
+                                        .select(count(review.id))
+                                        .from(review)
+                                        .where(product.id.eq(review.productId)), "reviewCount")
                 ))
                 .from(product)
-                .innerJoin(macket).on(product.celebId.eq(macket.id))
+                .innerJoin(market).on(product.marketId.eq(market.id));
+    }
+
+    public JPAQuery<ProductsInfo> productsInfosFilterQuery(JPAQuery<ProductsInfo> query, ProductFilterReq request) {
+
+        return query
                 .where(filterProductCategory(request)) // 카테고리 필터
                 .where(filterProductPrice(request)) // 가격 필터
                 .where(filterProductColor(request)) // 색상 필터
-                .where(filterProductTallAndAgeGroup(request)) // 키 - 연령 필터
-                .fetch();
+                .where(filterProductTallAndAgeGroup(request)); // 키 - 연령 필터
+    }
 
+    // todo : 인기순 정렬 로직 추가해야 함.
+    public JPAQuery<ProductsInfo> productsInfosOrderByQuery(JPAQuery<ProductsInfo> query, ProductOrderType orderType) {
+
+        if (LASTEST.equals(orderType)) {
+            return query.orderBy(product.dateCreated.desc());
+        }
+        if (CHEAPEST.equals(orderType)) {
+            return query.orderBy(getDiscountedPrice().asc());
+        }
+        if (REVIEWS.equals(orderType)) {
+            return query.orderBy(new OrderSpecifier<>(Order.DESC, Alias.var("reviewCount")));
+        }
+        return query;
     }
 
     // 카테고리 필터 적용
@@ -75,8 +114,8 @@ public class ProductQueryRepository {
 
         BooleanBuilder builder = new BooleanBuilder();
 
-        request.getMinimumPrice().ifPresent(minimumPrice -> builder.and(applyGoeOnMinimumPrice(minimumPrice)));
-        request.getMaximumPrice().ifPresent(maximumPrice -> builder.and(applyLoeOnMaximumPrice(maximumPrice)));
+        request.getMinimumPrice().ifPresent(minimumPrice -> builder.and(minimumPriceGoe(minimumPrice)));
+        request.getMaximumPrice().ifPresent(maximumPrice -> builder.and(maximumPriceLoe(maximumPrice)));
 
         return builder;
     }
@@ -107,18 +146,20 @@ public class ProductQueryRepository {
         return builder;
     }
 
-    private BooleanExpression applyLoeOnMaximumPrice(Integer maximumPrice) {
-        return product.price
-                .divide(HUNDRED)
-                .multiply(Expressions.asNumber(HUNDRED).subtract(product.discountRate))
+    private BooleanExpression maximumPriceLoe(Integer maximumPrice) {
+        return getDiscountedPrice()
                 .loe(maximumPrice);
     }
 
-    private BooleanExpression applyGoeOnMinimumPrice(Integer minimumPrice) {
+    private BooleanExpression minimumPriceGoe(Integer minimumPrice) {
+        return getDiscountedPrice()
+                .goe(minimumPrice);
+    }
+
+    private NumberExpression<Integer> getDiscountedPrice() {
         return product.price
                 .divide(HUNDRED)
-                .multiply(Expressions.asNumber(HUNDRED).subtract(product.discountRate))
-                .goe(minimumPrice);
+                .multiply(Expressions.asNumber(HUNDRED).subtract(product.discountRate));
     }
 
 }

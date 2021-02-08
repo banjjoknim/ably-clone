@@ -4,6 +4,7 @@ import com.softsquared.template.config.BaseException;
 import com.softsquared.template.config.BaseResponse;
 import com.softsquared.template.src.product.models.GetProductsRes;
 import com.softsquared.template.src.product.models.ProductFilterReq;
+import com.softsquared.template.src.product.models.ProductOrderType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,9 +35,9 @@ public class ProductController {
                                                           @RequestParam(required = false) Optional<List<Long>> colorIds, @RequestParam(required = false) Optional<List<Long>> printIds,
                                                           @RequestParam(required = false) Optional<List<Long>> fabricIds, @RequestParam(required = false) Optional<Integer> minimumTall,
                                                           @RequestParam(required = false) Optional<Integer> maximumTall, @RequestParam(required = false) Optional<List<Long>> ageGroupIds,
-                                                          @RequestParam(required = false) Optional<List<Long>> clothLengthIds) {
+                                                          @RequestParam(required = false) Optional<List<Long>> clothLengthIds, @RequestParam(required = false) ProductOrderType orderType) {
 
-        ProductFilterReq request = ProductFilterReq.builder()
+        ProductFilterReq filterRequest = ProductFilterReq.builder()
                 .categoryId(categoryId)
                 .detailCategoryId(detailCategoryId)
                 .minimumPrice(minimumPrice)
@@ -51,7 +52,7 @@ public class ProductController {
                 .build();
 
         try {
-            return new BaseResponse<>(SUCCESS, productProvider.retrieveProducts(request));
+            return new BaseResponse<>(SUCCESS, productProvider.retrieveProducts(filterRequest, orderType));
         } catch (BaseException e) {
             if (e.getStatus().equals(NOT_FOUND_CATEGORY)) {
                 return new BaseResponse<>(NOT_FOUND_CATEGORY);

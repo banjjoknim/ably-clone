@@ -5,6 +5,7 @@ import com.softsquared.template.src.category.CategoryRepository;
 import com.softsquared.template.src.category.DetailCategoryRepository;
 import com.softsquared.template.src.product.models.GetProductsRes;
 import com.softsquared.template.src.product.models.ProductFilterReq;
+import com.softsquared.template.src.product.models.ProductOrderType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,11 +36,11 @@ public class ProductProvider {
 
     // 상품 조회
     @Transactional(readOnly = true)
-    public List<GetProductsRes> retrieveProducts(ProductFilterReq request) throws BaseException {
+    public List<GetProductsRes> retrieveProducts(ProductFilterReq filterRequest, ProductOrderType orderType) throws BaseException {
 
-        validateFilters(request); // 필터 유효성 검증
+        validateFilters(filterRequest); // 필터 유효성 검증
 
-        return productQueryRepository.getProductsInfos(request).stream()
+        return productQueryRepository.getProductsInfos(filterRequest, orderType).stream()
                 .map(productsInfo -> {
                     Long productId = productsInfo.getProductId();
                     boolean isNew = (new Date().getTime() - productRepository.findById(productId).get().getDateCreated().getTime()) <= 1000 * 60 * 60 * 24; // 등록된지 하루 이내이면 true
