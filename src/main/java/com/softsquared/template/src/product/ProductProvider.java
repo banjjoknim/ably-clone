@@ -121,7 +121,7 @@ public class ProductProvider {
         BooleanBuilder builder = new BooleanBuilder();
 
         request.getCategoryId().ifPresent(categoryId -> builder.and(product.categoryId.eq(categoryId)));
-        request.getCategoryId().ifPresent(detailCategoryId -> builder.and(product.categoryId.eq(detailCategoryId)));
+        request.getDetailCategoryId().ifPresent(detailCategoryId -> builder.and(product.detailCategoryId.eq(detailCategoryId)));
 
         return builder;
     }
