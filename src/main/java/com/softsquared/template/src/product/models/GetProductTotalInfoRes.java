@@ -8,12 +8,12 @@ import lombok.Getter;
 @Getter
 public class GetProductTotalInfoRes {
 
-    private ProductMainInfos productMainInfo;
-    private ProductSubInfo productSubInfo;
-    private ProductMarketInfos productMarketInfo;
-    private ProductDetailInfos productDetailInfo;
     private Long productCountInBasket;
+    private ProductMainInfos productMainInfos;
+    private ProductSubInfo productSubInfo;
+    private ProductMarketInfos productMarketInfos;
+    private ProductDetailInfos productDetailInfos;
     private Boolean liked;
-    private Boolean isSoldOut;
+    private Boolean onSale;
 
 }

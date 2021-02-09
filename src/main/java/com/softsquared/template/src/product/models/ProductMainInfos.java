@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 public class ProductMainInfos {
 
-    private ProductMainInfo productInfo;
+    private ProductMainInfo productMainInfo;
     private List<String> thumbnails;
 
 }
