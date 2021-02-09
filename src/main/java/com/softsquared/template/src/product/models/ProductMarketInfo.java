@@ -9,13 +9,11 @@ public class ProductMarketInfo {
     private Long marketId;
     private String marketImage;
     private String marketName;
-    private String marketTags;
 
     @QueryProjection
-    public ProductMarketInfo(Long marketId, String marketImage, String marketName, String marketTags) {
+    public ProductMarketInfo(Long marketId, String marketImage, String marketName) {
         this.marketId = marketId;
         this.marketImage = marketImage;
         this.marketName = marketName;
-        this.marketTags = marketTags;
     }
 }

@@ -21,11 +21,14 @@ import java.util.List;
 
 import static com.querydsl.core.types.ExpressionUtils.count;
 import static com.softsquared.template.DBmodel.QMarket.market;
+import static com.softsquared.template.DBmodel.QMarketAndTag.marketAndTag;
+import static com.softsquared.template.DBmodel.QMarketTag.marketTag;
 import static com.softsquared.template.DBmodel.QProduct.product;
 import static com.softsquared.template.DBmodel.QProductImage.productImage;
 import static com.softsquared.template.DBmodel.QPurchase.purchase;
 import static com.softsquared.template.DBmodel.QReview.review;
 import static com.softsquared.template.src.product.models.ProductOrderType.*;
+import static java.util.stream.Collectors.joining;
 
 @Repository
 public class ProductQueryRepository {
@@ -221,6 +224,38 @@ public class ProductQueryRepository {
                 .innerJoin(market).on(product.marketId.eq(market.id))
                 .where(product.id.eq(productId))
                 .fetchFirst();
+    }
+
+    private ProductMarketInfos getProductMarketInfos(Long productId) {
+        return new ProductMarketInfos(getProductMarketInfo(productId), getProductMarketTags(productId));
+    }
+
+    private ProductMarketInfo getProductMarketInfo(Long productId) {
+
+        return jpaQueryFactory
+                .select(new QProductMarketInfo(
+                        product.marketId,
+                        market.image,
+                        market.name
+                ))
+                .from(product)
+                .innerJoin(market).on(product.marketId.eq(market.id))
+                .where(product.id.eq(productId))
+                .fetchFirst();
+    }
+
+    private String getProductMarketTags(Long productId) {
+
+        return jpaQueryFactory
+                .select(marketTag.name)
+                .from(product)
+                .innerJoin(market).on(product.marketId.eq(market.id))
+                .innerJoin(marketAndTag).on(market.id.eq(marketAndTag.marketId))
+                .innerJoin(marketTag).on(marketAndTag.marketTagId.eq(marketTag.id))
+                .where(product.id.eq(productId))
+                .fetch()
+                .stream()
+                .collect(joining(" "));
     }
 
 }
