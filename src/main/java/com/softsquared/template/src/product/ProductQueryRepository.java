@@ -4,6 +4,8 @@ import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.softsquared.template.DBmodel.Fabric;
+import com.softsquared.template.DBmodel.Product;
 import com.softsquared.template.DBmodel.ProductDetail;
 import com.softsquared.template.DBmodel.Review;
 import com.softsquared.template.src.product.models.*;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static com.softsquared.template.DBmodel.Product.IsSale.ON_SALE;
 import static com.softsquared.template.DBmodel.ProductImage.ImageType.DETAIL;
 import static com.softsquared.template.DBmodel.QMarket.market;
 import static com.softsquared.template.DBmodel.QMarketAndTag.marketAndTag;
@@ -30,10 +33,12 @@ import static java.util.stream.Collectors.joining;
 public class ProductQueryRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
+    private final ProductRepository productRepository;
 
     @Autowired
-    public ProductQueryRepository(JPAQueryFactory jpaQueryFactory) {
+    public ProductQueryRepository(JPAQueryFactory jpaQueryFactory, ProductRepository productRepository) {
         this.jpaQueryFactory = jpaQueryFactory;
+        this.productRepository = productRepository;
     }
 
     private ProductMainInfos getProductMainInfos(Long productId) {
@@ -171,4 +176,27 @@ public class ProductQueryRepository {
                 .where(productDetail.productId.eq(productId))
                 .fetchFirst();
     }
+
+    // todo : 장바구니에 담긴 상품 갯수 계산 로직 추가해야 함.
+    private Long getProductCountInBasket(Long productId) {
+
+        return 0L;
+    }
+
+    // todo : 상품 찜하기 여부 로직 추가해야 함.
+    private Boolean getProductIsLiked(Long productId) {
+
+        return false;
+    }
+
+    private Boolean getProductIsSale(Long productId) {
+
+        Product.IsSale isSale = productRepository.findById(productId).get().getIsSale();
+
+        if (isSale.equals(ON_SALE)) {
+            return true;
+        }
+        return false;
+    }
+
 }
