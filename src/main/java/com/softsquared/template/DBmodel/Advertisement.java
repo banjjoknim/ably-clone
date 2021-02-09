@@ -17,7 +17,7 @@ public class Advertisement {
     @Id // PK를 의미하는 어노테이션
     @Column(name = "adCode", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long adCode;
+    private long adId;
 
 
     @Column(name = "adName", nullable = false, updatable = false)
@@ -40,9 +40,9 @@ public class Advertisement {
     @Column(name = "isBoard", nullable = false)
     private int isBoard;
 
-    public Advertisement(long adCode, String adName, String adImg, int isDeleted, String dateUpdated,
+    public Advertisement(long adId, String adName, String adImg, int isDeleted, String dateUpdated,
                          String dateCreated, int isBoard){
-        this.adCode = adCode;
+        this.adId = adId;
         this.adName = adName;
         this.adImg = adImg;
         this.isDeleted = isDeleted;
