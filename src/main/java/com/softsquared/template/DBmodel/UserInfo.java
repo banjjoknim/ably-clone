@@ -11,10 +11,10 @@ import javax.persistence.*;
 @EqualsAndHashCode(callSuper = false)
 @Data // from lombok
 @Entity // 필수, Class 를 Database Table화 해주는 것이다
-@Table(name = "User") // Table 이름을 명시해주지 않으면 class 이름을 Table 이름으로 대체한다.
-public class User {
+@Table(name = "UserInfo") // Table 이름을 명시해주지 않으면 class 이름을 Table 이름으로 대체한다.
+public class UserInfo {
     @Id // PK를 의미하는 어노테이션
-    @Column(name = "userCode", nullable = false, updatable = false)
+    @Column(name = "userId", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long userCode;
 
@@ -28,7 +28,7 @@ public class User {
     private String phoneNum;
 
     @Column(name = "birthday")
-    private String birthday;
+    private int birthday;
 
     @Column(name = "height")
     private String height;
@@ -75,10 +75,10 @@ public class User {
     private String dateCreated;
 
 
-    public User(long usrCode, String email, String userName, String phoneNum, String birthday,
-                String height, String weight, String topSize, String bottomSize, String shoeSize,
-                String refundName, String refundAccount, int point, int coupon, String rank,
-                int isDeleted, String dateUpdated, String dateCreated){
+    public UserInfo(long usrCode, String email, String userName, String phoneNum, int birthday,
+                    String height, String weight, String topSize, String bottomSize, String shoeSize,
+                    String refundName, String refundAccount, int point, int coupon, String rank,
+                    int isDeleted, String dateUpdated, String dateCreated){
         this.userCode = usrCode;
         this.email = email;
         this.userName = userName;

@@ -5,7 +5,8 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class PostLoginRes {
-    private final int userId;
-    private final String jwt;
+public class GetUsersPurchaseStatus {
+
+    private char purState;
+
 }
