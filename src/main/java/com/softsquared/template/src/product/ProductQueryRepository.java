@@ -12,6 +12,7 @@ import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.softsquared.template.DBmodel.Review;
 import com.softsquared.template.src.product.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -169,7 +170,7 @@ public class ProductQueryRepository {
     private ProductMainInfo getProductMainInfo(Long productId) {
 
         return jpaQueryFactory
-                .select(new QProductInfo(
+                .select(new QProductMainInfo(
                         product.id,
                         product.name,
                         product.discountRate,
@@ -188,6 +189,38 @@ public class ProductQueryRepository {
                 .from(productImage)
                 .where(productImage.productId.eq(productId))
                 .fetch();
+    }
+
+    private ProductSubInfo getProductSubInfo(Long productId) {
+        return jpaQueryFactory
+                .select(new QProductSubInfo(
+                        JPAExpressions
+                                .select(ExpressionUtils.count(review.id))
+                                .from(review)
+                                .where(review.productId.eq(productId)),
+                        JPAExpressions
+                                .select(ExpressionUtils.count(purchase.purCode))
+                                .from(purchase)
+                                .where(purchase.purProductCode.eq(productId)),
+                        JPAExpressions
+                                .select(
+                                        review.count()
+                                                .subtract(JPAExpressions
+                                                        .select(ExpressionUtils.count(review))
+                                                        .from(review)
+                                                        .where(review.satisfaction.eq(Review.Satisfaction.BAD).and(review.productId.eq(productId))))
+                                                .divide(review.count())
+                                                .multiply(Expressions.asNumber(HUNDRED))
+                                                .round()
+                                                .intValue())
+                                .from(review)
+                                .where(review.productId.eq(productId)),
+                        market.deliveryType
+                ))
+                .from(product)
+                .innerJoin(market).on(product.marketId.eq(market.id))
+                .where(product.id.eq(productId))
+                .fetchFirst();
     }
 
 }
