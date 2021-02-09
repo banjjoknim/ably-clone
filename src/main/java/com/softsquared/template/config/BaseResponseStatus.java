@@ -51,6 +51,10 @@ public enum BaseResponseStatus {
     //vivi
     FAILED_TO_GET_ADS(false, 3020, "광고 목록 조회에 실패하였습니다."),
     FAILED_TO_GET_CATEGORY(false, 3021, "카테고리 조회에 실패하였습니다."),
+    FAILED_TO_GET_PURCHASE(false, 3022, "구매 내역 조회에 실패하였습니다."),
+    FAILED_TO_GET_PURCHASE_PRODUCTS(false, 3023, "구매하신 제품 조회에 실패하였습니다."),
+
+
 
 
     // 4000 : Database 오류

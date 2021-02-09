@@ -25,7 +25,7 @@ public class AdvertisementProvider {
     }
 
     //홈 화면에 띄울 광고 리스트 가져오기
-    public List<GetAdRes> retrieveAd(String word) throws BaseException {
+    public List<GetAdRes> retrieveAd() throws BaseException {
         List<GetAdRes> getAdResList ;
         try{
             getAdResList = advertisementSelectRepository.findByOnBoard();
