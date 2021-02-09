@@ -12,6 +12,7 @@ import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.softsquared.template.DBmodel.ProductDetail;
 import com.softsquared.template.DBmodel.Review;
 import com.softsquared.template.src.product.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +21,13 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.querydsl.core.types.ExpressionUtils.count;
+import static com.softsquared.template.DBmodel.ProductImage.ImageType.DETAIL;
 import static com.softsquared.template.DBmodel.QMarket.market;
 import static com.softsquared.template.DBmodel.QMarketAndTag.marketAndTag;
 import static com.softsquared.template.DBmodel.QMarketTag.marketTag;
+import static com.softsquared.template.DBmodel.QModel.model;
 import static com.softsquared.template.DBmodel.QProduct.product;
+import static com.softsquared.template.DBmodel.QProductDetail.productDetail;
 import static com.softsquared.template.DBmodel.QProductImage.productImage;
 import static com.softsquared.template.DBmodel.QPurchase.purchase;
 import static com.softsquared.template.DBmodel.QReview.review;
@@ -258,4 +262,46 @@ public class ProductQueryRepository {
                 .collect(joining(" "));
     }
 
+    private ProductDetailInfos getProductDetailInfos(Long productId) {
+
+        List<String> detailImages = getProductDetailImages(productId);
+        ProductModelInfo productModelInfo = getProductModelInfo(productId);
+        ProductDetail productDetail = getProductDetail(productId);
+
+        return new ProductDetailInfos(detailImages, productModelInfo, productDetail);
+    }
+
+    private List<String> getProductDetailImages(Long productId) {
+
+        return jpaQueryFactory
+                .select(productImage.image)
+                .from(productImage)
+                .where(productImage.productId.eq(productId).and(productImage.type.eq(DETAIL)))
+                .fetch();
+    }
+
+    private ProductModelInfo getProductModelInfo(Long productId) {
+
+        return jpaQueryFactory
+                .select(new QProductModelInfo(
+                        model.image,
+                        model.name,
+                        model.tall,
+                        model.topSize,
+                        model.bottomSize,
+                        model.shoeSize
+                ))
+                .from(product)
+                .innerJoin(model).on(product.modelId.eq(model.id))
+                .where(product.id.eq(productId))
+                .fetchFirst();
+    }
+
+    private ProductDetail getProductDetail(Long productId) {
+
+        return jpaQueryFactory
+                .selectFrom(productDetail)
+                .where(productDetail.productId.eq(productId))
+                .fetchFirst();
+    }
 }
