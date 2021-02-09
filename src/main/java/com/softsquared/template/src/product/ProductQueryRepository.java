@@ -4,7 +4,6 @@ import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.softsquared.template.DBmodel.Fabric;
 import com.softsquared.template.DBmodel.Product;
 import com.softsquared.template.DBmodel.ProductDetail;
 import com.softsquared.template.DBmodel.Review;
@@ -43,16 +42,16 @@ public class ProductQueryRepository {
 
     public GetProductTotalInfoRes getProductTotalInfo(Long productId) {
 
+        Long productCountInBasket = getProductCountInBasket(productId);
         ProductMainInfos productMainInfos = getProductMainInfos(productId);
         ProductSubInfo productSubInfo = getProductSubInfo(productId);
         ProductMarketInfos productMarketInfos = getProductMarketInfos(productId);
         ProductDetailInfos productDetailInfos = getProductDetailInfos(productId);
-        Long productCountInBasket = getProductCountInBasket(productId);
         Boolean productIsLiked = getProductIsLiked(productId);
         Boolean productIsSale = getProductIsSale(productId);
 
-        return new GetProductTotalInfoRes(productMainInfos, productSubInfo, productMarketInfos,
-                productDetailInfos, productCountInBasket, productIsLiked, productIsSale);
+        return new GetProductTotalInfoRes(productCountInBasket, productMainInfos, productSubInfo,
+                productMarketInfos, productDetailInfos, productIsLiked, productIsSale);
     }
 
     private ProductMainInfos getProductMainInfos(Long productId) {
@@ -71,6 +70,7 @@ public class ProductQueryRepository {
                         product.price,
                         product.code
                 ))
+                .from(product)
                 .where(product.id.eq(productId))
                 .fetchFirst();
     }
@@ -92,7 +92,7 @@ public class ProductQueryRepository {
                                 .from(review)
                                 .where(review.productId.eq(productId)),
                         JPAExpressions
-                                .select(ExpressionUtils.count(purchase.purCode))
+                                .select(ExpressionUtils.count(purchase))
                                 .from(purchase)
                                 .where(purchase.purProductCode.eq(productId)),
                         JPAExpressions
