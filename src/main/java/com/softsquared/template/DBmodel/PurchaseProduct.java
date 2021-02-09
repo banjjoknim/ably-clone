@@ -16,18 +16,18 @@ import javax.persistence.*;
 @Table(name = "PurchaseProduct")
 public class PurchaseProduct extends BaseEntity {
     @Id
-    @Column(name = "purProductIdx", nullable = false, updatable = false)
+    @Column(name = "purProductId", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long purProductIdx;
+    private long purProductId;
 
 
     //여러가지 제품을 묶어주는 수단
-    @Column(name = "purProductCode", nullable = false, updatable = false)
-    private long purProductCode;
+    @Column(name = "purchaseId", nullable = false, updatable = false)
+    private long purchaseId;
 
     //제품 코드
-    @Column(name = "productCode", nullable = false, updatable = false)
-    private long productCode;
+    @Column(name = "productId", nullable = false, updatable = false)
+    private long productId;
 
     //가격
     @Column(name = "price", nullable = false, updatable = false)
@@ -41,8 +41,13 @@ public class PurchaseProduct extends BaseEntity {
     @Column(name = "count", nullable = false, updatable = false)
     private int count;
 
-    @Column(name = "isDeleted", nullable = false, updatable = false)
-    private int isDeleted;
+    @Column(name = "status", nullable = false, updatable = false)
+    private int status;
+
+    //배송 상태
+    //R - 배송 준비  C-배송 완 T- 주문 접수   D - 취소/반품
+    @Column(name = "purStatus", nullable = false)
+    private char purStatus;
 
 
 

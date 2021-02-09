@@ -1,12 +1,11 @@
 package com.softsquared.template.src.user;
 
-import com.softsquared.template.config.secret.Secret;
-import com.softsquared.template.utils.AES128;
+import com.softsquared.template.config.Caster;
 import com.softsquared.template.config.BaseException;
-import com.softsquared.template.utils.JwtService;
 import com.softsquared.template.src.user.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,138 +14,150 @@ import static com.softsquared.template.config.BaseResponseStatus.*;
 
 @Service
 public class UserInfoProvider {
-    private final UserInfoRepository userInfoRepository;
-        private final JwtService jwtService;
+    private UserInfoSelectRepository userInfoSelectRepository;
+     //   private final JwtService jwtService;
+    private Caster caster;
+
 
     @Autowired
-    public UserInfoProvider(UserInfoRepository userInfoRepository, JwtService jwtService) {
-        this.userInfoRepository = userInfoRepository;
-        this.jwtService = jwtService;
+    public UserInfoProvider(UserInfoSelectRepository userInfoSelectRepository) {
+        this.userInfoSelectRepository = userInfoSelectRepository;
+      //  this.jwtService = jwtService;
+        this.caster = new Caster();
+    }
+    /**
+     * userId를 통해서 해당 회원이 구매 내역 조회
+     */
+    public GetUsersPurchaseRes retrieveUserPurchases(long userId) throws BaseException{
+        GetUsersPurchaseRes purchaseRes;
+        List<GetUsersPurchase> purchaseList;
+
+        //주문 목록
+        List<GetUsersPurchasesTemp> tempList;
+
+        //배송 상태 표시를 위해
+       GetUsersPurchaseProductStatusRes productStatus;
+
+        try{
+            purchaseList = userInfoSelectRepository.findUsersPurchaseByUserId(userId);
+
+        }catch(Exception e){
+            e.printStackTrace();
+            throw new BaseException(FAILED_TO_GET_PURCHASE);
+        }
+
+        tempList = productListToTempList(purchaseList);
+
+        productStatus = retrievePurchaseStatus(userId);
+
+        purchaseRes = new GetUsersPurchaseRes(productStatus,tempList);
+
+        return purchaseRes;
     }
 
     /**
-     * 전체 회원 조회
-     * @return List<UserInfoRes>
-     * @throws BaseException
+     * 특정 구매 내역에 포함된 제품들 조회
      */
-    public List<GetUsersRes> retrieveUserInfoList(String word) throws BaseException {
-        // 1. DB에서 전체 UserInfo 조회
-        List<UserInfo> userInfoList;
-        try {
-            if (word == null) { // 전체 조회
-                userInfoList = userInfoRepository.findByStatus("ACTIVE");
-            } else { // 검색 조회
-                userInfoList = userInfoRepository.findByStatusAndNicknameIsContaining("ACTIVE", word);
+    public List<GetUsersPurchaseProductRes> retrievePurchaseProduct(long purId) throws BaseException{
+        List<GetUserPurchaseProduct> productList ;
+
+        try{
+            productList = userInfoSelectRepository.findProductByPurchaseId(purId);
+        }catch(Exception e){
+            e.printStackTrace();
+            throw new BaseException(FAILED_TO_GET_PURCHASE_PRODUCTS);
+        }
+
+        for(int i=0; i<productList.size();i++){
+            System.out.println(productList.get(i).getProdId()+ "  "+productList.get(i));
+        }
+
+        return changePurProductToRes(productList);
+    }
+
+    /**
+     * 하나의 구매 내역의 (날짜+ 제품) 한번에 조회 가능하도록 구성
+     */
+
+    public List<GetUsersPurchasesTemp> productListToTempList(List<GetUsersPurchase> list) {
+        List<GetUsersPurchasesTemp> changedList;
+
+        changedList = list.stream().map( GetUsersPurchase ->{
+            long purId = GetUsersPurchase.getPurId();
+            String dateCreated = caster.dateToString(GetUsersPurchase.getDateCreated());
+
+            List<GetUsersPurchaseProductRes> purProductList = null;
+            try {
+                purProductList = retrievePurchaseProduct(purId);
+            }catch (BaseException e){
+                e.printStackTrace();
+                try {
+                    throw new BaseException(e.getStatus());
+                } catch (BaseException baseException) {
+                    baseException.printStackTrace();
+                }
             }
-        } catch (Exception ignored) {
-            throw new BaseException(FAILED_TO_GET_USER);
+
+
+            return new GetUsersPurchasesTemp(purId, dateCreated, purProductList);
+
+                }).collect(Collectors.toList());
+        return changedList;
+
+    }
+
+    /**
+     * 현재 주문 내역 수 현황
+     */
+    public GetUsersPurchaseProductStatusRes retrievePurchaseStatus(long userId) throws BaseException{
+        List<GetUsersPurchaseStatus> statusList;
+
+        int ready =0;
+        int complete = 0;
+        int delete =0;
+
+
+        GetUsersPurchaseProductStatusRes result;
+        try{
+            statusList = userInfoSelectRepository.findStatusByUserId(userId);
+        }catch(Exception e){
+            e.printStackTrace();
+            throw new BaseException(FAILED_TO_GET_PURCHASE_PRODUCTS);
+        }
+        for(int i=0;i<statusList.size();i++){
+            char status = statusList.get(i).getPurState();
+            if(status=='R')
+                ready++;
+            else if(status == 'C')
+                complete++;
+            else
+                delete++;
         }
 
-        // 2. UserInfoRes로 변환하여 return
-        return userInfoList.stream().map(userInfo -> {
-            int id = userInfo.getId();
-            String email = userInfo.getEmail();
-            return new GetUsersRes(id, email);
+        result = new GetUsersPurchaseProductStatusRes(ready, complete, delete);
+        return result;
+    }
+
+
+
+
+
+    /**
+     * GetUserPurchaseProduct --> GetUserPurchasesProductRes
+     */
+    public List<GetUsersPurchaseProductRes> changePurProductToRes (List<GetUserPurchaseProduct> list){
+        List<GetUsersPurchaseProductRes> changedList;
+        changedList = list.stream().map( GetUserPurchaseProduct ->{
+                long prodId = GetUserPurchaseProduct.getProdId();
+                String purState = caster.statusToString(GetUserPurchaseProduct.getPurState());
+                int price = GetUserPurchaseProduct.getPrice();
+                String prodName = GetUserPurchaseProduct.getProdName();
+                String option = GetUserPurchaseProduct.getOption();
+
+                return new GetUsersPurchaseProductRes(prodId,purState,price,prodName,option);
         }).collect(Collectors.toList());
+
+        return changedList;
     }
 
-    /**
-     * 회원 조회
-     * @param userId
-     * @return UserInfoDetailRes
-     * @throws BaseException
-     */
-    public GetUserRes retrieveUserInfo(int userId) throws BaseException {
-        // 1. DB에서 userId로 UserInfo 조회
-        UserInfo userInfo = retrieveUserInfoByUserId(userId);
-
-        // 2. UserInfoRes로 변환하여 return
-        int id = userInfo.getId();
-        String email = userInfo.getEmail();
-        String nickname = userInfo.getNickname();
-        String phoneNumber = userInfo.getPhoneNumber();
-        return new GetUserRes(id, email, nickname, phoneNumber);
-    }
-
-    /**
-     * 로그인
-     * @param postLoginReq
-     * @return PostLoginRes
-     * @throws BaseException
-     */
-    public PostLoginRes login(PostLoginReq postLoginReq) throws BaseException {
-        // 1. DB에서 email로 UserInfo 조회
-        UserInfo userInfo = retrieveUserInfoByEmail(postLoginReq.getEmail());
-
-        // 2. UserInfo에서 password 추출
-        String password;
-        try {
-            password = new AES128(Secret.USER_INFO_PASSWORD_KEY).decrypt(userInfo.getPassword());
-        } catch (Exception ignored) {
-            throw new BaseException(FAILED_TO_LOGIN);
-        }
-
-        // 3. 비밀번호 일치 여부 확인
-        if (!postLoginReq.getPassword().equals(password)) {
-            throw new BaseException(WRONG_PASSWORD);
-        }
-
-        // 3. Create JWT
-        String jwt = jwtService.createJwt(userInfo.getId());
-
-        // 4. PostLoginRes 변환하여 return
-        int id = userInfo.getId();
-        return new PostLoginRes(id, jwt);
-    }
-
-    /**
-     * 회원 조회
-     * @param userId
-     * @return UserInfo
-     * @throws BaseException
-     */
-    public UserInfo retrieveUserInfoByUserId(int userId) throws BaseException {
-        // 1. DB에서 UserInfo 조회
-        UserInfo userInfo;
-        try {
-            userInfo = userInfoRepository.findById(userId).orElse(null);
-        } catch (Exception ignored) {
-            throw new BaseException(FAILED_TO_GET_USER);
-        }
-
-        // 2. 존재하는 회원인지 확인
-        if (userInfo == null || !userInfo.getStatus().equals("ACTIVE")) {
-            throw new BaseException(NOT_FOUND_USER);
-        }
-
-        // 3. UserInfo를 return
-        return userInfo;
-    }
-
-    /**
-     * 회원 조회
-     * @param email
-     * @return UserInfo
-     * @throws BaseException
-     */
-    public UserInfo retrieveUserInfoByEmail(String email) throws BaseException {
-        // 1. email을 이용해서 UserInfo DB 접근
-        List<UserInfo> existsUserInfoList;
-        try {
-            existsUserInfoList = userInfoRepository.findByEmailAndStatus(email, "ACTIVE");
-        } catch (Exception ignored) {
-            throw new BaseException(FAILED_TO_GET_USER);
-        }
-
-        // 2. 존재하는 UserInfo가 있는지 확인
-        UserInfo userInfo;
-        if (existsUserInfoList != null && existsUserInfoList.size() > 0) {
-            userInfo = existsUserInfoList.get(0);
-        } else {
-            throw new BaseException(NOT_FOUND_USER);
-        }
-
-        // 3. UserInfo를 return
-        return userInfo;
-    }
 }

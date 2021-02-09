@@ -15,14 +15,10 @@ import javax.persistence.*;
 @Table(name = "Purchase") // Table 이름을 명시해주지 않으면 class 이름을 Table 이름으로 대체한다.
 public class Purchase extends BaseEntity {
     @Id // PK를 의미하는 어노테이션
-    @Column(name = "purCode", nullable = false, updatable = false)
+    @Column(name = "purId", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long purCode;
+    private long purId;
 
-    //배송 상태
-    //R - 배송 준비  C-배송 완
-    @Column(name = "purState", nullable = false)
-    private char purState;
 
     @Column(name = "coupon")
     private int coupon;
@@ -35,8 +31,8 @@ public class Purchase extends BaseEntity {
 
     //배송지 코드 (여러 배송지 수단중 고른 코드)
     //DeliveryDestination table과 연
-    @Column(name = "desCode", nullable = false)
-    private long desCode;
+    @Column(name = "desId", nullable = false)
+    private long desId;
 
     //결제 수단 코드
     //Payment table과 연관
@@ -49,11 +45,11 @@ public class Purchase extends BaseEntity {
     private long purProductCode;
 
 
-    @Column(name = "isDeleted", nullable = false)
-    private int isDeleted;
+    @Column(name = "status", nullable = false)
+    private int status;
 
 
-    @Column(name = "userCode", nullable = false)
-    private long userCode;
+    @Column(name = "userId", nullable = false)
+    private long userId;
 
 }
