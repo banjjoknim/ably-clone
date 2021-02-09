@@ -2,14 +2,12 @@ package com.softsquared.template.src.product;
 
 import com.softsquared.template.config.BaseException;
 import com.softsquared.template.config.BaseResponse;
+import com.softsquared.template.src.product.models.GetProductTotalInfoRes;
 import com.softsquared.template.src.product.models.GetProductsRes;
 import com.softsquared.template.src.product.models.ProductFilterReq;
 import com.softsquared.template.src.product.models.ProductOrderType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -69,4 +67,9 @@ public class ProductController {
             return new BaseResponse<>(FILTER_TALL_MUST_BE_POSITIVE);
         }
     }
-}
+
+    @GetMapping("/products/{productId}")
+    public BaseResponse<GetProductTotalInfoRes> getProductInfo(@PathVariable(value = "productId") Long productId) {
+            return new BaseResponse<>(SUCCESS, productProvider.retrieveProduct(productId));
+        }
+    }
