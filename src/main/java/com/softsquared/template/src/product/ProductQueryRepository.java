@@ -12,10 +12,7 @@ import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.softsquared.template.src.product.models.ProductFilterReq;
-import com.softsquared.template.src.product.models.ProductOrderType;
-import com.softsquared.template.src.product.models.ProductsInfo;
-import com.softsquared.template.src.product.models.QProductsInfo;
+import com.softsquared.template.src.product.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -24,6 +21,7 @@ import java.util.List;
 import static com.querydsl.core.types.ExpressionUtils.count;
 import static com.softsquared.template.DBmodel.QMarket.market;
 import static com.softsquared.template.DBmodel.QProduct.product;
+import static com.softsquared.template.DBmodel.QProductImage.productImage;
 import static com.softsquared.template.DBmodel.QPurchase.purchase;
 import static com.softsquared.template.DBmodel.QReview.review;
 import static com.softsquared.template.src.product.models.ProductOrderType.*;
@@ -160,6 +158,36 @@ public class ProductQueryRepository {
         return product.price
                 .divide(HUNDRED)
                 .multiply(Expressions.asNumber(HUNDRED).subtract(product.discountRate));
+    }
+
+
+    private ProductMainInfos getProductMainInfos(Long productId) {
+
+        return new ProductMainInfos(getProductMainInfo(productId), getProductThumbnails(productId));
+    }
+
+    private ProductMainInfo getProductMainInfo(Long productId) {
+
+        return jpaQueryFactory
+                .select(new QProductInfo(
+                        product.id,
+                        product.name,
+                        product.discountRate,
+                        getDiscountedPrice(),
+                        product.price,
+                        product.code
+                ))
+                .where(product.id.eq(productId))
+                .fetchFirst();
+    }
+
+    private List<String> getProductThumbnails(Long productId) {
+
+        return jpaQueryFactory
+                .select(productImage.image)
+                .from(productImage)
+                .where(productImage.productId.eq(productId))
+                .fetch();
     }
 
 }
