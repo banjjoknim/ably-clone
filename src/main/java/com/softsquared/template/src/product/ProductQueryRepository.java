@@ -41,6 +41,20 @@ public class ProductQueryRepository {
         this.productRepository = productRepository;
     }
 
+    public GetProductTotalInfoRes getProductTotalInfo(Long productId) {
+
+        ProductMainInfos productMainInfos = getProductMainInfos(productId);
+        ProductSubInfo productSubInfo = getProductSubInfo(productId);
+        ProductMarketInfos productMarketInfos = getProductMarketInfos(productId);
+        ProductDetailInfos productDetailInfos = getProductDetailInfos(productId);
+        Long productCountInBasket = getProductCountInBasket(productId);
+        Boolean productIsLiked = getProductIsLiked(productId);
+        Boolean productIsSale = getProductIsSale(productId);
+
+        return new GetProductTotalInfoRes(productMainInfos, productSubInfo, productMarketInfos,
+                productDetailInfos, productCountInBasket, productIsLiked, productIsSale);
+    }
+
     private ProductMainInfos getProductMainInfos(Long productId) {
 
         return new ProductMainInfos(getProductMainInfo(productId), getProductThumbnails(productId));

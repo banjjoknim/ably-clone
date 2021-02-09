@@ -3,12 +3,15 @@ package com.softsquared.template.src.product;
 import com.softsquared.template.config.BaseException;
 import com.softsquared.template.src.category.CategoryRepository;
 import com.softsquared.template.src.category.DetailCategoryRepository;
+import com.softsquared.template.src.product.models.GetProductTotalInfoRes;
 import com.softsquared.template.src.product.models.GetProductsRes;
 import com.softsquared.template.src.product.models.ProductFilterReq;
 import com.softsquared.template.src.product.models.ProductOrderType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.Date;
 import java.util.List;
@@ -20,14 +23,16 @@ import static java.util.stream.Collectors.toList;
 public class ProductProvider {
 
     private final ProductQueryRepository productQueryRepository;
+    private final ProductsQueryRepository productsQueryRepository;
     private final ProductRepository productRepository;
     private final ProductImageRepository productImageRepository;
     private final CategoryRepository categoryRepository;
     private final DetailCategoryRepository detailCategoryRepository;
 
     @Autowired
-    public ProductProvider(ProductQueryRepository productQueryRepository, ProductRepository productRepository, ProductImageRepository productImageRepository, CategoryRepository categoryRepository, DetailCategoryRepository detailCategoryRepository) {
+    public ProductProvider(ProductQueryRepository productQueryRepository, ProductsQueryRepository productsQueryRepository, ProductRepository productRepository, ProductImageRepository productImageRepository, CategoryRepository categoryRepository, DetailCategoryRepository detailCategoryRepository) {
         this.productQueryRepository = productQueryRepository;
+        this.productsQueryRepository = productsQueryRepository;
         this.productRepository = productRepository;
         this.productImageRepository = productImageRepository;
         this.categoryRepository = categoryRepository;
@@ -40,7 +45,7 @@ public class ProductProvider {
 
         validateFilters(filterRequest); // 필터 유효성 검증
 
-        return productQueryRepository.getProductsInfos(filterRequest, orderType).stream()
+        return productsQueryRepository.getProductsInfos(filterRequest, orderType).stream()
                 .map(productsInfo -> {
                     Long productId = productsInfo.getProductId();
                     boolean isNew = (new Date().getTime() - productRepository.findById(productId).get().getDateCreated().getTime()) <= 1000 * 60 * 60 * 24; // 등록된지 하루 이내이면 true
@@ -98,4 +103,8 @@ public class ProductProvider {
         }
     }
 
+    public GetProductTotalInfoRes retrieveProduct(Long productId) {
+
+        return productQueryRepository.getProductTotalInfo(productId);
+    }
 }
