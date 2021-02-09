@@ -70,6 +70,10 @@ public class Product extends BaseEntity {
     private Long printId;
 
     @NotNull
+    @Column(name = "modelId")
+    private Long modelId;
+
+    @NotNull
     @Column(name = "price")
     private Integer price;
 
@@ -78,7 +82,7 @@ public class Product extends BaseEntity {
     private Integer discountRate;
 
     @Builder
-    public Product(@NotNull String code, @NotNull String name, @NotNull Long marketId, @NotNull Long categoryId, @NotNull Long detailCategoryId, @NotNull Long ageGroupId, @NotNull Long clothLengthId, @NotNull Long colorId, @NotNull Long fabricId, @NotNull Integer tall, @NotNull Long fitId, @NotNull Long printId, @NotNull Integer price, @NotNull Integer discountRate) {
+    public Product(@NotNull String code, @NotNull String name, @NotNull Long marketId, @NotNull Long categoryId, @NotNull Long detailCategoryId, @NotNull Long ageGroupId, @NotNull Long clothLengthId, @NotNull Long colorId, @NotNull Long fabricId, @NotNull Integer tall, @NotNull Long fitId, @NotNull Long printId, @NotNull Long modelId, @NotNull Integer price, @NotNull Integer discountRate) {
         this.code = code;
         this.name = name;
         this.marketId = marketId;
@@ -91,6 +95,7 @@ public class Product extends BaseEntity {
         this.tall = tall;
         this.fitId = fitId;
         this.printId = printId;
+        this.modelId = modelId;
         this.price = price;
         this.discountRate = discountRate;
     }
