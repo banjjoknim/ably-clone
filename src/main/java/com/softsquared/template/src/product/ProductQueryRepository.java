@@ -49,7 +49,7 @@ public class ProductQueryRepository {
 
     // todo : 상품 목록 조회시 유저 별 찜 반영 쿼리 로직 추가해야 함.
     // 상품 조회 쿼리
-    public JPAQuery<ProductsInfo> getProductsInfosQuery() {
+    private JPAQuery<ProductsInfo> getProductsInfosQuery() {
 
         return jpaQueryFactory
                 .select(new QProductsInfo(
@@ -74,7 +74,7 @@ public class ProductQueryRepository {
                 .innerJoin(market).on(product.marketId.eq(market.id));
     }
 
-    public JPAQuery<ProductsInfo> productsInfosFilterQuery(JPAQuery<ProductsInfo> query, ProductFilterReq request) {
+    private JPAQuery<ProductsInfo> productsInfosFilterQuery(JPAQuery<ProductsInfo> query, ProductFilterReq request) {
 
         return query
                 .where(filterProductCategory(request)) // 카테고리 필터
@@ -84,7 +84,7 @@ public class ProductQueryRepository {
     }
 
     // todo : 인기순 정렬 로직 추가해야 함.
-    public JPAQuery<ProductsInfo> productsInfosOrderByQuery(JPAQuery<ProductsInfo> query, ProductOrderType orderType) {
+    private JPAQuery<ProductsInfo> productsInfosOrderByQuery(JPAQuery<ProductsInfo> query, ProductOrderType orderType) {
 
         if (LASTEST.equals(orderType)) {
             return query.orderBy(product.dateCreated.desc());
@@ -99,7 +99,7 @@ public class ProductQueryRepository {
     }
 
     // 카테고리 필터 적용
-    public Predicate filterProductCategory(ProductFilterReq request) {
+    private Predicate filterProductCategory(ProductFilterReq request) {
 
         BooleanBuilder builder = new BooleanBuilder();
 
@@ -110,7 +110,7 @@ public class ProductQueryRepository {
     }
 
     // 가격 필터 적용
-    public Predicate filterProductPrice(ProductFilterReq request) {
+    private Predicate filterProductPrice(ProductFilterReq request) {
 
         BooleanBuilder builder = new BooleanBuilder();
 
@@ -134,7 +134,7 @@ public class ProductQueryRepository {
 
     // todo : 스타일 별 필터링 추가해야함
     // 카테고리 내의 상품 상세 필터링, null일경우 필터링 조건에서 제외됨
-    public Predicate filterProductTallAndAgeGroup(ProductFilterReq request) {
+    private Predicate filterProductTallAndAgeGroup(ProductFilterReq request) {
 
         BooleanBuilder builder = new BooleanBuilder();
 
