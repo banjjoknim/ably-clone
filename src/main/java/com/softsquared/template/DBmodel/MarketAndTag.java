@@ -10,8 +10,8 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @Getter
 @Entity
-@Table(name = "CelebAndTag")
-public class CelebAndTag {
+@Table(name = "MarketAndTag")
+public class MarketAndTag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,16 +19,16 @@ public class CelebAndTag {
     private Long id;
 
     @NotNull
-    @Column(name = "celebId")
-    private Long celebId;
+    @Column(name = "marketId")
+    private Long marketId;
 
     @NotNull
-    @Column(name = "celebTagId")
-    private Long celebTagId;
+    @Column(name = "marketTagId")
+    private Long marketTagId;
 
     @Builder
-    public CelebAndTag(Long celebId, Long celebTagId) {
-        this.celebId = celebId;
-        this.celebTagId = celebTagId;
+    public MarketAndTag(Long marketId, Long marketTagId) {
+        this.marketId = marketId;
+        this.marketTagId = marketTagId;
     }
 }

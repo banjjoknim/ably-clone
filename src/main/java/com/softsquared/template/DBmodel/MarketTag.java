@@ -12,8 +12,8 @@ import javax.validation.constraints.NotNull;
 @Getter
 @DynamicInsert
 @Entity
-@Table(name = "CelebTag")
-public class CelebTag {
+@Table(name = "MarketTag")
+public class MarketTag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +25,7 @@ public class CelebTag {
     private String name;
 
     @Builder
-    public CelebTag(String name) {
+    public MarketTag(String name) {
         this.name = name;
     }
 }

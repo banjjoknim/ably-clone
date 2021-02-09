@@ -50,7 +50,7 @@ public class Review extends BaseEntity {
     private Long likesCount;
 
     public enum Satisfaction {
-        GOOD, NORMAL, BAD
+        GOOD, BAD
     }
 
     public enum SizeComment {
