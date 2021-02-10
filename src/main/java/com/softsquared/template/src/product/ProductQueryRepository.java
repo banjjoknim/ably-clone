@@ -12,6 +12,7 @@ import com.softsquared.template.src.product.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.softsquared.template.DBmodel.Product.IsOnSale.ON_SALE;
@@ -47,13 +48,13 @@ public class ProductQueryRepository {
 
         Long productCountInBasket = getProductCountInBasket();
         ProductMainInfos productMainInfos = getProductMainInfos(productId);
-        ProductSubInfo productSubInfo = getProductSubInfo(productId);
+        ProductSubInfos productSubInfos = getProductSubInfos(productId);
         ProductMarketInfos productMarketInfos = getProductMarketInfos(productId);
         ProductDetailInfos productDetailInfos = getProductDetailInfos(productId);
         Boolean productIsLiked = getProductIsLiked(productId);
         Boolean productIsSale = getProductIsSale(productId);
 
-        return new GetProductRes(productCountInBasket, productMainInfos, productSubInfo,
+        return new GetProductRes(productCountInBasket, productMainInfos, productSubInfos,
                 productMarketInfos, productDetailInfos, productIsLiked, productIsSale);
     }
 
@@ -87,7 +88,16 @@ public class ProductQueryRepository {
                 .fetch();
     }
 
+    private ProductSubInfos getProductSubInfos(Long productId) {
+
+        ProductSubInfo productSubInfo = getProductSubInfo(productId);
+        List<Integer> preparePeriodShares = getPreparePeriodShares(productId);
+
+        return new ProductSubInfos(productSubInfo, preparePeriodShares);
+    }
+
     private ProductSubInfo getProductSubInfo(Long productId) {
+
         return jpaQueryFactory
                 .select(new QProductSubInfo(
                         JPAExpressions
@@ -117,6 +127,11 @@ public class ProductQueryRepository {
                 .innerJoin(market).on(product.marketId.eq(market.id))
                 .where(product.id.eq(productId))
                 .fetchFirst();
+    }
+
+    private List<Integer> getPreparePeriodShares(Long productId) {
+
+        return List.of(98, 2, 0, 0);
     }
 
     private ProductMarketInfos getProductMarketInfos(Long productId) {
