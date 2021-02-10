@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class GetProductTotalInfoRes {
+public class GetProductRes {
 
     private Long productCountInBasket;
     private ProductMainInfos productMainInfos;

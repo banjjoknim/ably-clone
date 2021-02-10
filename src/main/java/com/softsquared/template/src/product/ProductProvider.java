@@ -3,7 +3,7 @@ package com.softsquared.template.src.product;
 import com.softsquared.template.config.BaseException;
 import com.softsquared.template.src.category.CategoryRepository;
 import com.softsquared.template.src.category.DetailCategoryRepository;
-import com.softsquared.template.src.product.models.GetProductTotalInfoRes;
+import com.softsquared.template.src.product.models.GetProductRes;
 import com.softsquared.template.src.product.models.GetProductsRes;
 import com.softsquared.template.src.product.models.ProductFilterReq;
 import com.softsquared.template.src.product.models.ProductOrderType;
@@ -102,7 +102,7 @@ public class ProductProvider {
         }
     }
 
-    public GetProductTotalInfoRes retrieveProduct(Long productId) {
+    public GetProductRes retrieveProduct(Long productId) {
 
         return productQueryRepository.getProductTotalInfo(productId);
     }

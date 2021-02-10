@@ -43,7 +43,7 @@ public class ProductQueryRepository {
         this.productRepository = productRepository;
     }
 
-    public GetProductTotalInfoRes getProductTotalInfo(Long productId) {
+    public GetProductRes getProductTotalInfo(Long productId) {
 
         Long productCountInBasket = getProductCountInBasket();
         ProductMainInfos productMainInfos = getProductMainInfos(productId);
@@ -53,7 +53,7 @@ public class ProductQueryRepository {
         Boolean productIsLiked = getProductIsLiked(productId);
         Boolean productIsSale = getProductIsSale(productId);
 
-        return new GetProductTotalInfoRes(productCountInBasket, productMainInfos, productSubInfo,
+        return new GetProductRes(productCountInBasket, productMainInfos, productSubInfo,
                 productMarketInfos, productDetailInfos, productIsLiked, productIsSale);
     }
 

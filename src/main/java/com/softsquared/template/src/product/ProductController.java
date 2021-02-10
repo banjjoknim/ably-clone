@@ -2,7 +2,7 @@ package com.softsquared.template.src.product;
 
 import com.softsquared.template.config.BaseException;
 import com.softsquared.template.config.BaseResponse;
-import com.softsquared.template.src.product.models.GetProductTotalInfoRes;
+import com.softsquared.template.src.product.models.GetProductRes;
 import com.softsquared.template.src.product.models.GetProductsRes;
 import com.softsquared.template.src.product.models.ProductFilterReq;
 import com.softsquared.template.src.product.models.ProductOrderType;
@@ -69,7 +69,7 @@ public class ProductController {
     }
 
     @GetMapping("/{productId}")
-    public BaseResponse<GetProductTotalInfoRes> getProductInfo(@PathVariable(value = "productId") Long productId) {
+    public BaseResponse<GetProductRes> getProductInfo(@PathVariable(value = "productId") Long productId) {
             return new BaseResponse<>(SUCCESS, productProvider.retrieveProduct(productId));
         }
     }
