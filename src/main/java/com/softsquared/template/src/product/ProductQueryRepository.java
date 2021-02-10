@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.softsquared.template.DBmodel.Product.IsSale.ON_SALE;
+import static com.softsquared.template.DBmodel.Product.IsOnSale.ON_SALE;
 import static com.softsquared.template.DBmodel.ProductImage.ImageType.DETAIL;
 import static com.softsquared.template.DBmodel.QBasket.basket;
 import static com.softsquared.template.DBmodel.QFavoriteProduct.favoriteProduct;
@@ -223,7 +223,7 @@ public class ProductQueryRepository {
 
     private Boolean getProductIsSale(Long productId) {
 
-        Product.IsSale isSale = productRepository.findById(productId).get().getIsSale();
+        Product.IsOnSale isSale = productRepository.findById(productId).get().getIsOnSale();
 
         if (isSale.equals(ON_SALE)) {
             return true;
