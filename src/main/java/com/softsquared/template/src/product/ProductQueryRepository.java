@@ -15,6 +15,7 @@ import java.util.List;
 
 import static com.softsquared.template.DBmodel.Product.IsSale.ON_SALE;
 import static com.softsquared.template.DBmodel.ProductImage.ImageType.DETAIL;
+import static com.softsquared.template.DBmodel.QBasket.basket;
 import static com.softsquared.template.DBmodel.QMarket.market;
 import static com.softsquared.template.DBmodel.QMarketAndTag.marketAndTag;
 import static com.softsquared.template.DBmodel.QMarketTag.marketTag;
@@ -42,7 +43,7 @@ public class ProductQueryRepository {
 
     public GetProductTotalInfoRes getProductTotalInfo(Long productId) {
 
-        Long productCountInBasket = getProductCountInBasket(productId);
+        Long productCountInBasket = getProductCountInBasket();
         ProductMainInfos productMainInfos = getProductMainInfos(productId);
         ProductSubInfo productSubInfo = getProductSubInfo(productId);
         ProductMarketInfos productMarketInfos = getProductMarketInfos(productId);
@@ -192,9 +193,15 @@ public class ProductQueryRepository {
     }
 
     // todo : 장바구니에 담긴 상품 갯수 계산 로직 추가해야 함.
-    private Long getProductCountInBasket(Long productId) {
+    public Long getProductCountInBasket() {
 
-        return 0L;
+        Long userId = 1L;
+
+        return jpaQueryFactory
+                .select(basket)
+                .from(basket)
+                .where(basket.userId.eq(userId))
+                .fetchCount();
     }
 
     // todo : 상품 찜하기 여부 로직 추가해야 함.
