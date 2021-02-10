@@ -32,7 +32,7 @@ public class ProductImage {
     private ImageType type;
 
     public enum ImageType{
-        THUMBNAIL, DETAIL
+        THUMBNAIL, DETAIL, TEXT
     }
 
     @Builder
