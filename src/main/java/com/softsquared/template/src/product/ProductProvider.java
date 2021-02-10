@@ -10,8 +10,6 @@ import com.softsquared.template.src.product.models.ProductOrderType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.Date;
 import java.util.List;
@@ -49,7 +47,7 @@ public class ProductProvider {
                 .map(productsInfo -> {
                     Long productId = productsInfo.getProductId();
                     boolean isNew = (new Date().getTime() - productRepository.findById(productId).get().getDateCreated().getTime()) <= 1000 * 60 * 60 * 24; // 등록된지 하루 이내이면 true
-                    return new GetProductsRes(productsInfo, productImageRepository.findProductImageByProductId(productsInfo.getProductId()), true, isNew);
+                    return new GetProductsRes(productsInfo, productQueryRepository.getProductThumbnails(productId), true, isNew);
                 })
                 .collect(toList()); // 필터 적용된 결과 리스트 조회
     }

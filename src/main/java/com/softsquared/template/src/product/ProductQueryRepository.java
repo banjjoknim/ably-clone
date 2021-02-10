@@ -15,8 +15,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.softsquared.template.DBmodel.Product.IsOnSale.ON_SALE;
-import static com.softsquared.template.DBmodel.ProductImage.ImageType.DETAIL;
-import static com.softsquared.template.DBmodel.ProductImage.ImageType.TEXT;
+import static com.softsquared.template.DBmodel.ProductImage.ImageType.*;
 import static com.softsquared.template.DBmodel.QBasket.basket;
 import static com.softsquared.template.DBmodel.QFavoriteProduct.favoriteProduct;
 import static com.softsquared.template.DBmodel.QMarket.market;
@@ -79,12 +78,12 @@ public class ProductQueryRepository {
                 .fetchFirst();
     }
 
-    private List<String> getProductThumbnails(Long productId) {
+    public List<String> getProductThumbnails(Long productId) {
 
         return jpaQueryFactory
                 .select(productImage.image)
                 .from(productImage)
-                .where(productImage.productId.eq(productId))
+                .where(productImage.productId.eq(productId).and(productImage.type.eq(THUMBNAIL)))
                 .fetch();
     }
 
