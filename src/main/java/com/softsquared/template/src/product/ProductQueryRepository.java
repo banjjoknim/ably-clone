@@ -16,6 +16,7 @@ import java.util.List;
 
 import static com.softsquared.template.DBmodel.Product.IsOnSale.ON_SALE;
 import static com.softsquared.template.DBmodel.ProductImage.ImageType.DETAIL;
+import static com.softsquared.template.DBmodel.ProductImage.ImageType.TEXT;
 import static com.softsquared.template.DBmodel.QBasket.basket;
 import static com.softsquared.template.DBmodel.QFavoriteProduct.favoriteProduct;
 import static com.softsquared.template.DBmodel.QMarket.market;
@@ -153,19 +154,24 @@ public class ProductQueryRepository {
 
     private ProductDetailInfos getProductDetailInfos(Long productId) {
 
-        List<String> detailImages = getProductDetailImages(productId);
+        List<ProductDetailContent> productDetailTextAndImages = getProductDetailTextAndImages(productId);
         ProductModelInfo productModelInfo = getProductModelInfo(productId);
         ProductDetail productDetail = getProductDetail(productId);
 
-        return new ProductDetailInfos(detailImages, productModelInfo, productDetail);
+        return new ProductDetailInfos(productDetailTextAndImages, productModelInfo, productDetail);
     }
 
-    private List<String> getProductDetailImages(Long productId) {
+    private List<ProductDetailContent> getProductDetailTextAndImages(Long productId) {
 
         return jpaQueryFactory
-                .select(productImage.image)
+                .select(new QProductDetailContent(
+                        productImage.image,
+                        productImage.type
+                ))
                 .from(productImage)
-                .where(productImage.productId.eq(productId).and(productImage.type.eq(DETAIL)))
+                .where(productImage.productId.eq(productId))
+                .where(productImage.type.eq(TEXT).or(productImage.type.eq(DETAIL)))
+                .orderBy(productImage.id.asc())
                 .fetch();
     }
 
