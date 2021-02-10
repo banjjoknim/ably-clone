@@ -142,6 +142,11 @@ public class UserInfoProvider {
 
 
 
+            /*********************************************changedList
+
+
+
+
     /**
      * GetUserPurchaseProduct --> GetUserPurchasesProductRes
      */
@@ -159,5 +164,7 @@ public class UserInfoProvider {
 
         return changedList;
     }
+
+
 
 }

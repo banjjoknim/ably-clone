@@ -2,10 +2,7 @@ package com.softsquared.template.src.user;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.softsquared.template.DBmodel.Advertisement;
-import com.softsquared.template.DBmodel.QProduct;
-import com.softsquared.template.DBmodel.QPurchase;
-import com.softsquared.template.DBmodel.QPurchaseProduct;
+import com.softsquared.template.DBmodel.*;
 import com.softsquared.template.src.user.models.GetUserPurchaseProduct;
 import com.softsquared.template.src.user.models.GetUsersPurchase;
 import com.softsquared.template.src.user.models.GetUsersPurchaseStatus;
@@ -76,5 +73,7 @@ public class UserInfoSelectRepository extends QuerydslRepositorySupport {
                 .fetch();
 
     }
+
+
 }
 

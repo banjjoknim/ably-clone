@@ -14,12 +14,12 @@ import javax.persistence.*;
 @Table(name = "DeliveryDestination") // Table 이름을 명시해주지 않으면 class 이름을 Table 이름으로 대체한다.
 public class DeliveryDestination {
     @Id // PK를 의미하는 어노테이션
-    @Column(name = "desCode", nullable = false, updatable = false)
+    @Column(name = "desId", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long desCode;
+    private long desId;
 
-    @Column(name = "userCode", nullable = false)
-    private long userCode;
+    @Column(name = "userId", nullable = false)
+    private long userId;
 
     @Column(name = "detailAddress")
     private String detailAddress;
@@ -33,12 +33,15 @@ public class DeliveryDestination {
     @Column(name = "address", nullable = false)
     private String address;
 
-    @Column(name = "isDeleted", nullable = false)
-    private int isDeleted;
+    @Column(name = "status", nullable = false)
+    private int status;
 
     @Column(name = "dateUpdated", nullable = false)
     private String dateUpdated;
 
     @Column(name = "dateCreated", nullable = false)
     private String dateCreated;
+
+    @Column(name = "isMain", nullable = false)
+    private int isMain;
 }
