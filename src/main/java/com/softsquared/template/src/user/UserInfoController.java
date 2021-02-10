@@ -3,8 +3,7 @@ package com.softsquared.template.src.user;
 import com.softsquared.template.config.BaseException;
 import com.softsquared.template.config.BaseResponse;
 import com.softsquared.template.config.FormatChecker;
-import com.softsquared.template.src.purchase.model.GetPurchaseRes;
-import com.softsquared.template.utils.JwtService;
+import com.softsquared.template.src.deliverydestination.model.GetUserDeliveryRes;
 import com.softsquared.template.src.user.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import static com.softsquared.template.config.BaseResponseStatus.*;
-import static com.softsquared.template.utils.ValidationRegex.*;
 
 @RestController
 @RequestMapping("/users")
@@ -36,7 +34,7 @@ public class UserInfoController {
      */
     @ResponseBody
     @GetMapping("/{userId}/purchases")
-    public BaseResponse<GetUsersPurchaseRes> getPurchases (@PathVariable long userId){
+    public BaseResponse<GetUsersPurchaseRes> getUserPurchases (@PathVariable long userId){
         try{
             GetUsersPurchaseRes list = userInfoProvider.retrieveUserPurchases(userId);
             return new BaseResponse<>(SUCCESS,list);
@@ -45,4 +43,7 @@ public class UserInfoController {
             return new BaseResponse<>(e.getStatus());
         }
     }
+
+
+
 }
