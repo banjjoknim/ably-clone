@@ -19,7 +19,6 @@ public class Purchase extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long purId;
 
-
     @Column(name = "coupon")
     private int coupon;
 

@@ -70,6 +70,10 @@ public class Product extends BaseEntity {
     private Long printId;
 
     @NotNull
+    @Column(name = "modelId")
+    private Long modelId;
+
+    @NotNull
     @Column(name = "price")
     private Integer price;
 
@@ -77,8 +81,17 @@ public class Product extends BaseEntity {
     @Column(name = "discountRate")
     private Integer discountRate;
 
+    @NotNull
+    @Column(name = "isSale")
+    @Enumerated(value = EnumType.STRING)
+    private IsSale isSale;
+
+    public enum IsSale{
+        ON_SALE, SOLD_OUT
+    }
+
     @Builder
-    public Product(@NotNull String code, @NotNull String name, @NotNull Long marketId, @NotNull Long categoryId, @NotNull Long detailCategoryId, @NotNull Long ageGroupId, @NotNull Long clothLengthId, @NotNull Long colorId, @NotNull Long fabricId, @NotNull Integer tall, @NotNull Long fitId, @NotNull Long printId, @NotNull Integer price, @NotNull Integer discountRate) {
+    public Product(@NotNull String code, @NotNull String name, @NotNull Long marketId, @NotNull Long categoryId, @NotNull Long detailCategoryId, @NotNull Long ageGroupId, @NotNull Long clothLengthId, @NotNull Long colorId, @NotNull Long fabricId, @NotNull Integer tall, @NotNull Long fitId, @NotNull Long printId, @NotNull Long modelId, @NotNull Integer price, @NotNull Integer discountRate, @NotNull IsSale isSale) {
         this.code = code;
         this.name = name;
         this.marketId = marketId;
@@ -91,7 +104,9 @@ public class Product extends BaseEntity {
         this.tall = tall;
         this.fitId = fitId;
         this.printId = printId;
+        this.modelId = modelId;
         this.price = price;
         this.discountRate = discountRate;
+        this.isSale = isSale;
     }
 }

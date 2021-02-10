@@ -1,165 +1,216 @@
 package com.softsquared.template.src.product;
 
-import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.alias.Alias;
 import com.querydsl.core.types.ExpressionUtils;
-import com.querydsl.core.types.Order;
-import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.Predicate;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.JPAExpressions;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.softsquared.template.src.product.models.ProductFilterReq;
-import com.softsquared.template.src.product.models.ProductOrderType;
-import com.softsquared.template.src.product.models.ProductsInfo;
-import com.softsquared.template.src.product.models.QProductsInfo;
+import com.softsquared.template.DBmodel.Product;
+import com.softsquared.template.DBmodel.ProductDetail;
+import com.softsquared.template.DBmodel.Review;
+import com.softsquared.template.src.product.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.querydsl.core.types.ExpressionUtils.count;
+import static com.softsquared.template.DBmodel.Product.IsSale.ON_SALE;
+import static com.softsquared.template.DBmodel.ProductImage.ImageType.DETAIL;
 import static com.softsquared.template.DBmodel.QMarket.market;
+import static com.softsquared.template.DBmodel.QMarketAndTag.marketAndTag;
+import static com.softsquared.template.DBmodel.QMarketTag.marketTag;
+import static com.softsquared.template.DBmodel.QModel.model;
 import static com.softsquared.template.DBmodel.QProduct.product;
+import static com.softsquared.template.DBmodel.QProductDetail.productDetail;
+import static com.softsquared.template.DBmodel.QProductImage.productImage;
 import static com.softsquared.template.DBmodel.QPurchase.purchase;
 import static com.softsquared.template.DBmodel.QReview.review;
-import static com.softsquared.template.src.product.models.ProductOrderType.*;
+import static com.softsquared.template.config.Constant.HUNDRED;
+import static com.softsquared.template.src.product.ProductsQueryRepository.getDiscountedPrice;
+import static java.util.stream.Collectors.joining;
 
 @Repository
 public class ProductQueryRepository {
 
-    private static final Integer HUNDRED = 100;
-
     private final JPAQueryFactory jpaQueryFactory;
+    private final ProductRepository productRepository;
 
     @Autowired
-    public ProductQueryRepository(JPAQueryFactory jpaQueryFactory) {
+    public ProductQueryRepository(JPAQueryFactory jpaQueryFactory, ProductRepository productRepository) {
         this.jpaQueryFactory = jpaQueryFactory;
+        this.productRepository = productRepository;
     }
 
-    // 상품 조회
-    public List<ProductsInfo> getProductsInfos(ProductFilterReq filterRequest, ProductOrderType orderType) {
+    public GetProductTotalInfoRes getProductTotalInfo(Long productId) {
 
-        JPAQuery<ProductsInfo> infosFilterQuery = productsInfosFilterQuery(getProductsInfosQuery(), filterRequest);
-        return productsInfosOrderByQuery(infosFilterQuery, orderType).fetch();
+        Long productCountInBasket = getProductCountInBasket(productId);
+        ProductMainInfos productMainInfos = getProductMainInfos(productId);
+        ProductSubInfo productSubInfo = getProductSubInfo(productId);
+        ProductMarketInfos productMarketInfos = getProductMarketInfos(productId);
+        ProductDetailInfos productDetailInfos = getProductDetailInfos(productId);
+        Boolean productIsLiked = getProductIsLiked(productId);
+        Boolean productIsSale = getProductIsSale(productId);
+
+        return new GetProductTotalInfoRes(productCountInBasket, productMainInfos, productSubInfo,
+                productMarketInfos, productDetailInfos, productIsLiked, productIsSale);
     }
 
-    // todo : 상품 목록 조회시 유저 별 찜 반영 쿼리 로직 추가해야 함.
-    // 상품 조회 쿼리
-    public JPAQuery<ProductsInfo> getProductsInfosQuery() {
+    private ProductMainInfos getProductMainInfos(Long productId) {
+
+        return new ProductMainInfos(getProductMainInfo(productId), getProductThumbnails(productId));
+    }
+
+    private ProductMainInfo getProductMainInfo(Long productId) {
 
         return jpaQueryFactory
-                .select(new QProductsInfo(
+                .select(new QProductMainInfo(
                         product.id,
-                        product.discountRate,
-                        product.price
-                                .divide(HUNDRED)
-                                .multiply(Expressions.asNumber(HUNDRED).subtract(product.discountRate)),
-                        market.name,
                         product.name,
-                        JPAExpressions
-                                .select(count(purchase))
-                                .from(purchase)
-                                .where(purchase.purProductCode.eq(product.id)),
-                        ExpressionUtils.as(
-                                JPAExpressions
-                                        .select(count(review.id))
-                                        .from(review)
-                                        .where(product.id.eq(review.productId)), "reviewCount")
+                        product.discountRate,
+                        getDiscountedPrice(),
+                        product.price,
+                        product.code
                 ))
                 .from(product)
-                .innerJoin(market).on(product.marketId.eq(market.id));
+                .where(product.id.eq(productId))
+                .fetchFirst();
     }
 
-    public JPAQuery<ProductsInfo> productsInfosFilterQuery(JPAQuery<ProductsInfo> query, ProductFilterReq request) {
+    private List<String> getProductThumbnails(Long productId) {
 
-        return query
-                .where(filterProductCategory(request)) // 카테고리 필터
-                .where(filterProductPrice(request)) // 가격 필터
-                .where(filterProductColor(request)) // 색상 필터
-                .where(filterProductTallAndAgeGroup(request)); // 키 - 연령 필터
+        return jpaQueryFactory
+                .select(productImage.image)
+                .from(productImage)
+                .where(productImage.productId.eq(productId))
+                .fetch();
     }
 
-    // todo : 인기순 정렬 로직 추가해야 함.
-    public JPAQuery<ProductsInfo> productsInfosOrderByQuery(JPAQuery<ProductsInfo> query, ProductOrderType orderType) {
+    private ProductSubInfo getProductSubInfo(Long productId) {
+        return jpaQueryFactory
+                .select(new QProductSubInfo(
+                        JPAExpressions
+                                .select(ExpressionUtils.count(review.id))
+                                .from(review)
+                                .where(review.productId.eq(productId)),
+                        JPAExpressions
+                                .select(ExpressionUtils.count(purchase))
+                                .from(purchase)
+                                .where(purchase.purProductCode.eq(productId)),
+                        JPAExpressions
+                                .select(
+                                        review.count()
+                                                .subtract(JPAExpressions
+                                                        .select(ExpressionUtils.count(review))
+                                                        .from(review)
+                                                        .where(review.satisfaction.eq(Review.Satisfaction.BAD).and(review.productId.eq(productId))))
+                                                .divide(review.count())
+                                                .multiply(Expressions.asNumber(HUNDRED))
+                                                .round()
+                                                .intValue())
+                                .from(review)
+                                .where(review.productId.eq(productId)),
+                        market.deliveryType
+                ))
+                .from(product)
+                .innerJoin(market).on(product.marketId.eq(market.id))
+                .where(product.id.eq(productId))
+                .fetchFirst();
+    }
 
-        if (LASTEST.equals(orderType)) {
-            return query.orderBy(product.dateCreated.desc());
+    private ProductMarketInfos getProductMarketInfos(Long productId) {
+        return new ProductMarketInfos(getProductMarketInfo(productId), getProductMarketTags(productId));
+    }
+
+    private ProductMarketInfo getProductMarketInfo(Long productId) {
+
+        return jpaQueryFactory
+                .select(new QProductMarketInfo(
+                        product.marketId,
+                        market.image,
+                        market.name
+                ))
+                .from(product)
+                .innerJoin(market).on(product.marketId.eq(market.id))
+                .where(product.id.eq(productId))
+                .fetchFirst();
+    }
+
+    private String getProductMarketTags(Long productId) {
+
+        return jpaQueryFactory
+                .select(marketTag.name)
+                .from(product)
+                .innerJoin(market).on(product.marketId.eq(market.id))
+                .innerJoin(marketAndTag).on(market.id.eq(marketAndTag.marketId))
+                .innerJoin(marketTag).on(marketAndTag.marketTagId.eq(marketTag.id))
+                .where(product.id.eq(productId))
+                .fetch()
+                .stream()
+                .collect(joining(" "));
+    }
+
+    private ProductDetailInfos getProductDetailInfos(Long productId) {
+
+        List<String> detailImages = getProductDetailImages(productId);
+        ProductModelInfo productModelInfo = getProductModelInfo(productId);
+        ProductDetail productDetail = getProductDetail(productId);
+
+        return new ProductDetailInfos(detailImages, productModelInfo, productDetail);
+    }
+
+    private List<String> getProductDetailImages(Long productId) {
+
+        return jpaQueryFactory
+                .select(productImage.image)
+                .from(productImage)
+                .where(productImage.productId.eq(productId).and(productImage.type.eq(DETAIL)))
+                .fetch();
+    }
+
+    private ProductModelInfo getProductModelInfo(Long productId) {
+
+        return jpaQueryFactory
+                .select(new QProductModelInfo(
+                        model.image,
+                        model.name,
+                        model.tall,
+                        model.topSize,
+                        model.bottomSize,
+                        model.shoeSize
+                ))
+                .from(product)
+                .innerJoin(model).on(product.modelId.eq(model.id))
+                .where(product.id.eq(productId))
+                .fetchFirst();
+    }
+
+    private ProductDetail getProductDetail(Long productId) {
+
+        return jpaQueryFactory
+                .selectFrom(productDetail)
+                .where(productDetail.productId.eq(productId))
+                .fetchFirst();
+    }
+
+    // todo : 장바구니에 담긴 상품 갯수 계산 로직 추가해야 함.
+    private Long getProductCountInBasket(Long productId) {
+
+        return 0L;
+    }
+
+    // todo : 상품 찜하기 여부 로직 추가해야 함.
+    private Boolean getProductIsLiked(Long productId) {
+
+        return false;
+    }
+
+    private Boolean getProductIsSale(Long productId) {
+
+        Product.IsSale isSale = productRepository.findById(productId).get().getIsSale();
+
+        if (isSale.equals(ON_SALE)) {
+            return true;
         }
-        if (CHEAPEST.equals(orderType)) {
-            return query.orderBy(getDiscountedPrice().asc());
-        }
-        if (REVIEWS.equals(orderType)) {
-            return query.orderBy(new OrderSpecifier<>(Order.DESC, Alias.var("reviewCount")));
-        }
-        return query;
-    }
-
-    // 카테고리 필터 적용
-    public Predicate filterProductCategory(ProductFilterReq request) {
-
-        BooleanBuilder builder = new BooleanBuilder();
-
-        request.getCategoryId().ifPresent(categoryId -> builder.and(product.categoryId.eq(categoryId)));
-        request.getDetailCategoryId().ifPresent(detailCategoryId -> builder.and(product.detailCategoryId.eq(detailCategoryId)));
-
-        return builder;
-    }
-
-    // 가격 필터 적용
-    public Predicate filterProductPrice(ProductFilterReq request) {
-
-        BooleanBuilder builder = new BooleanBuilder();
-
-        request.getMinimumPrice().ifPresent(minimumPrice -> builder.and(minimumPriceGoe(minimumPrice)));
-        request.getMaximumPrice().ifPresent(maximumPrice -> builder.and(maximumPriceLoe(maximumPrice)));
-
-        return builder;
-    }
-
-    // 색상 필터 적용
-    private Predicate filterProductColor(ProductFilterReq request) {
-
-        BooleanBuilder builder = new BooleanBuilder();
-
-        request.getColorIds().ifPresent(colorIds -> colorIds.stream().forEach(colorId -> builder.or(product.colorId.eq(colorId))));
-        request.getPrintIds().ifPresent(printIds -> printIds.stream().forEach(printId -> builder.or(product.printId.eq(printId))));
-        request.getPrintIds().ifPresent(fabricIds -> fabricIds.stream().forEach(fabricId -> builder.or(product.fabricId.eq(fabricId))));
-
-        return builder;
-    }
-
-    // todo : 스타일 별 필터링 추가해야함
-    // 카테고리 내의 상품 상세 필터링, null일경우 필터링 조건에서 제외됨
-    public Predicate filterProductTallAndAgeGroup(ProductFilterReq request) {
-
-        BooleanBuilder builder = new BooleanBuilder();
-
-        request.getMinimumTall().ifPresent(minimumTall -> builder.and(product.tall.goe(minimumTall)));
-        request.getMaximumTall().ifPresent(maximumTall -> builder.and(product.tall.loe(maximumTall)));
-        request.getAgeGroupIds().ifPresent(ageGroupIds -> ageGroupIds.stream().forEach(ageGroupId -> builder.or(product.ageGroupId.eq(ageGroupId))));
-        request.getClothLengthIds().ifPresent(clothLengthIds -> clothLengthIds.stream().forEach(clothLengthId -> builder.or(product.clothLengthId.eq(clothLengthId))));
-
-        return builder;
-    }
-
-    private BooleanExpression maximumPriceLoe(Integer maximumPrice) {
-        return getDiscountedPrice()
-                .loe(maximumPrice);
-    }
-
-    private BooleanExpression minimumPriceGoe(Integer minimumPrice) {
-        return getDiscountedPrice()
-                .goe(minimumPrice);
-    }
-
-    private NumberExpression<Integer> getDiscountedPrice() {
-        return product.price
-                .divide(HUNDRED)
-                .multiply(Expressions.asNumber(HUNDRED).subtract(product.discountRate));
+        return false;
     }
 
 }
