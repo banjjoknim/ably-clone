@@ -4,6 +4,7 @@ import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.softsquared.template.DBmodel.FavoriteProduct;
 import com.softsquared.template.DBmodel.Product;
 import com.softsquared.template.DBmodel.ProductDetail;
 import com.softsquared.template.DBmodel.Review;
@@ -16,6 +17,7 @@ import java.util.List;
 import static com.softsquared.template.DBmodel.Product.IsSale.ON_SALE;
 import static com.softsquared.template.DBmodel.ProductImage.ImageType.DETAIL;
 import static com.softsquared.template.DBmodel.QBasket.basket;
+import static com.softsquared.template.DBmodel.QFavoriteProduct.favoriteProduct;
 import static com.softsquared.template.DBmodel.QMarket.market;
 import static com.softsquared.template.DBmodel.QMarketAndTag.marketAndTag;
 import static com.softsquared.template.DBmodel.QMarketTag.marketTag;
@@ -192,7 +194,6 @@ public class ProductQueryRepository {
                 .fetchFirst();
     }
 
-    // todo : 장바구니에 담긴 상품 갯수 계산 로직 추가해야 함.
     public Long getProductCountInBasket() {
 
         Long userId = 1L;
@@ -204,9 +205,19 @@ public class ProductQueryRepository {
                 .fetchCount();
     }
 
-    // todo : 상품 찜하기 여부 로직 추가해야 함.
     private Boolean getProductIsLiked(Long productId) {
 
+        Long userId = 1L;
+
+        FavoriteProduct.Liked liked = jpaQueryFactory
+                .select(favoriteProduct.liked)
+                .from(favoriteProduct)
+                .where(favoriteProduct.favoriteProductId.userCode.eq(userId).and(favoriteProduct.favoriteProductId.productCode.eq(productId)))
+                .fetchFirst();
+
+        if (FavoriteProduct.Liked.YES.equals(liked)) {
+            return true;
+        }
         return false;
     }
 
