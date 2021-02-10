@@ -210,7 +210,7 @@ public class ProductQueryRepository {
                 .fetchCount();
     }
 
-    private Boolean getProductIsLiked(Long productId) {
+    public Boolean getProductIsLiked(Long productId) {
 
         Long userId = 1L;
 
