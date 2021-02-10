@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Getter
 @AllArgsConstructor
-public class GetUserDelivery {
+public class GetDelivery {
     private String userName;
     private String mainAddress;
     private String subAddress;

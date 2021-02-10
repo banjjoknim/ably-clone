@@ -2,8 +2,6 @@ package com.softsquared.template.src.user;
 
 import com.softsquared.template.config.Caster;
 import com.softsquared.template.config.BaseException;
-import com.softsquared.template.src.deliverydestination.model.GetUserDelivery;
-import com.softsquared.template.src.deliverydestination.model.GetUserDeliveryRes;
 import com.softsquared.template.src.user.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

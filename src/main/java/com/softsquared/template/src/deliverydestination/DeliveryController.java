@@ -2,9 +2,8 @@ package com.softsquared.template.src.deliverydestination;
 
 import com.softsquared.template.config.BaseException;
 import com.softsquared.template.config.*;
-import com.softsquared.template.src.deliverydestination.model.GetUserDeliveryRes;
+import com.softsquared.template.src.deliverydestination.model.GetDeliveryRes;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,13 +29,20 @@ public class DeliveryController {
 
     @ResponseBody
     @GetMapping("")
-    public BaseResponse<List<GetUserDeliveryRes>> getUserDelivery(){
+    public BaseResponse<List<GetDeliveryRes>> getUserDelivery(){
         try{
-            List<GetUserDeliveryRes> deliveryList = deliveryProvider.retrieveUserDelivery(1);
+            List<GetDeliveryRes> deliveryList = deliveryProvider.retrieveUserDelivery(1);
             return new BaseResponse<>(SUCCESS, deliveryList);
         }catch(BaseException e){
             e.printStackTrace();
             return new BaseResponse<>(e.getStatus());
         }
     }
+
+    /**
+     * 구매하기에서 하나의 배송지 선택
+     * --> 구매하기의 모든 리소스들을 한번의 response로 보내는 것 vs 리소스별로 따로 보내는 것
+     * --> 클라 여쭤보기
+     *
+     */
 }

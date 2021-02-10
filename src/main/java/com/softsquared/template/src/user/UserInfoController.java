@@ -3,12 +3,9 @@ package com.softsquared.template.src.user;
 import com.softsquared.template.config.BaseException;
 import com.softsquared.template.config.BaseResponse;
 import com.softsquared.template.config.FormatChecker;
-import com.softsquared.template.src.deliverydestination.model.GetUserDeliveryRes;
 import com.softsquared.template.src.user.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 import static com.softsquared.template.config.BaseResponseStatus.*;
 

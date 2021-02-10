@@ -3,7 +3,6 @@ package com.softsquared.template.src.user;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.softsquared.template.DBmodel.*;
-import com.softsquared.template.src.deliverydestination.model.GetUserDelivery;
 import com.softsquared.template.src.user.models.GetUserPurchaseProduct;
 import com.softsquared.template.src.user.models.GetUsersPurchase;
 import com.softsquared.template.src.user.models.GetUsersPurchaseStatus;

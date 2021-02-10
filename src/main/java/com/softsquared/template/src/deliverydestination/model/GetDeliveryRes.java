@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class GetUserDeliveryRes {
+public class GetDeliveryRes {
     private String userName;
     private String mainAddress;
     private String subAddress;
