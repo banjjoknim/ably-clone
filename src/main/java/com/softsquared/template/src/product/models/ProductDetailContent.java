@@ -5,7 +5,6 @@ import com.softsquared.template.DBmodel.ProductImage;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 @Getter
 public class ProductDetailContent {
 
