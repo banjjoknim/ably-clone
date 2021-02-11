@@ -11,6 +11,7 @@ import com.softsquared.template.DBmodel.Review;
 import com.softsquared.template.src.product.models.*;
 import com.softsquared.template.src.review.ReviewQueryRepository;
 import com.softsquared.template.src.review.models.ProductReviews;
+import com.softsquared.template.src.review.models.ReviewSummary;
 import com.softsquared.template.src.review.models.ReviewInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -55,7 +56,7 @@ public class ProductQueryRepository {
         ProductSubInfos productSubInfos = getProductSubInfos(productId);
         ProductMarketInfos productMarketInfos = getProductMarketInfos(productId);
         ProductDetailInfos productDetailInfos = getProductDetailInfos(productId);
-        ProductReviews productReviews = getProductReviews(productId);
+        ProductReviews productReviews = reviewQueryRepository.getProductReviews(productId);
         Boolean productIsLiked = getProductIsLiked(productId);
         Boolean productIsSale = getProductIsSale(productId);
 
@@ -63,18 +64,11 @@ public class ProductQueryRepository {
                 productMarketInfos, productDetailInfos, productReviews, productIsLiked, productIsSale);
     }
 
-    private ProductReviews getProductReviews(Long productId) {
-        List<ReviewInfo> reviewInfos = reviewQueryRepository.getProductReviews(productId);
-        return new ProductReviews(reviewInfos);
-    }
-
     private ProductMainInfos getProductMainInfos(Long productId) {
-
         return new ProductMainInfos(getProductMainInfo(productId), getProductThumbnails(productId));
     }
 
     private ProductMainInfo getProductMainInfo(Long productId) {
-
         return jpaQueryFactory
                 .select(new QProductMainInfo(
                         product.id,
@@ -90,7 +84,6 @@ public class ProductQueryRepository {
     }
 
     public List<String> getProductThumbnails(Long productId) {
-
         return jpaQueryFactory
                 .select(productImage.image)
                 .from(productImage)
@@ -99,7 +92,6 @@ public class ProductQueryRepository {
     }
 
     private ProductSubInfos getProductSubInfos(Long productId) {
-
         ProductSubInfo productSubInfo = getProductSubInfo(productId);
         List<Integer> preparePeriodShares = getPreparePeriodShares(productId);
 
@@ -107,7 +99,6 @@ public class ProductQueryRepository {
     }
 
     private ProductSubInfo getProductSubInfo(Long productId) {
-
         return jpaQueryFactory
                 .select(new QProductSubInfo(
                         JPAExpressions
@@ -140,7 +131,6 @@ public class ProductQueryRepository {
     }
 
     private List<Integer> getPreparePeriodShares(Long productId) {
-
         return List.of(98, 2, 0, 0);
     }
 
@@ -149,7 +139,6 @@ public class ProductQueryRepository {
     }
 
     private ProductMarketInfo getProductMarketInfo(Long productId) {
-
         return jpaQueryFactory
                 .select(new QProductMarketInfo(
                         product.marketId,
@@ -163,7 +152,6 @@ public class ProductQueryRepository {
     }
 
     private String getProductMarketTags(Long productId) {
-
         return jpaQueryFactory
                 .select(marketTag.name)
                 .from(product)
@@ -177,7 +165,6 @@ public class ProductQueryRepository {
     }
 
     private ProductDetailInfos getProductDetailInfos(Long productId) {
-
         List<ProductDetailContent> productDetailTextAndImages = getProductDetailTextAndImages(productId);
         ProductModelInfo productModelInfo = getProductModelInfo(productId);
         ProductDetail productDetail = getProductDetail(productId);
@@ -186,7 +173,6 @@ public class ProductQueryRepository {
     }
 
     private List<ProductDetailContent> getProductDetailTextAndImages(Long productId) {
-
         return jpaQueryFactory
                 .select(new QProductDetailContent(
                         productImage.image,
@@ -200,7 +186,6 @@ public class ProductQueryRepository {
     }
 
     private ProductModelInfo getProductModelInfo(Long productId) {
-
         return jpaQueryFactory
                 .select(new QProductModelInfo(
                         model.image,
@@ -217,7 +202,6 @@ public class ProductQueryRepository {
     }
 
     private ProductDetail getProductDetail(Long productId) {
-
         return jpaQueryFactory
                 .selectFrom(productDetail)
                 .where(productDetail.productId.eq(productId))
@@ -225,7 +209,6 @@ public class ProductQueryRepository {
     }
 
     public Long getProductCountInBasket() {
-
         Long userId = 1L;
 
         return jpaQueryFactory
@@ -236,7 +219,6 @@ public class ProductQueryRepository {
     }
 
     public Boolean getProductIsLiked(Long productId) {
-
         Long userId = 1L;
 
         FavoriteProduct.Liked liked = jpaQueryFactory
@@ -252,7 +234,6 @@ public class ProductQueryRepository {
     }
 
     private Boolean getProductIsSale(Long productId) {
-
         Product.IsOnSale isSale = productRepository.findById(productId).get().getIsOnSale();
 
         if (isSale.equals(ON_SALE)) {

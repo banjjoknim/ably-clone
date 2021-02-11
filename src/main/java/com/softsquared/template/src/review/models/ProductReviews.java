@@ -10,5 +10,6 @@ import java.util.List;
 @Getter
 public class ProductReviews {
 
+    private ReviewSummary reviewSummary;
     private List<ReviewInfo> reviewInfos;
 }
