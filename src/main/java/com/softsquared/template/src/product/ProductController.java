@@ -69,7 +69,7 @@ public class ProductController {
     }
 
     @GetMapping("/{productId}")
-    public BaseResponse<GetProductRes> getProductInfo(@PathVariable(value = "productId") Long productId) {
+    public BaseResponse<GetProductRes> getProduct(@PathVariable(value = "productId") Long productId) {
             return new BaseResponse<>(SUCCESS, productProvider.retrieveProduct(productId));
         }
     }

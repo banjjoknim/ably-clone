@@ -44,7 +44,7 @@ public class ProductQueryRepository {
         this.productRepository = productRepository;
     }
 
-    public GetProductRes getProductTotalInfo(Long productId) {
+    public GetProductRes getProductInfos(Long productId) {
 
         Long productCountInBasket = getProductCountInBasket();
         ProductMainInfos productMainInfos = getProductMainInfos(productId);

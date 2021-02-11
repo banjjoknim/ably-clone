@@ -104,6 +104,6 @@ public class ProductProvider {
 
     public GetProductRes retrieveProduct(Long productId) {
 
-        return productQueryRepository.getProductTotalInfo(productId);
+        return productQueryRepository.getProductInfos(productId);
     }
 }
