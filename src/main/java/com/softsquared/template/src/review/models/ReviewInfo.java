@@ -15,11 +15,11 @@ public class ReviewInfo {
     private String dateCreated;
     private Long likedCount;
     private String purchasedOptions;
-    private List<String> reviewPictures;
+    private List<ReviewImageInfo> reviewImageInfos;
     private String form; // 체형
-    private String sizeComment; //
-    private String colorComment;
-    private String reviewComment;
+    private String sizeComment; // 사이즈
+    private String colorComment; // 색상
+    private String reviewComment; // 내용
 
     @QueryProjection
     public ReviewInfo(Long reviewId, String satisfaction, String userName, String rank, String dateCreated, Long likedCount, String purchasedOptions, String form, String sizeComment, String colorComment, String reviewComment) {
@@ -36,8 +36,8 @@ public class ReviewInfo {
         this.reviewComment = reviewComment;
     }
 
-    public ReviewInfo getReviewWithPictures(List<String> reviewPictures) {
-        this.reviewPictures = reviewPictures;
+    public ReviewInfo getReviewWithPictures(List<ReviewImageInfo> reviewImageInfos) {
+        this.reviewImageInfos = reviewImageInfos;
         return this;
     }
 }

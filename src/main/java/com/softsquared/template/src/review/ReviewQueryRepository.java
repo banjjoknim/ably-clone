@@ -2,7 +2,9 @@ package com.softsquared.template.src.review;
 
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.softsquared.template.src.review.models.QReviewImageInfo;
 import com.softsquared.template.src.review.models.QReviewInfo;
+import com.softsquared.template.src.review.models.ReviewImageInfo;
 import com.softsquared.template.src.review.models.ReviewInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -28,8 +30,8 @@ public class ReviewQueryRepository {
         List<ReviewInfo> reviewInfos = getReviewInfos(productId);
         return reviewInfos.stream()
                 .map(reviewInfo -> {
-                    List<String> reviewImages = getReviewImages(reviewInfo.getReviewId());
-                    return reviewInfo.getReviewWithPictures(reviewImages);
+                    List<ReviewImageInfo> reviewImageInfos = getReviewImageInfos(reviewInfo.getReviewId());
+                    return reviewInfo.getReviewWithPictures(reviewImageInfos);
                 })
                 .collect(toList());
     }
@@ -55,9 +57,9 @@ public class ReviewQueryRepository {
                 .fetch();
     }
 
-    private List<String> getReviewImages(Long reviewId) {
+    private List<ReviewImageInfo> getReviewImageInfos(Long reviewId) {
         return jpaQueryFactory
-                .select(reviewImage.image)
+                .select(new QReviewImageInfo(reviewImage.reviewId, reviewImage.image))
                 .from(reviewImage)
                 .where(reviewImage.reviewId.eq(reviewId))
                 .fetch();
