@@ -21,21 +21,29 @@ public class Review extends BaseEntity {
     @Column(name = "id")
     private Long id;
 
+    @NotNull
     @Column(name = "productId")
     private Long productId;
 
+    @NotNull
     @Column(name = "userId")
     private Long userId;
 
+    @NotNull
     @Column(name = "comment")
     private String comment;
 
+    @NotNull
     @Enumerated(value = EnumType.STRING)
     @Column(name = "satisfaction")
     private Satisfaction satisfaction;
 
+    @NotNull
     @Column(name = "purchasedOption")
     private String purchasedOption;
+
+    @Column(name = "form")
+    private String form;
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "sizeComment")
@@ -62,12 +70,13 @@ public class Review extends BaseEntity {
     }
 
     @Builder
-    public Review(Long productId, Long userId, String comment, Satisfaction satisfaction, String purchasedOption, SizeComment sizeComment, ColorComment colorComment, @NotNull Long likesCount) {
+    public Review(Long productId, Long userId, String comment, Satisfaction satisfaction, String purchasedOption, String form, SizeComment sizeComment, ColorComment colorComment, @NotNull Long likesCount) {
         this.productId = productId;
         this.userId = userId;
         this.comment = comment;
         this.satisfaction = satisfaction;
         this.purchasedOption = purchasedOption;
+        this.form = form;
         this.sizeComment = sizeComment;
         this.colorComment = colorComment;
         this.likesCount = likesCount;
