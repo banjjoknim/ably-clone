@@ -15,7 +15,6 @@ import com.softsquared.template.src.review.models.ReviewInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.softsquared.template.DBmodel.Product.IsOnSale.ON_SALE;
