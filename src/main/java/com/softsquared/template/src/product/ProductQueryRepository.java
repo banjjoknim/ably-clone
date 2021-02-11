@@ -9,6 +9,9 @@ import com.softsquared.template.DBmodel.Product;
 import com.softsquared.template.DBmodel.ProductDetail;
 import com.softsquared.template.DBmodel.Review;
 import com.softsquared.template.src.product.models.*;
+import com.softsquared.template.src.review.ReviewQueryRepository;
+import com.softsquared.template.src.review.models.ProductReviews;
+import com.softsquared.template.src.review.models.ReviewInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -37,11 +40,13 @@ public class ProductQueryRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
     private final ProductRepository productRepository;
+    private final ReviewQueryRepository reviewQueryRepository;
 
     @Autowired
-    public ProductQueryRepository(JPAQueryFactory jpaQueryFactory, ProductRepository productRepository) {
+    public ProductQueryRepository(JPAQueryFactory jpaQueryFactory, ProductRepository productRepository, ReviewQueryRepository reviewQueryRepository) {
         this.jpaQueryFactory = jpaQueryFactory;
         this.productRepository = productRepository;
+        this.reviewQueryRepository = reviewQueryRepository;
     }
 
     public GetProductRes getProductInfos(Long productId) {
@@ -51,11 +56,17 @@ public class ProductQueryRepository {
         ProductSubInfos productSubInfos = getProductSubInfos(productId);
         ProductMarketInfos productMarketInfos = getProductMarketInfos(productId);
         ProductDetailInfos productDetailInfos = getProductDetailInfos(productId);
+        ProductReviews productReviews = getProductReviews(productId);
         Boolean productIsLiked = getProductIsLiked(productId);
         Boolean productIsSale = getProductIsSale(productId);
 
         return new GetProductRes(productCountInBasket, productMainInfos, productSubInfos,
-                productMarketInfos, productDetailInfos, productIsLiked, productIsSale);
+                productMarketInfos, productDetailInfos, productReviews, productIsLiked, productIsSale);
+    }
+
+    private ProductReviews getProductReviews(Long productId) {
+        List<ReviewInfo> reviewInfos = reviewQueryRepository.getProductReviews(productId);
+        return new ProductReviews(reviewInfos);
     }
 
     private ProductMainInfos getProductMainInfos(Long productId) {
