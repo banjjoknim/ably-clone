@@ -1,5 +1,6 @@
 package com.softsquared.template.src.user;
 
+import com.fasterxml.jackson.databind.ser.Serializers;
 import com.softsquared.template.config.Caster;
 import com.softsquared.template.config.BaseException;
 import com.softsquared.template.src.user.models.*;
@@ -157,6 +158,21 @@ public class UserInfoProvider {
             throw new BaseException(NOT_FOUND_USERS);
         }
         return userInfo;
+    }
+
+
+    /**
+     * 환불계좌 정보
+     */
+    public GetUserRefund retrieveRefundInfo(long userId) throws BaseException{
+        GetUserRefund refundInfo;
+        try{
+            refundInfo = userInfoSelectRepository.findRefundByUserId(userId).get(0);
+        }catch(Exception e){
+            e.printStackTrace();
+            throw new BaseException(FAILED_TO_GET_USER);
+        }
+        return refundInfo;
     }
 
 

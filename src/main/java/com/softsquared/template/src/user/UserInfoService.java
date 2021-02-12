@@ -1,5 +1,6 @@
 package com.softsquared.template.src.user;
 
+import com.softsquared.template.DBmodel.UserInfo;
 import com.softsquared.template.utils.JwtService;
 import com.softsquared.template.config.secret.Secret;
 import com.softsquared.template.utils.AES128;
@@ -8,6 +9,8 @@ import com.softsquared.template.src.user.models.*;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
 
 import static com.softsquared.template.config.BaseResponseStatus.*;
 
@@ -25,4 +28,29 @@ public class UserInfoService {
         this.jwtService = jwtService;
     }
 
+    /**
+     * 회원 가입
+     */
+    public String createUserInfo(PostUserInfoReq param, long userId) throws BaseException{
+
+        UserInfo newUser;
+        String userName = param.getNickname();
+
+        String email = param.getEmail();
+        String gender = param.getGender();
+        String age = param.getAge();
+
+        String phoneNum = param.getPhoneNum();
+        int birthday = param.getBirthday();
+
+        String dateCreated = (new Timestamp(System.currentTimeMillis())).toString();
+        String dateUpdated = (new Timestamp(System.currentTimeMillis())).toString();
+
+        newUser = new UserInfo(userId,email,userName,phoneNum,birthday, gender, age);
+
+        userInfoRepository.save(newUser);
+
+        return Long.toString(userId);
+
+    }
 }
