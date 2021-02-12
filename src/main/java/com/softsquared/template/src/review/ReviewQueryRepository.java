@@ -17,7 +17,6 @@ import static com.softsquared.template.DBmodel.QReview.review;
 import static com.softsquared.template.DBmodel.QReviewImage.reviewImage;
 import static com.softsquared.template.DBmodel.QUserInfo.userInfo;
 import static com.softsquared.template.config.Constant.HUNDRED;
-import static java.util.stream.Collectors.toList;
 
 @Repository
 public class ReviewQueryRepository {
@@ -29,17 +28,7 @@ public class ReviewQueryRepository {
         this.jpaQueryFactory = jpaQueryFactory;
     }
 
-    public List<ReviewInfo> getProductReviewsWithImages(Long productId) {
-        List<ReviewInfo> reviewInfos = getReviewInfos(productId);
-        return reviewInfos.stream()
-                .map(reviewInfo -> {
-                    List<ReviewImageInfo> reviewImageInfos = getReviewImageInfos(reviewInfo.getReviewId());
-                    return reviewInfo.getReviewWithPictures(reviewImageInfos);
-                })
-                .collect(toList());
-    }
-
-    private List<ReviewInfo> getReviewInfos(Long productId) {
+    public List<ReviewInfo> getReviewInfos(Long productId) {
         return jpaQueryFactory
                 .select(new QReviewInfo(
                         review.id,
@@ -60,7 +49,7 @@ public class ReviewQueryRepository {
                 .fetch();
     }
 
-    private List<ReviewImageInfo> getReviewImageInfos(Long reviewId) {
+    public List<ReviewImageInfo> getReviewImageInfos(Long reviewId) {
         return jpaQueryFactory
                 .select(new QReviewImageInfo(reviewImage.reviewId, reviewImage.image))
                 .from(reviewImage)
@@ -68,15 +57,7 @@ public class ReviewQueryRepository {
                 .fetch();
     }
 
-    public ProductReviews getProductReviews(Long productId) {
-        ReviewSummary reviewSummary = getReviewSummary(productId)
-                .getReviewSummaryWithImageInfos(getReviewImageInfosByProductId(productId));
-        List<ReviewInfo> reviewInfos = getProductReviewsWithImages(productId);
-
-        return new ProductReviews(reviewSummary, reviewInfos);
-    }
-
-    private ReviewSummary getReviewSummary(Long productId) {
+    public ReviewSummary getReviewSummary(Long productId) {
         return jpaQueryFactory
                 .select(new QReviewSummary(
                         review.count(),
@@ -104,7 +85,7 @@ public class ReviewQueryRepository {
                 .fetchFirst();
     }
 
-    private List<ReviewImageInfo> getReviewImageInfosByProductId(Long productId) {
+    public List<ReviewImageInfo> getReviewImageInfosByProductId(Long productId) {
         return jpaQueryFactory
                 .select(new QReviewImageInfo(reviewImage.reviewId, reviewImage.image))
                 .from(reviewImage)

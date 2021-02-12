@@ -157,8 +157,7 @@ public class ProductQueryRepository {
                 .fetchFirst();
     }
 
-    public Long getProductCountInBasketQuery() {
-        Long userId = 1L;
+    public Long getProductCountInBasketQuery(Long userId) {
 
         return jpaQueryFactory
                 .select(basket)
@@ -167,8 +166,7 @@ public class ProductQueryRepository {
                 .fetchCount();
     }
 
-    public Boolean getProductIsLikedQuery(Long productId) {
-        Long userId = 1L;
+    public Boolean getProductIsLikedQuery(Long userId, Long productId) {
 
         FavoriteProduct.Liked liked = jpaQueryFactory
                 .select(favoriteProduct.liked)

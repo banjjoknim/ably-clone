@@ -1,11 +1,15 @@
 package com.softsquared.template.src.product;
 
+import com.softsquared.template.DBmodel.FavoriteProductId;
 import com.softsquared.template.config.BaseException;
 import com.softsquared.template.config.BaseResponse;
+import com.softsquared.template.src.favorite.FavoriteProductService;
 import com.softsquared.template.src.product.models.GetProductRes;
 import com.softsquared.template.src.product.models.GetProductsRes;
 import com.softsquared.template.src.product.models.ProductFilterReq;
 import com.softsquared.template.src.product.models.ProductOrderType;
+import com.softsquared.template.src.review.ReviewProvider;
+import com.softsquared.template.src.review.models.GetProductReviewsRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,13 +24,17 @@ public class ProductController {
 
     private final ProductsProvider productsProvider;
     private final ProductProvider productProvider;
+    private final ReviewProvider reviewProvider;
     private final ProductService productService;
+    private final FavoriteProductService favoriteProductService;
 
     @Autowired
-    public ProductController(ProductsProvider productsProvider, ProductProvider productProvider, ProductService productService) {
+    public ProductController(ProductsProvider productsProvider, ProductProvider productProvider, ReviewProvider reviewProvider, ProductService productService, FavoriteProductService favoriteProductService) {
         this.productsProvider = productsProvider;
         this.productProvider = productProvider;
+        this.reviewProvider = reviewProvider;
         this.productService = productService;
+        this.favoriteProductService = favoriteProductService;
     }
 
     @GetMapping("")
@@ -72,6 +80,31 @@ public class ProductController {
 
     @GetMapping("/{productId}")
     public BaseResponse<GetProductRes> getProduct(@PathVariable(value = "productId") Long productId) {
+        try {
             return new BaseResponse<>(SUCCESS, productProvider.retrieveProduct(productId));
+        } catch (BaseException e) {
+            return new BaseResponse<>(NOT_FOUND_PRODUCT);
         }
     }
+
+    @GetMapping("/{productId}/reviews")
+    public BaseResponse<GetProductReviewsRes> getProductReviews(@PathVariable(value = "productId") Long productId) {
+        try {
+            return new BaseResponse<>(SUCCESS, reviewProvider.retrieveProductReviews(productId));
+        } catch (BaseException e) {
+            return new BaseResponse<>(NOT_FOUND_PRODUCT);
+        }
+    }
+
+    @PatchMapping("/{productId}/favorite")
+    public BaseResponse<FavoriteProductId> patchProductFavorite(@PathVariable(value = "productId") Long productId) {
+        try {
+            return new BaseResponse<>(SUCCESS, favoriteProductService.updateProductFavorite(productId));
+        } catch (BaseException e) {
+            if (e.getStatus().equals(EMPTY_JWT)) {
+                return new BaseResponse<>(EMPTY_JWT);
+            }
+            return new BaseResponse<>(NOT_FOUND_USERS);
+        }
+    }
+}
