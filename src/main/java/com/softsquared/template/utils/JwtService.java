@@ -1,5 +1,7 @@
 package com.softsquared.template.utils;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.softsquared.template.config.BaseException;
 import com.softsquared.template.config.secret.Secret;
 import io.jsonwebtoken.Claims;
@@ -11,7 +13,13 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Date;
+import java.util.HashMap;
 
 import static com.softsquared.template.config.BaseResponseStatus.*;
 
@@ -45,24 +53,53 @@ public class JwtService {
      * @return int
      * @throws BaseException
      */
-    public int getUserId() throws BaseException {
+    public long getUserId() throws BaseException {
         // 1. JWT 추출
-        String accessToken = getJwt();
-        if (accessToken == null || accessToken.length() == 0) {
+        String access_Token = getJwt();
+        if (access_Token == null || access_Token.length() == 0) {
             throw new BaseException(EMPTY_JWT);
         }
 
-        // 2. JWT parsing
-        Jws<Claims> claims;
-        try {
-            claims = Jwts.parser()
-                    .setSigningKey(Secret.JWT_SECRET_KEY)
-                    .parseClaimsJws(accessToken);
-        } catch (Exception ignored) {
-            throw new BaseException(INVALID_JWT);
-        }
+        HashMap<String, Object> userInfo = new HashMap<>();
+        String reqURL = "https://kapi.kakao.com/v2/user/me";
+        long userId=0;
 
-        // 3. userId 추출
-        return claims.getBody().get("userId", Integer.class);
+
+        try {
+                URL url = new URL(reqURL);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+
+                conn.setRequestProperty("Authorization", "Bearer " + access_Token);
+
+                int responseCode = conn.getResponseCode();
+                System.out.println("responseCode : " + responseCode);
+                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+                String line = "";
+                String result = "";
+
+                while ((line = br.readLine()) != null) {
+                    result += line;
+                }
+                System.out.println("response body : " + result);
+
+                JsonParser parser = new JsonParser();
+                JsonElement element = parser.parse(result);
+
+                userId= element.getAsJsonObject().get("id").getAsLong();
+
+                System.out.println(userId);
+
+
+            }catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+            // 3. userId 추출
+            // return claims.getBody().get("userId", Integer.class);
+            return userId;
+        }
     }
-}
+

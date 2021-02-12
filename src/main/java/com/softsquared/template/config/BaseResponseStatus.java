@@ -38,6 +38,11 @@ public enum BaseResponseStatus {
     FILTER_PRICE_MUST_BE_POSITIVE(false, 2053, "필터 설정 가격은 0보다 큰 정수여야 합니다."),
     FILTER_TALL_MUST_BE_POSITIVE(false, 2054, "필터 설정 키는 0보다 큰 정수여야 합니다."),
 
+
+    //vivi
+    NOT_FOUND_USERS(false, 2080, "회원가입이 되어있지 않는 회원입니다."),
+
+
     // 3000 : Response 오류
     RESPONSE_ERROR(false, 3000, "값을 불러오는데 실패하였습니다."),
     NOT_FOUND_USER(false, 3010, "존재하지 않는 회원입니다."),
@@ -54,6 +59,7 @@ public enum BaseResponseStatus {
     FAILED_TO_GET_PURCHASE(false, 3022, "구매 내역 조회에 실패하였습니다."),
     FAILED_TO_GET_PURCHASE_PRODUCTS(false, 3023, "구매하신 제품 조회에 실패하였습니다."),
     FAILED_TO_GET_DELVIERY_DESTINATION(false, 3024, "배송지 조회에 실패하였습니다."),
+
 
 
 
