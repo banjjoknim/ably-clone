@@ -1,9 +1,12 @@
 package com.softsquared.template.src.product;
 
 import com.softsquared.template.DBmodel.ProductDetail;
+import com.softsquared.template.config.BaseException;
+import com.softsquared.template.config.BaseResponseStatus;
 import com.softsquared.template.src.product.models.*;
 import com.softsquared.template.src.review.ReviewQueryRepository;
-import com.softsquared.template.src.review.models.ProductReviews;
+import com.softsquared.template.src.review.models.GetProductReviewsRes;
+import com.softsquared.template.utils.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,29 +15,44 @@ import java.util.List;
 @Service
 public class ProductProvider {
 
+    private final ProductRepository productRepository;
     private final ProductQueryRepository productQueryRepository;
     private final ProductImageQueryRepository productImageQueryRepository;
-    private final ReviewQueryRepository reviewQueryRepository;
+    private final JwtService jwtService;
 
     @Autowired
-    public ProductProvider(ProductQueryRepository productQueryRepository, ProductImageQueryRepository productImageQueryRepository, ReviewQueryRepository reviewQueryRepository) {
+    public ProductProvider(ProductRepository productRepository, ProductQueryRepository productQueryRepository, ProductImageQueryRepository productImageQueryRepository, JwtService jwtService) {
+        this.productRepository = productRepository;
         this.productQueryRepository = productQueryRepository;
         this.productImageQueryRepository = productImageQueryRepository;
-        this.reviewQueryRepository = reviewQueryRepository;
+        this.jwtService = jwtService;
     }
 
-    public GetProductRes retrieveProduct(Long productId) {
-        Long productCountInBasket = productQueryRepository.getProductCountInBasketQuery();
+    public GetProductRes retrieveProduct(Long productId) throws BaseException {
+        if (!productRepository.existsById(productId)) {
+            throw new BaseException(BaseResponseStatus.NOT_FOUND_PRODUCT);
+        }
+        Long userId;
+        try {
+            userId = jwtService.getUserId();
+        } catch (BaseException e) { // 토큰이 없을 경우 -> 비회원인 경우
+            userId = 0L;
+        }
+
+        Long productCountInBasket = retrieveProductCountInBasket(userId);
         ProductMainInfos productMainInfos = retrieveProductMainInfos(productId);
         ProductSubInfos productSubInfos = retrieveProductSubInfos(productId);
         ProductMarketInfos productMarketInfos = retrieveProductMarketInfos(productId);
         ProductDetailInfos productDetailInfos = retrieveProductDetailInfos(productId);
-        ProductReviews productReviews = retrieveProductReviews(productId);
-        Boolean productIsLiked = retrieveProductIsLiked(productId);
+        Boolean productIsLiked = retrieveProductIsLiked(userId, productId);
         Boolean productIsSale = retrieveProductIsSale(productId);
 
         return new GetProductRes(productCountInBasket, productMainInfos, productSubInfos,
-                productMarketInfos, productDetailInfos, productReviews, productIsLiked, productIsSale);
+                productMarketInfos, productDetailInfos, productIsLiked, productIsSale);
+    }
+
+    private Long retrieveProductCountInBasket(Long userId) {
+        return productQueryRepository.getProductCountInBasketQuery(userId);
     }
 
     private ProductMainInfos retrieveProductMainInfos(Long productId) {
@@ -66,12 +84,8 @@ public class ProductProvider {
         return new ProductDetailInfos(productDetailTextAndImages, productModelInfo, productDetail);
     }
 
-    private ProductReviews retrieveProductReviews(Long productId) {
-        return reviewQueryRepository.getProductReviews(productId);
-    }
-
-    private Boolean retrieveProductIsLiked(Long productId) {
-        return productQueryRepository.getProductIsLikedQuery(productId);
+    private Boolean retrieveProductIsLiked(Long userId, Long productId) {
+        return productQueryRepository.getProductIsLikedQuery(userId, productId);
     }
 
     private Boolean retrieveProductIsSale(Long productId) {

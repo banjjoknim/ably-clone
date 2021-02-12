@@ -8,7 +8,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @Getter
-public class ProductReviews {
+public class GetProductReviewsRes {
 
     private ReviewSummary reviewSummary;
     private List<ReviewInfo> reviewInfos;
