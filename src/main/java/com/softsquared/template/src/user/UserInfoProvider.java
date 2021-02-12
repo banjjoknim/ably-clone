@@ -139,10 +139,28 @@ public class UserInfoProvider {
     }
 
 
+    /**
+     * for PurchaseController --> 환불 계좌 조회
+     */
+//    public Get
 
 
+    /**
+     * 회원가입 유무 확인
+     */
+    public GetUserInfo retrieveIsUser(long userId) throws BaseException{
+        GetUserInfo userInfo ;
+        try{
+            userInfo= userInfoSelectRepository.findUserByUserId(userId).get(0);
+        }catch(Exception e){
+            e.printStackTrace();
+            throw new BaseException(NOT_FOUND_USERS);
+        }
+        return userInfo;
+    }
 
-            /*********************************************changedList
+
+    /*********************************************changedList
 
 
 
