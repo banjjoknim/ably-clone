@@ -46,7 +46,6 @@ public class ProductsQueryRepository {
         return productsInfosOrderByQuery(infosFilterQuery, orderType).fetch();
     }
 
-    // todo : 상품 목록 조회시 유저 별 찜 반영 쿼리 로직 추가해야 함.
     // 상품 목록 조회 쿼리
     private JPAQuery<ProductsInfo> getProductsInfosQuery() {
 

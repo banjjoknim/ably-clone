@@ -18,11 +18,13 @@ import static com.softsquared.template.config.BaseResponseStatus.*;
 @RequestMapping("/products")
 public class ProductController {
 
+    private final ProductsProvider productsProvider;
     private final ProductProvider productProvider;
     private final ProductService productService;
 
     @Autowired
-    public ProductController(ProductProvider productProvider, ProductService productService) {
+    public ProductController(ProductsProvider productsProvider, ProductProvider productProvider, ProductService productService) {
+        this.productsProvider = productsProvider;
         this.productProvider = productProvider;
         this.productService = productService;
     }
@@ -50,7 +52,7 @@ public class ProductController {
                 .build();
 
         try {
-            return new BaseResponse<>(SUCCESS, productProvider.retrieveProducts(filterRequest, orderType));
+            return new BaseResponse<>(SUCCESS, productsProvider.retrieveProducts(filterRequest, orderType));
         } catch (BaseException e) {
             if (e.getStatus().equals(NOT_FOUND_CATEGORY)) {
                 return new BaseResponse<>(NOT_FOUND_CATEGORY);

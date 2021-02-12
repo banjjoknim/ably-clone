@@ -1,109 +1,81 @@
 package com.softsquared.template.src.product;
 
-import com.softsquared.template.config.BaseException;
-import com.softsquared.template.src.category.CategoryRepository;
-import com.softsquared.template.src.category.DetailCategoryRepository;
-import com.softsquared.template.src.product.models.GetProductRes;
-import com.softsquared.template.src.product.models.GetProductsRes;
-import com.softsquared.template.src.product.models.ProductFilterReq;
-import com.softsquared.template.src.product.models.ProductOrderType;
+import com.softsquared.template.DBmodel.ProductDetail;
+import com.softsquared.template.src.product.models.*;
+import com.softsquared.template.src.review.ReviewQueryRepository;
+import com.softsquared.template.src.review.models.ProductReviews;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.List;
-
-import static com.softsquared.template.config.BaseResponseStatus.*;
-import static java.util.stream.Collectors.toList;
 
 @Service
 public class ProductProvider {
 
     private final ProductQueryRepository productQueryRepository;
-    private final ProductsQueryRepository productsQueryRepository;
-    private final ProductRepository productRepository;
-    private final ProductImageRepository productImageRepository;
-    private final CategoryRepository categoryRepository;
-    private final DetailCategoryRepository detailCategoryRepository;
+    private final ProductImageQueryRepository productImageQueryRepository;
+    private final ReviewQueryRepository reviewQueryRepository;
 
     @Autowired
-    public ProductProvider(ProductQueryRepository productQueryRepository, ProductsQueryRepository productsQueryRepository, ProductRepository productRepository, ProductImageRepository productImageRepository, CategoryRepository categoryRepository, DetailCategoryRepository detailCategoryRepository) {
+    public ProductProvider(ProductQueryRepository productQueryRepository, ProductImageQueryRepository productImageQueryRepository, ReviewQueryRepository reviewQueryRepository) {
         this.productQueryRepository = productQueryRepository;
-        this.productsQueryRepository = productsQueryRepository;
-        this.productRepository = productRepository;
-        this.productImageRepository = productImageRepository;
-        this.categoryRepository = categoryRepository;
-        this.detailCategoryRepository = detailCategoryRepository;
-    }
-
-    // 상품 조회
-    @Transactional(readOnly = true)
-    public List<GetProductsRes> retrieveProducts(ProductFilterReq filterRequest, ProductOrderType orderType) throws BaseException {
-
-        validateFilters(filterRequest); // 필터 유효성 검증
-
-        return productsQueryRepository.getProductsInfos(filterRequest, orderType).stream()
-                .map(productsInfo -> {
-                    Long productId = productsInfo.getProductId();
-                    boolean isLiked = productQueryRepository.getProductIsLiked(productId);
-                    boolean isNew = (new Date().getTime() - productRepository.findById(productId).get().getDateCreated().getTime()) <= 1000 * 60 * 60 * 24; // 등록된지 하루 이내이면 true
-                    return new GetProductsRes(productsInfo, productQueryRepository.getProductThumbnails(productId), isLiked, isNew);
-                })
-                .collect(toList()); // 필터 적용된 결과 리스트 조회
-    }
-
-    // 필터 유효성 검증
-    private void validateFilters(ProductFilterReq request) throws BaseException {
-
-        validateCategoryFilter(request);
-        validatePriceFilter(request);
-        validateTallFilter(request);
-
-    }
-
-    private void validateCategoryFilter(ProductFilterReq request) throws BaseException {
-
-        if (request.getCategoryId().isPresent()) {
-            if (!categoryRepository.existsById(request.getCategoryId().get())) {
-                throw new BaseException(NOT_FOUND_CATEGORY);
-            }
-        }
-        if (request.getCategoryId().isPresent() && request.getDetailCategoryId().isPresent()) {
-            Long categoryId = request.getCategoryId().get();
-            Long detailCategoryId = request.getDetailCategoryId().get();
-
-            if (!detailCategoryRepository.existsById(detailCategoryId)) {
-                throw new BaseException(NOT_FOUND_DETAIL_CATEGORY);
-            }
-            if (!detailCategoryRepository.existsByIdAndCategoryId(detailCategoryId, categoryId)) {
-                throw new BaseException(NOT_FOUND_DETAIL_CATEGORY_BELONGED_CATEGORY);
-            }
-        }
-    }
-
-    private void validateTallFilter(ProductFilterReq request) throws BaseException {
-
-        if (request.getMinimumTall().isPresent() && request.getMinimumTall().get() < 0) {
-            throw new BaseException(FILTER_TALL_MUST_BE_POSITIVE);
-        }
-        if (request.getMaximumTall().isPresent() && request.getMaximumTall().get() < 0) {
-            throw new BaseException(FILTER_TALL_MUST_BE_POSITIVE);
-        }
-    }
-
-    private void validatePriceFilter(ProductFilterReq request) throws BaseException {
-
-        if (request.getMinimumPrice().isPresent() && request.getMinimumPrice().get() < 0) {
-            throw new BaseException(FILTER_PRICE_MUST_BE_POSITIVE);
-        }
-        if (request.getMaximumPrice().isPresent() && request.getMaximumPrice().get() < 0) {
-            throw new BaseException(FILTER_PRICE_MUST_BE_POSITIVE);
-        }
+        this.productImageQueryRepository = productImageQueryRepository;
+        this.reviewQueryRepository = reviewQueryRepository;
     }
 
     public GetProductRes retrieveProduct(Long productId) {
+        Long productCountInBasket = productQueryRepository.getProductCountInBasketQuery();
+        ProductMainInfos productMainInfos = retrieveProductMainInfos(productId);
+        ProductSubInfos productSubInfos = retrieveProductSubInfos(productId);
+        ProductMarketInfos productMarketInfos = retrieveProductMarketInfos(productId);
+        ProductDetailInfos productDetailInfos = retrieveProductDetailInfos(productId);
+        ProductReviews productReviews = retrieveProductReviews(productId);
+        Boolean productIsLiked = retrieveProductIsLiked(productId);
+        Boolean productIsSale = retrieveProductIsSale(productId);
 
-        return productQueryRepository.getProductInfos(productId);
+        return new GetProductRes(productCountInBasket, productMainInfos, productSubInfos,
+                productMarketInfos, productDetailInfos, productReviews, productIsLiked, productIsSale);
     }
+
+    private ProductMainInfos retrieveProductMainInfos(Long productId) {
+        ProductMainInfo productMainInfo = productQueryRepository.getProductMainInfoQuery(productId);
+        List<String> productThumbnails = productImageQueryRepository.getProductThumbnailsQuery(productId);
+
+        return new ProductMainInfos(productMainInfo, productThumbnails);
+    }
+
+    private ProductSubInfos retrieveProductSubInfos(Long productId) {
+        ProductSubInfo productSubInfo = productQueryRepository.getProductSubInfoQuery(productId);
+        List<Integer> preparePeriodShares = productQueryRepository.getPreparePeriodSharesQuery(productId);
+
+        return new ProductSubInfos(productSubInfo, preparePeriodShares);
+    }
+
+    private ProductMarketInfos retrieveProductMarketInfos(Long productId) {
+        ProductMarketInfo productMarketInfo = productQueryRepository.getProductMarketInfoQuery(productId);
+        String productMarketTags = productQueryRepository.getProductMarketTagsQuery(productId);
+
+        return new ProductMarketInfos(productMarketInfo, productMarketTags);
+    }
+
+    private ProductDetailInfos retrieveProductDetailInfos(Long productId) {
+        List<ProductDetailContent> productDetailTextAndImages = productQueryRepository.getProductDetailTextAndImagesQuery(productId);
+        ProductModelInfo productModelInfo = productQueryRepository.getProductModelInfoQuery(productId);
+        ProductDetail productDetail = productQueryRepository.getProductDetailQuery(productId);
+
+        return new ProductDetailInfos(productDetailTextAndImages, productModelInfo, productDetail);
+    }
+
+    private ProductReviews retrieveProductReviews(Long productId) {
+        return reviewQueryRepository.getProductReviews(productId);
+    }
+
+    private Boolean retrieveProductIsLiked(Long productId) {
+        return productQueryRepository.getProductIsLikedQuery(productId);
+    }
+
+    private Boolean retrieveProductIsSale(Long productId) {
+        return productQueryRepository.getProductIsSaleQuery(productId);
+    }
+
 }
