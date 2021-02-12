@@ -50,7 +50,7 @@ public enum BaseResponseStatus {
 
 
     //vivi
-    NOT_FOUND_USERS(false, 2500, "회원가입이 되어있지 않는 회원입니다."),
+   // NOT_FOUND_USERS(false, 2500, "회원가입이 되어있지 않는 회원입니다."),
     EMPTY_PHONENUM(false, 2501, "핸드폰 번호 값을 확인해주세요."),
 
     NOT_FOUND_REFUND(false, 2502, "환불정보가 없습니"),
