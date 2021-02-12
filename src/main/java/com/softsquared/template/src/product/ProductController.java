@@ -72,6 +72,10 @@ public class ProductController {
 
     @GetMapping("/{productId}")
     public BaseResponse<GetProductRes> getProduct(@PathVariable(value = "productId") Long productId) {
+        try {
             return new BaseResponse<>(SUCCESS, productProvider.retrieveProduct(productId));
+        } catch (BaseException e) {
+            return new BaseResponse<>(NOT_FOUND_PRODUCT);
         }
+    }
     }

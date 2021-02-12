@@ -1,6 +1,8 @@
 package com.softsquared.template.src.product;
 
 import com.softsquared.template.DBmodel.ProductDetail;
+import com.softsquared.template.config.BaseException;
+import com.softsquared.template.config.BaseResponseStatus;
 import com.softsquared.template.src.product.models.*;
 import com.softsquared.template.src.review.ReviewQueryRepository;
 import com.softsquared.template.src.review.models.ProductReviews;
@@ -12,19 +14,24 @@ import java.util.List;
 @Service
 public class ProductProvider {
 
+    private final ProductRepository productRepository;
     private final ProductQueryRepository productQueryRepository;
     private final ProductImageQueryRepository productImageQueryRepository;
     private final ReviewQueryRepository reviewQueryRepository;
 
     @Autowired
-    public ProductProvider(ProductQueryRepository productQueryRepository, ProductImageQueryRepository productImageQueryRepository, ReviewQueryRepository reviewQueryRepository) {
+    public ProductProvider(ProductRepository productRepository, ProductQueryRepository productQueryRepository, ProductImageQueryRepository productImageQueryRepository, ReviewQueryRepository reviewQueryRepository) {
+        this.productRepository = productRepository;
         this.productQueryRepository = productQueryRepository;
         this.productImageQueryRepository = productImageQueryRepository;
         this.reviewQueryRepository = reviewQueryRepository;
     }
 
-    public GetProductRes retrieveProduct(Long productId) {
-        Long productCountInBasket = productQueryRepository.getProductCountInBasketQuery();
+    public GetProductRes retrieveProduct(Long productId) throws BaseException {
+        if (!productRepository.existsById(productId)) {
+            throw new BaseException(BaseResponseStatus.NOT_FOUND_PRODUCT);
+        }
+        Long productCountInBasket = retrieveProductCountInBasket();
         ProductMainInfos productMainInfos = retrieveProductMainInfos(productId);
         ProductSubInfos productSubInfos = retrieveProductSubInfos(productId);
         ProductMarketInfos productMarketInfos = retrieveProductMarketInfos(productId);
@@ -35,6 +42,10 @@ public class ProductProvider {
 
         return new GetProductRes(productCountInBasket, productMainInfos, productSubInfos,
                 productMarketInfos, productDetailInfos, productReviews, productIsLiked, productIsSale);
+    }
+
+    private Long retrieveProductCountInBasket() {
+        return productQueryRepository.getProductCountInBasketQuery();
     }
 
     private ProductMainInfos retrieveProductMainInfos(Long productId) {

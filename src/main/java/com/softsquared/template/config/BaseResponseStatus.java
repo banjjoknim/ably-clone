@@ -37,7 +37,7 @@ public enum BaseResponseStatus {
     NOT_FOUND_DETAIL_CATEGORY_BELONGED_CATEGORY(false, 2052, "해당 하위 카테고리의 상위 카테고리가 아닙니다."),
     FILTER_PRICE_MUST_BE_POSITIVE(false, 2053, "필터 설정 가격은 0보다 큰 정수여야 합니다."),
     FILTER_TALL_MUST_BE_POSITIVE(false, 2054, "필터 설정 키는 0보다 큰 정수여야 합니다."),
-
+    NOT_FOUND_PRODUCT(false, 2055, "존재하지 않는 상품입니다."),
 
     //vivi
     NOT_FOUND_USERS(false, 2080, "회원가입이 되어있지 않는 회원입니다."),
