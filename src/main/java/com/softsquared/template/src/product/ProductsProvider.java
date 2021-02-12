@@ -3,7 +3,10 @@ package com.softsquared.template.src.product;
 import com.softsquared.template.config.BaseException;
 import com.softsquared.template.src.category.CategoryRepository;
 import com.softsquared.template.src.category.DetailCategoryRepository;
-import com.softsquared.template.src.product.models.*;
+import com.softsquared.template.src.product.models.GetProductsRes;
+import com.softsquared.template.src.product.models.ProductFilterReq;
+import com.softsquared.template.src.product.models.ProductOrderType;
+import com.softsquared.template.utils.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,15 +26,17 @@ public class ProductsProvider {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final DetailCategoryRepository detailCategoryRepository;
+    private final JwtService jwtService;
 
     @Autowired
-    public ProductsProvider(ProductQueryRepository productQueryRepository, ProductsQueryRepository productsQueryRepository, ProductImageQueryRepository productImageQueryRepository, ProductRepository productRepository, CategoryRepository categoryRepository, DetailCategoryRepository detailCategoryRepository) {
+    public ProductsProvider(ProductQueryRepository productQueryRepository, ProductsQueryRepository productsQueryRepository, ProductImageQueryRepository productImageQueryRepository, ProductRepository productRepository, CategoryRepository categoryRepository, DetailCategoryRepository detailCategoryRepository, JwtService jwtService) {
         this.productQueryRepository = productQueryRepository;
         this.productsQueryRepository = productsQueryRepository;
         this.productImageQueryRepository = productImageQueryRepository;
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
         this.detailCategoryRepository = detailCategoryRepository;
+        this.jwtService = jwtService;
     }
 
     // 상품 조회
@@ -42,8 +47,14 @@ public class ProductsProvider {
 
         return productsQueryRepository.getProductsInfos(filterRequest, orderType).stream()
                 .map(productsInfo -> {
+                    Long userId;
+                    try {
+                        userId = jwtService.getUserId();
+                    } catch (BaseException e) {
+                        userId = 0L;
+                    }
                     Long productId = productsInfo.getProductId();
-                    boolean isLiked = productQueryRepository.getProductIsLikedQuery(productId);
+                    boolean isLiked = productQueryRepository.getProductIsLikedQuery(userId, productId);
                     boolean isNew = (new Date().getTime() - productRepository.findById(productId).get().getDateCreated().getTime()) <= 1000 * 60 * 60 * 24; // 등록된지 하루 이내이면 true
                     return new GetProductsRes(productsInfo, productImageQueryRepository.getProductThumbnailsQuery(productId), isLiked, isNew);
                 })
