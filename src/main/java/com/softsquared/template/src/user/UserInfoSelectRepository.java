@@ -100,5 +100,7 @@ public class UserInfoSelectRepository extends QuerydslRepositorySupport {
                 .where(userInfo.userCode.eq((userId)), userInfo.isDeleted.eq(0))
                 .fetch();
     }
+
+
 }
 

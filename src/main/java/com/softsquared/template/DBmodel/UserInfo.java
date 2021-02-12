@@ -74,28 +74,22 @@ public class UserInfo {
     @Column(name = "dateCreated", nullable = false)
     private String dateCreated;
 
+    @Column(name = "gender")
+    private String gender;
+
+    @Column(name = "age")
+    private String age;
+
 
     public UserInfo(long usrCode, String email, String userName, String phoneNum, int birthday,
-                    String height, String weight, String topSize, String bottomSize, String shoeSize,
-                    String refundName, String refundAccount, int point, int coupon, String rank,
-                    int isDeleted, String dateUpdated, String dateCreated){
+                    String gender, String age){
         this.userCode = usrCode;
         this.email = email;
         this.userName = userName;
         this.phoneNum = phoneNum;
         this.birthday = birthday;
-        this.height = height;
-        this.weight = weight;
-        this.topSize = topSize;
-        this.bottomSize = bottomSize;
-        this.shoeSize = shoeSize;
-        this.refundName = refundName;
-        this.refundAccount = refundAccount;
-        this.point = point;
-        this.coupon = coupon;
-        this.rank = rank;
-        this.isDeleted = isDeleted;
-        this.dateUpdated = dateUpdated ;
-        this.dateCreated = dateCreated;
+        this.gender= gender;
+        this.age = age;
+
     }
 }

@@ -2,16 +2,12 @@ package com.softsquared.template.src.purchase;
 
 import com.softsquared.template.config.BaseException;
 import com.softsquared.template.config.BaseResponse;
-import com.softsquared.template.config.BaseResponseStatus;
 import com.softsquared.template.config.FormatChecker;
 import com.softsquared.template.src.deliverydestination.DeliveryProvider;
 import com.softsquared.template.src.deliverydestination.model.GetMainDeliveryRes;
-import com.softsquared.template.src.purchase.model.GetPurchaseRes;
+import com.softsquared.template.src.purchase.model.GetPurchaseRefundRes;
 import org.springframework.web.bind.annotation.*;
 import static com.softsquared.template.config.BaseResponseStatus.*;
-
-
-import java.util.*;
 
 @RestController
 @RequestMapping("/purchases")
@@ -43,7 +39,7 @@ public class PurchaseController {
     @GetMapping("/deliverydestinations")
     public BaseResponse<GetMainDeliveryRes> getMainDelivery(){
         try{
-            GetMainDeliveryRes getMainDeliveryRes = deliveryProvider.retrieveMainDelivery(1);
+            GetMainDeliveryRes getMainDeliveryRes = purchaseProvider.retrievePurchaseMainAddress(1);
             return new BaseResponse<>(SUCCESS, getMainDeliveryRes);
         }catch (BaseException e){
             e.printStackTrace();
@@ -52,9 +48,17 @@ public class PurchaseController {
     }
 
 
-//
-//    @ResponseBody
-//    @GetMapping("/refunds")
-//    public Base
+
+    @ResponseBody
+    @GetMapping("/refundInfos")
+    public BaseResponse<GetPurchaseRefundRes> getPurchaseRefund(){
+        try{
+            GetPurchaseRefundRes getPurchaseRefundRes= purchaseProvider.retrievePurchaseRefundInfo(1);
+            return new BaseResponse<>(SUCCESS, getPurchaseRefundRes);
+        }catch(BaseException e){
+            e.printStackTrace();
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
 
 }

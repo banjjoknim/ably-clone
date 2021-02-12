@@ -18,11 +18,16 @@ public enum BaseResponseStatus {
     SUCCESS_PATCH_USER(true, 1016, "회원정보 수정에 성공하였습니다."),
     SUCCESS_READ_SEARCH_USERS(true, 1017, "회원 검색 조회에 성공하였습니다."),
 
+    //vivi
+    SUCCESS_CHECK_DELIVERY_DESTINATION(true, 1100, "배송지를 입력해주세요."),
+    SUCCESS_CHECK_REFUND_INFO(true, 1101, "환불받을 계좌를 입력해주세요"),
+
+
     // 2000 : Request 오류
     REQUEST_ERROR(false, 2000, "입력값을 확인해주세요."),
     EMPTY_USERID(false, 2001, "유저 아이디 값을 확인해주세요."),
     EMPTY_JWT(false, 2010, "JWT를 입력해주세요."),
-    INVALID_JWT(false, 2011, "유효하지 않은 JWT입니다."),
+    INVALID_TOKEN(false, 2011, "유효하지 않은 토큰입니다."),
     EMPTY_EMAIL(false, 2020, "이메일을 입력해주세요."),
     INVALID_EMAIL(false, 2021, "이메일 형식을 확인해주세요."),
     EMPTY_PASSWORD(false, 2030, "비밀번호를 입력해주세요."),
@@ -45,7 +50,16 @@ public enum BaseResponseStatus {
 
 
     //vivi
-    NOT_FOUND_USERS(false, 2080, "회원가입이 되어있지 않는 회원입니다."),
+    NOT_FOUND_USERS(false, 2500, "회원가입이 되어있지 않는 회원입니다."),
+    EMPTY_PHONENUM(false, 2501, "핸드폰 번호 값을 확인해주세요."),
+
+    NOT_FOUND_REFUND(false, 2502, "환불정보가 없습니"),
+
+
+    INVALID_PHONENUM(false, 2550, "유효하지 않은 핸드폰 번호 형식입니다."),
+
+
+
 
 
     // 3000 : Response 오류
@@ -64,6 +78,7 @@ public enum BaseResponseStatus {
     FAILED_TO_GET_PURCHASE(false, 3022, "구매 내역 조회에 실패하였습니다."),
     FAILED_TO_GET_PURCHASE_PRODUCTS(false, 3023, "구매하신 제품 조회에 실패하였습니다."),
     FAILED_TO_GET_DELVIERY_DESTINATION(false, 3024, "배송지 조회에 실패하였습니다."),
+    NOT_FOUND_DELIVERY_DESTINATION(false, 3025, "배송지를 입력해주세요."),
 
 
 

@@ -5,8 +5,8 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class GetUserRefund {
-    private String name;
-    private String bank;
-    private String account;
+public class PostUserProfile {
+    private String userName;
+    private String profileImg;
+
 }

@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.softsquared.template.config.BaseException;
 import com.softsquared.template.config.BaseResponse;
+import com.softsquared.template.config.BaseResponseStatus;
 import com.softsquared.template.config.FormatChecker;
 import com.softsquared.template.src.user.models.*;
 import com.softsquared.template.utils.JwtService;
@@ -55,56 +56,52 @@ public class UserInfoController {
     @ResponseBody
     @GetMapping("/check-tokens")
     public BaseResponse<String> requestResponse(@RequestHeader("X-ACCESS-TOKEN") String token) {
-        String isAvailable ="avaliable";
+        boolean isAvailable =true;
         HashMap<String, Object> userInfo = new HashMap<>();
         String reqURL = "https://kapi.kakao.com/v2/user/me";
         String access_Token = token;
         try {
-            try {
-                URL url = new URL(reqURL);
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("POST");
+            URL url = new URL(reqURL);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
 
-                conn.setRequestProperty("Authorization", "Bearer " + access_Token);
+            conn.setRequestProperty("Authorization", "Bearer " + access_Token);
 
-                int responseCode = conn.getResponseCode();
-                System.out.println("responseCode : " + responseCode);
+            int responseCode = conn.getResponseCode();
+            System.out.println("responseCode : " + responseCode);
 
-                if (responseCode != 200)
-                    isAvailable = "unAvaliable";
-
-
-                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-
-                String line = "";
-                String result = "";
-
-                while ((line = br.readLine()) != null) {
-                    result += line;
-                }
-                System.out.println("response body : " + result);
-
-//            JsonParser parser = new JsonParser();
-//            JsonElement element = parser.parse(result);
-//
-//            String properties = element.getAsJsonObject().get("id").getAsString();
-//            JsonObject kakao_account = element.getAsJsonObject().get("kakao_account").getAsJsonObject();
-//
-//            //String nickname = properties.getAsJsonObject().get("id").getAsString();
-//            String email = kakao_account.getAsJsonObject().get("email").getAsString();
-//
-//            System.out.println(properties);
+            if (responseCode != 200) {
+                isAvailable = false;
+                return new BaseResponse<>(INVALID_TOKEN);
+            }
 
 
-            } catch (IOException e) {
+            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+            String line = "";
+            String result = "";
+
+            while ((line = br.readLine()) != null) {
+                result += line;
+            }
+            System.out.println("response body : " + result);
+
+        }catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
+        }
+
+        try{
+            if(isAvailable) {
+                System.out.println("??");
+                return new BaseResponse<>(SUCCESS, "available");
             }
-            return new BaseResponse<>(SUCCESS,isAvailable);
+            else
+                return new BaseResponse<>(INVALID_TOKEN, "unAvailable");
 
         }catch (Exception e){
             e.printStackTrace();
-            return new BaseResponse<>(FAILED_TO_DELETE_USER,isAvailable);
+            return new BaseResponse<>(INVALID_TOKEN,"unAvailable");
         }
 
     }
@@ -130,16 +127,39 @@ public class UserInfoController {
      *
      */
 
-//    @ResponseBody
-//    @PostMapping("/check-ids")
-//    public BaseResponse<PostUserInfoRes> postUserInfo(@RequestHeader("X-ACCESS-TOKEN") String token,
-//                                                      @RequestBody PostUserInfoReq param){
-//        if(param.getPhoneNum().length()==0 || param.getPhoneNum()==null){
-//            return new BaseResponse<>(NO_)
-//        }
-//        try{
-//
-//        }
-//    }
+    @ResponseBody
+    @PostMapping("")
+    public BaseResponse<String> postUserInfo(@RequestHeader("X-ACCESS-TOKEN") String token,
+                                                      @RequestBody PostUserInfoReq param){
+        long userId;
+        try{
+            userId = jwtService.getUserId();
+
+        }catch(Exception e){
+            return new BaseResponse<>(INVALID_TOKEN);
+        }
+
+        //전화번호 확인
+       if(!formatChecker.isFull(param.getPhoneNum())){
+            return new BaseResponse<>(EMPTY_PHONENUM);
+        }
+        if(!formatChecker.isPhoneNum(param.getPhoneNum()))
+            return new BaseResponse<>(INVALID_PHONENUM);
+
+        //이메일 확인
+        if(!formatChecker.isFull(param.getEmail()))
+            return new BaseResponse<>(EMPTY_EMAIL);
+        if(!formatChecker.isEmail(param.getEmail()))
+            return new BaseResponse<>(INVALID_EMAIL);
+
+
+        try{
+            String result = userInfoService.createUserInfo(param,userId);
+            return new BaseResponse<>(SUCCESS, result);
+        }catch(BaseException e){
+            e.printStackTrace();
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
 
 }

@@ -6,6 +6,12 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class PostUserInfoReq {
+
+    private String nickname;
+    private String email;
+    private String age;
+    private String gender;
+
     private String phoneNum;
-    private String birthday;
+    private int birthday;
 }

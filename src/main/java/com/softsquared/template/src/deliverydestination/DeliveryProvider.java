@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.softsquared.template.config.BaseResponseStatus.FAILED_TO_GET_DELVIERY_DESTINATION;
+import static com.softsquared.template.config.BaseResponseStatus.NOT_FOUND_DELIVERY_DESTINATION;
 
 @Service
 public class DeliveryProvider {
@@ -26,7 +27,7 @@ public class DeliveryProvider {
      * 해당 회원의 배송지 목록 찾기
      */
     public List<GetDeliveryRes> retrieveUserDelivery(long userId) throws BaseException {
-        List <GetDelivery> deliveryList;
+        List<GetDelivery> deliveryList;
         try{
             deliveryList = deliverySelectRepository.findDeliveryByUserId(userId);
         }catch (Exception e){
@@ -42,13 +43,17 @@ public class DeliveryProvider {
      * 주문하기 진행 화면의 하나의 배송지 조회하기
      */
     public GetMainDeliveryRes retrieveMainDelivery(long userId) throws BaseException{
+        List<GetMainDelivery> mainList;
         GetMainDeliveryRes mainDeliveryRes;
         try{
-            mainDeliveryRes = changeMainDelToRes(deliverySelectRepository.findMainDeliveryByUserId(userId).get(0));
+            mainList = deliverySelectRepository.findMainDeliveryByUserId(userId);
+            if(mainList.size()==0)
+                throw new BaseException(NOT_FOUND_DELIVERY_DESTINATION);
+            mainDeliveryRes = changeMainDelToRes(mainList.get(0));
+
         }catch(Exception e){
             e.printStackTrace();
             throw new BaseException(FAILED_TO_GET_DELVIERY_DESTINATION);
-
         }
         return mainDeliveryRes;
     }
@@ -74,9 +79,12 @@ public class DeliveryProvider {
 
     public GetMainDeliveryRes changeMainDelToRes(GetMainDelivery main){
         GetMainDeliveryRes result;
-        String nameNum = main.getUserName()+ "  "+main.getPhoneNum();
-        String mainAddress= main.getMainAddress();
-        String subAddress = main.getSubAddress();
+
+          String   nameNum = main.getUserName() + "  " + main.getPhoneNum();
+          String   mainAddress = main.getMainAddress();
+           String  subAddress = main.getSubAddress();
+
+
 
         result = new GetMainDeliveryRes(nameNum,mainAddress,subAddress);
         return result;
