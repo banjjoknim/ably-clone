@@ -3,9 +3,7 @@ package com.softsquared.template.src.user;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.softsquared.template.DBmodel.*;
-import com.softsquared.template.src.user.models.GetUserPurchaseProduct;
-import com.softsquared.template.src.user.models.GetUsersPurchase;
-import com.softsquared.template.src.user.models.GetUsersPurchaseStatus;
+import com.softsquared.template.src.user.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
@@ -74,6 +72,33 @@ public class UserInfoSelectRepository extends QuerydslRepositorySupport {
 
     }
 
+    /**
+     * 회원의 환불 계좌 정보 가져오기
+     * purchaseController에서 필요
+     * userInfoProvider -->
+     */
+    public List<GetUserRefund> findRefundByUserId(long userId){
+        QUserInfo userInfo = QUserInfo.userInfo;
+        return queryFactory.select((Projections.constructor(GetUserRefund.class,
+                userInfo.refundName, userInfo.refundBank, userInfo.refundAccount)))
+                .from(userInfo)
+                .where(userInfo.userCode.eq(userId))
+                .fetch();
 
+    }
+
+    /**
+     * 회원 Id 찾기
+     * 회원가입 유무 리턴을 위해서
+     * 일단 회원 탈퇴 회원이여도 별도의 과정없이 회원가입 다시 하니까 status값 고려할 것
+     */
+    public List<GetUserInfo> findUserByUserId(long userId){
+        QUserInfo userInfo = QUserInfo.userInfo;
+        return queryFactory.select((Projections.constructor(GetUserInfo.class,
+                userInfo.userName, userInfo.email)))
+                .from(userInfo)
+                .where(userInfo.userCode.eq((userId)), userInfo.isDeleted.eq(0))
+                .fetch();
+    }
 }
 

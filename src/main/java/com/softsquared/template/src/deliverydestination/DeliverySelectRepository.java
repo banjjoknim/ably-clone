@@ -6,6 +6,8 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.softsquared.template.DBmodel.DeliveryDestination;
 import com.softsquared.template.DBmodel.QDeliveryDestination;
 import com.softsquared.template.src.deliverydestination.model.GetDelivery;
+import com.softsquared.template.src.deliverydestination.model.GetMainDelivery;
+import com.softsquared.template.src.deliverydestination.model.GetMainDeliveryRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
@@ -35,6 +37,24 @@ public class DeliverySelectRepository extends QuerydslRepositorySupport {
         )))
                 .from(deliveryDestination)
                 .where(deliveryDestination.userId.eq(userId), deliveryDestination.status.eq(0))
+                .orderBy(deliveryDestination.dateCreated.desc())
+                .fetch();
+    }
+
+    /**
+     * 회원의 기본 배송지 찾기
+     */
+    public List<GetMainDelivery> findMainDeliveryByUserId(long userId){
+        QDeliveryDestination deliveryDestination = QDeliveryDestination.deliveryDestination;
+
+        return queryFactory.select((Projections.constructor(GetMainDelivery.class,
+                deliveryDestination.userName, deliveryDestination.address,
+                deliveryDestination.detailAddress, deliveryDestination.phoneNum
+
+        )))
+                .from(deliveryDestination)
+                .where(deliveryDestination.userId.eq(userId), deliveryDestination.status.eq(0),
+                        deliveryDestination.isMain.eq(1))
                 .orderBy(deliveryDestination.dateCreated.desc())
                 .fetch();
     }
