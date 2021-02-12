@@ -1,7 +1,6 @@
 package com.softsquared.template.src.product.models;
 
 
-import com.softsquared.template.src.review.models.ProductReviews;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -14,7 +13,6 @@ public class GetProductRes {
     private ProductSubInfos productSubInfos;
     private ProductMarketInfos productMarketInfos;
     private ProductDetailInfos productDetailInfos;
-    private ProductReviews productReviews;
     private Boolean liked;
     private Boolean onSale;
 

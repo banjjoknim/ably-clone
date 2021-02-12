@@ -5,7 +5,7 @@ import com.softsquared.template.config.BaseException;
 import com.softsquared.template.config.BaseResponseStatus;
 import com.softsquared.template.src.product.models.*;
 import com.softsquared.template.src.review.ReviewQueryRepository;
-import com.softsquared.template.src.review.models.ProductReviews;
+import com.softsquared.template.src.review.models.GetProductReviewsRes;
 import com.softsquared.template.utils.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,15 +18,13 @@ public class ProductProvider {
     private final ProductRepository productRepository;
     private final ProductQueryRepository productQueryRepository;
     private final ProductImageQueryRepository productImageQueryRepository;
-    private final ReviewQueryRepository reviewQueryRepository;
     private final JwtService jwtService;
 
     @Autowired
-    public ProductProvider(ProductRepository productRepository, ProductQueryRepository productQueryRepository, ProductImageQueryRepository productImageQueryRepository, ReviewQueryRepository reviewQueryRepository, JwtService jwtService) {
+    public ProductProvider(ProductRepository productRepository, ProductQueryRepository productQueryRepository, ProductImageQueryRepository productImageQueryRepository, JwtService jwtService) {
         this.productRepository = productRepository;
         this.productQueryRepository = productQueryRepository;
         this.productImageQueryRepository = productImageQueryRepository;
-        this.reviewQueryRepository = reviewQueryRepository;
         this.jwtService = jwtService;
     }
 
@@ -46,12 +44,11 @@ public class ProductProvider {
         ProductSubInfos productSubInfos = retrieveProductSubInfos(productId);
         ProductMarketInfos productMarketInfos = retrieveProductMarketInfos(productId);
         ProductDetailInfos productDetailInfos = retrieveProductDetailInfos(productId);
-        ProductReviews productReviews = retrieveProductReviews(productId);
         Boolean productIsLiked = retrieveProductIsLiked(userId, productId);
         Boolean productIsSale = retrieveProductIsSale(productId);
 
         return new GetProductRes(productCountInBasket, productMainInfos, productSubInfos,
-                productMarketInfos, productDetailInfos, productReviews, productIsLiked, productIsSale);
+                productMarketInfos, productDetailInfos, productIsLiked, productIsSale);
     }
 
     private Long retrieveProductCountInBasket(Long userId) {
@@ -85,10 +82,6 @@ public class ProductProvider {
         ProductDetail productDetail = productQueryRepository.getProductDetailQuery(productId);
 
         return new ProductDetailInfos(productDetailTextAndImages, productModelInfo, productDetail);
-    }
-
-    private ProductReviews retrieveProductReviews(Long productId) {
-        return reviewQueryRepository.getProductReviews(productId);
     }
 
     private Boolean retrieveProductIsLiked(Long userId, Long productId) {

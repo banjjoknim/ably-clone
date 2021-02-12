@@ -6,6 +6,8 @@ import com.softsquared.template.src.product.models.GetProductRes;
 import com.softsquared.template.src.product.models.GetProductsRes;
 import com.softsquared.template.src.product.models.ProductFilterReq;
 import com.softsquared.template.src.product.models.ProductOrderType;
+import com.softsquared.template.src.review.ReviewProvider;
+import com.softsquared.template.src.review.models.GetProductReviewsRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,12 +23,14 @@ public class ProductController {
     private final ProductsProvider productsProvider;
     private final ProductProvider productProvider;
     private final ProductService productService;
+    private final ReviewProvider reviewProvider;
 
     @Autowired
-    public ProductController(ProductsProvider productsProvider, ProductProvider productProvider, ProductService productService) {
+    public ProductController(ProductsProvider productsProvider, ProductProvider productProvider, ProductService productService, ReviewProvider reviewProvider) {
         this.productsProvider = productsProvider;
         this.productProvider = productProvider;
         this.productService = productService;
+        this.reviewProvider = reviewProvider;
     }
 
     @GetMapping("")
@@ -74,6 +78,15 @@ public class ProductController {
     public BaseResponse<GetProductRes> getProduct(@PathVariable(value = "productId") Long productId) {
         try {
             return new BaseResponse<>(SUCCESS, productProvider.retrieveProduct(productId));
+        } catch (BaseException e) {
+            return new BaseResponse<>(NOT_FOUND_PRODUCT);
+        }
+    }
+
+    @GetMapping("/{productId}/reviews")
+    public BaseResponse<GetProductReviewsRes> getProductReviews(@PathVariable(value = "productId") Long productId) {
+        try {
+            return new BaseResponse<>(SUCCESS, reviewProvider.retrieveProductReviews(productId));
         } catch (BaseException e) {
             return new BaseResponse<>(NOT_FOUND_PRODUCT);
         }
