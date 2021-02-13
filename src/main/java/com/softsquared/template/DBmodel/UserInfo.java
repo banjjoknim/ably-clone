@@ -6,14 +6,15 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @NoArgsConstructor(access = AccessLevel.PUBLIC) // Unit Test 를 위해 PUBLIC
-@EqualsAndHashCode(callSuper = false)
 @Data // from lombok
 @Entity // 필수, Class 를 Database Table화 해주는 것이다
 @Table(name = "UserInfo") // Table 이름을 명시해주지 않으면 class 이름을 Table 이름으로 대체한다.
 public class UserInfo {
-    @Id // PK를 의미하는 어노테이션
+
+    @Id
     @Column(name = "userId", nullable = false, updatable = false)
     private long userCode;
 
@@ -29,28 +30,28 @@ public class UserInfo {
     @Column(name = "birthday")
     private int birthday;
 
-    @Column(name = "height")
+    @Column(name = "height", length = 20)
     private String height;
 
-    @Column(name = "weight")
+    @Column(name = "weight",length = 20)
     private String weight;
 
-    @Column(name = "topSize")
+    @Column(name = "topSize",length = 20)
     private String topSize;
 
-    @Column(name = "bottomSize")
+    @Column(name = "bottomSize",length = 20)
     private String bottomSize;
 
-    @Column(name = "shoeSize")
+    @Column(name = "shoeSize",length = 20)
     private String shoeSize;
 
-    @Column(name = "refundBank")
+    @Column(name = "refundBank",length = 20)
     private String refundBank;
 
-    @Column(name = "refundName")
+    @Column(name = "refundName",length = 20)
     private String refundName;
 
-    @Column(name = "refundAccount")
+    @Column(name = "refundAccount",length = 45)
     private String refundAccount;
 
     @Column(name = "point", nullable = false)
@@ -59,8 +60,8 @@ public class UserInfo {
     @Column(name = "coupon", nullable = false)
     private int coupon;
 
-    @Column(name = "rank", nullable = false)
-    private String rank;
+    @Column(name = "userRank", nullable = false)
+    private String userRank;
 
     @Column(name = "status", nullable = false)
     private int status;
@@ -73,16 +74,18 @@ public class UserInfo {
     @Column(name = "dateCreated", nullable = false)
     private String dateCreated;
 
-    @Column(name = "gender")
+    @Column(name = "gender",length = 20)
     private String gender;
 
-    @Column(name = "age")
+    @Column(name = "age",length = 20)
     private String age;
 
 // for 회원가입
-    public UserInfo(long usrCode, String email, String userName, String phoneNum, int birthday,int point, int coupon,String rank,int status,
+    public UserInfo(long userCode, String email, String userName, String phoneNum, int birthday,String height, String weight,
+                    String topSize, String bottomSize, String shoeSize, String refundBank, String refundName,
+                    String refundAccount,int point, int coupon,String userRank,int status,
                     String dateUpdated, String dateCreated,String gender, String age){
-        this.userCode = usrCode;
+        this.userCode = userCode;
         this.email = email;
         this.userName = userName;
         this.phoneNum = phoneNum;
@@ -92,7 +95,33 @@ public class UserInfo {
         this.dateCreated = dateCreated;
         this.dateUpdated = dateUpdated;
         this.status= status;
-        this.rank = rank;
+        this.userRank = userRank;
+        this.point = point;
+        this.coupon = coupon;
+        this.height = height;
+        this.weight = weight;
+        this.topSize = topSize;
+        this.bottomSize = bottomSize;
+        this.refundAccount = refundAccount;
+        this.refundName = refundName;
+        this.refundBank = refundBank;
+        this.shoeSize = shoeSize;
+
+    }
+    public UserInfo(long userCode, String email, String userName, String phoneNum, int birthday,
+                    int point, int coupon,String userRank,int status,
+                    String dateUpdated, String dateCreated,String gender, String age){
+        this.userCode = userCode;
+        this.email = email;
+        this.userName = userName;
+        this.phoneNum = phoneNum;
+        this.birthday = birthday;
+        this.gender= gender;
+        this.age = age;
+        this.dateCreated = dateCreated;
+        this.dateUpdated = dateUpdated;
+        this.status= status;
+        this.userRank = userRank;
         this.point = point;
         this.coupon = coupon;
 

@@ -139,16 +139,22 @@ public class UserInfoController {
             return new BaseResponse<>(INVALID_TOKEN);
         }
 
-        //전화번호 확인
-       if(!formatChecker.isFull(param.getPhoneNum())){
+        if( !formatChecker.isFull(param.getNickname())){
+            return new BaseResponse<>(EMPTY_NICKNAME);
+        }
+        if( !formatChecker.isFull(param.getPhoneNum())){
             return new BaseResponse<>(EMPTY_PHONENUM);
         }
+        if( !formatChecker.isFull(param.getEmail())){
+            return new BaseResponse<>(EMPTY_EMAIL);
+        }
+
+
+        //전화번호 확인
         if(!formatChecker.isPhoneNum(param.getPhoneNum()))
             return new BaseResponse<>(INVALID_PHONENUM);
 
         //이메일 확인
-        if(!formatChecker.isFull(param.getEmail()))
-            return new BaseResponse<>(EMPTY_EMAIL);
         if(!formatChecker.isEmail(param.getEmail()))
             return new BaseResponse<>(INVALID_EMAIL);
 

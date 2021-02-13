@@ -10,6 +10,7 @@ import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.jdo.annotations.Transactional;
 import java.sql.Timestamp;
 
 import static com.softsquared.template.config.BaseResponseStatus.*;
@@ -31,6 +32,7 @@ public class UserInfoService {
     /**
      * 회원 가입
      */
+    @Transactional
     public String createUserInfo(PostUserInfoReq param, long userId) throws BaseException{
 
         UserInfo newUser;
@@ -46,9 +48,11 @@ public class UserInfoService {
         String dateCreated = (new Timestamp(System.currentTimeMillis())).toString();
         String dateUpdated = (new Timestamp(System.currentTimeMillis())).toString();
 
-        newUser = new UserInfo(userId,email,userName,phoneNum,birthday,0,0,"WELCOME",0,dateCreated,dateUpdated, gender, age);
+        newUser = new UserInfo(10,email,userName,phoneNum,birthday,
+                0,0,"WELCOME",0,dateCreated,dateUpdated, gender, age);
 
         userInfoRepository.save(newUser);
+
 
         return Long.toString(userId);
 
