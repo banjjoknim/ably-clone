@@ -97,7 +97,7 @@ public class UserInfoSelectRepository extends QuerydslRepositorySupport {
         return queryFactory.select((Projections.constructor(GetUserInfo.class,
                 userInfo.userName, userInfo.email)))
                 .from(userInfo)
-                .where(userInfo.userCode.eq((userId)), userInfo.isDeleted.eq(0))
+                .where(userInfo.userCode.eq((userId)), userInfo.status.eq(0))
                 .fetch();
     }
 
