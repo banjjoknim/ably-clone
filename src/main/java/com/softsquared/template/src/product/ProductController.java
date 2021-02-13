@@ -9,7 +9,9 @@ import com.softsquared.template.src.product.models.GetProductsRes;
 import com.softsquared.template.src.product.models.ProductFilterReq;
 import com.softsquared.template.src.product.models.ProductOrderType;
 import com.softsquared.template.src.review.ReviewProvider;
+import com.softsquared.template.src.review.ReviewService;
 import com.softsquared.template.src.review.models.GetProductReviewsRes;
+import com.softsquared.template.src.review.models.PostProductReviewsReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,14 +27,16 @@ public class ProductController {
     private final ProductsProvider productsProvider;
     private final ProductProvider productProvider;
     private final ReviewProvider reviewProvider;
+    private final ReviewService reviewService;
     private final ProductService productService;
     private final FavoriteProductService favoriteProductService;
 
     @Autowired
-    public ProductController(ProductsProvider productsProvider, ProductProvider productProvider, ReviewProvider reviewProvider, ProductService productService, FavoriteProductService favoriteProductService) {
+    public ProductController(ProductsProvider productsProvider, ProductProvider productProvider, ReviewProvider reviewProvider, ReviewService reviewService, ProductService productService, FavoriteProductService favoriteProductService) {
         this.productsProvider = productsProvider;
         this.productProvider = productProvider;
         this.reviewProvider = reviewProvider;
+        this.reviewService = reviewService;
         this.productService = productService;
         this.favoriteProductService = favoriteProductService;
     }
@@ -93,6 +97,36 @@ public class ProductController {
             return new BaseResponse<>(SUCCESS, reviewProvider.retrieveProductReviews(productId));
         } catch (BaseException e) {
             return new BaseResponse<>(NOT_FOUND_PRODUCT);
+        }
+    }
+
+    @PostMapping("/{productId}/reviews")
+    public BaseResponse<Long> postProductReviews(@PathVariable(value = "productId") Long productId, @RequestBody PostProductReviewsReq request) {
+        try {
+            return new BaseResponse(SUCCESS, reviewService.createProductReviews(productId, request));
+        } catch (BaseException e) {
+            if (e.getStatus().equals(EMPTY_JWT)) {
+                return new BaseResponse<>(EMPTY_JWT);
+            }
+            if (e.getStatus().equals(NOT_FOUND_USERS)) {
+                return new BaseResponse<>(NOT_FOUND_USERS);
+            }
+            if (e.getStatus().equals(NOT_FOUND_PRODUCT)) {
+                return new BaseResponse<>(NOT_FOUND_PRODUCT);
+            }
+            if (e.getStatus().equals(SATISFACTION_CAN_NOT_BE_EMPTY)) {
+                return new BaseResponse<>(SATISFACTION_CAN_NOT_BE_EMPTY);
+            }
+            if (e.getStatus().equals(PURCHASED_OPTIONS_CAN_NOT_EMPTY)) {
+                return new BaseResponse<>(PURCHASED_OPTIONS_CAN_NOT_EMPTY);
+            }
+            if (e.getStatus().equals(SIZE_COMMENT_CAN_NOT_BE_EMPTY)) {
+                return new BaseResponse<>(SIZE_COMMENT_CAN_NOT_BE_EMPTY);
+            }
+            if (e.getStatus().equals(COLOR_COMMENT_CAN_NOT_BE_EMPTY)) {
+                return new BaseResponse<>(COLOR_COMMENT_CAN_NOT_BE_EMPTY);
+            }
+            return new BaseResponse<>(COMMENT_CAN_NOT_BE_EMPTY);
         }
     }
 

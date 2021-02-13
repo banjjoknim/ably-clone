@@ -44,6 +44,11 @@ public enum BaseResponseStatus {
     FILTER_TALL_MUST_BE_POSITIVE(false, 2054, "필터 설정 키는 0보다 큰 정수여야 합니다."),
     NOT_FOUND_PRODUCT(false, 2055, "존재하지 않는 상품입니다."),
     NOT_FOUND_REVIEW(false, 2056, "존재하지 않는 리뷰입니다."),
+    COMMENT_CAN_NOT_BE_EMPTY(false, 2057, "리뷰 내용을 입력해주세요."),
+    SATISFACTION_CAN_NOT_BE_EMPTY(false, 2058, "만족도 평가를 입력해주세요."),
+    PURCHASED_OPTIONS_CAN_NOT_EMPTY(false, 2059, "구매 옵션을 입력해주세요."),
+    SIZE_COMMENT_CAN_NOT_BE_EMPTY(false, 2060, "사이즈 평가를 입력해주세요."),
+    COLOR_COMMENT_CAN_NOT_BE_EMPTY(false, 2061, "색상 평가를 입력해주세요."),
 
     //vivi
     NOT_FOUND_USERS(false, 2080, "회원가입이 되어있지 않는 회원입니다."),
