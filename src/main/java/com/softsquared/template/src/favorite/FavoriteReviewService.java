@@ -61,6 +61,7 @@ public class FavoriteReviewService {
 
     private void createReviewFavorite(FavoriteReviewId favoriteReviewId) {
         FavoriteReview favoriteReview = new FavoriteReview(favoriteReviewId, FavoriteProduct.Liked.YES);
+        reviewRepository.updateReviewCountPlus(favoriteReviewId.getReviewId());
         favoriteReviewRepository.save(favoriteReview);
     }
 }
