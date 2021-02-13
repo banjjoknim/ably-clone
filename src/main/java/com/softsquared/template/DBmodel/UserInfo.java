@@ -15,7 +15,6 @@ import javax.persistence.*;
 public class UserInfo {
     @Id // PK를 의미하는 어노테이션
     @Column(name = "userId", nullable = false, updatable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long userCode;
 
     @Column(name = "email", nullable = false, updatable = false)
@@ -54,17 +53,17 @@ public class UserInfo {
     @Column(name = "refundAccount")
     private String refundAccount;
 
-    @Column(name = "point")
+    @Column(name = "point", nullable = false)
     private int point;
 
-    @Column(name = "coupon")
+    @Column(name = "coupon", nullable = false)
     private int coupon;
 
     @Column(name = "rank", nullable = false)
     private String rank;
 
-    @Column(name = "isDeleted", nullable = false)
-    private int isDeleted;
+    @Column(name = "status", nullable = false)
+    private int status;
 
 
     @Column(name = "dateUpdated", nullable = false)
@@ -80,9 +79,9 @@ public class UserInfo {
     @Column(name = "age")
     private String age;
 
-
-    public UserInfo(long usrCode, String email, String userName, String phoneNum, int birthday,
-                    String gender, String age){
+// for 회원가입
+    public UserInfo(long usrCode, String email, String userName, String phoneNum, int birthday,int point, int coupon,String rank,int status,
+                    String dateUpdated, String dateCreated,String gender, String age){
         this.userCode = usrCode;
         this.email = email;
         this.userName = userName;
@@ -90,6 +89,12 @@ public class UserInfo {
         this.birthday = birthday;
         this.gender= gender;
         this.age = age;
+        this.dateCreated = dateCreated;
+        this.dateUpdated = dateUpdated;
+        this.status= status;
+        this.rank = rank;
+        this.point = point;
+        this.coupon = coupon;
 
     }
 }

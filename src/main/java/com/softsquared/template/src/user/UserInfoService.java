@@ -46,7 +46,7 @@ public class UserInfoService {
         String dateCreated = (new Timestamp(System.currentTimeMillis())).toString();
         String dateUpdated = (new Timestamp(System.currentTimeMillis())).toString();
 
-        newUser = new UserInfo(userId,email,userName,phoneNum,birthday, gender, age);
+        newUser = new UserInfo(userId,email,userName,phoneNum,birthday,0,0,"WELCOME",0,dateCreated,dateUpdated, gender, age);
 
         userInfoRepository.save(newUser);
 
