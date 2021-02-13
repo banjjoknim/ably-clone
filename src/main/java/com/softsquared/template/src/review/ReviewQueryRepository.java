@@ -44,7 +44,7 @@ public class ReviewQueryRepository {
                         review.comment
                 ))
                 .from(review)
-                .innerJoin(userInfo).on(review.userId.eq(userInfo.userCode))
+                .innerJoin(userInfo).on(review.userId.eq(userInfo.userId))
                 .where(review.productId.eq(productId))
                 .fetch();
     }

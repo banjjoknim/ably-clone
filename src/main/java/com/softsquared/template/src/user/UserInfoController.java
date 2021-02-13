@@ -134,8 +134,9 @@ public class UserInfoController {
         long userId;
         try{
             userId = jwtService.getUserId();
-
+            System.out.println(userId);
         }catch(Exception e){
+            e.printStackTrace();
             return new BaseResponse<>(INVALID_TOKEN);
         }
 
@@ -163,6 +164,30 @@ public class UserInfoController {
             String result = userInfoService.createUserInfo(param,userId);
             return new BaseResponse<>(SUCCESS, result);
         }catch(BaseException e){
+            e.printStackTrace();
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    /**
+     * 회원 탈퇴
+     *
+     */
+    @ResponseBody
+    @DeleteMapping("")
+    public BaseResponse<Boolean> deleteUserInfo(@RequestHeader("X-ACCESS-TOKEN") String token){
+        long userId;
+        try{
+            userId = jwtService.getUserId();
+
+        }catch(Exception e){
+            return new BaseResponse<>(INVALID_TOKEN);
+        }
+
+        try{
+            boolean result = userInfoService.deleteUserInfo(userId);
+            return new BaseResponse<>(SUCCESS,result);
+        }catch (BaseException e){
             e.printStackTrace();
             return new BaseResponse<>(e.getStatus());
         }

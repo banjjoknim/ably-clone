@@ -16,7 +16,7 @@ public class UserInfo {
 
     @Id
     @Column(name = "userId", nullable = false, updatable = false)
-    private long userCode;
+    private long userId;
 
     @Column(name = "email", nullable = false, updatable = false)
     private String email;
@@ -81,11 +81,11 @@ public class UserInfo {
     private String age;
 
 // for 회원가입
-    public UserInfo(long userCode, String email, String userName, String phoneNum, int birthday,String height, String weight,
+    public UserInfo(long userId, String email, String userName, String phoneNum, int birthday,String height, String weight,
                     String topSize, String bottomSize, String shoeSize, String refundBank, String refundName,
                     String refundAccount,int point, int coupon,String userRank,int status,
                     String dateUpdated, String dateCreated,String gender, String age){
-        this.userCode = userCode;
+        this.userId = userId;
         this.email = email;
         this.userName = userName;
         this.phoneNum = phoneNum;
@@ -108,10 +108,10 @@ public class UserInfo {
         this.shoeSize = shoeSize;
 
     }
-    public UserInfo(long userCode, String email, String userName, String phoneNum, int birthday,
+    public UserInfo(long userId, String email, String userName, String phoneNum, int birthday,
                     int point, int coupon,String userRank,int status,
                     String dateUpdated, String dateCreated,String gender, String age){
-        this.userCode = userCode;
+        this.userId = userId;
         this.email = email;
         this.userName = userName;
         this.phoneNum = phoneNum;

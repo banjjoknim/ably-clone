@@ -20,13 +20,16 @@ import static com.softsquared.template.config.BaseResponseStatus.*;
 public class UserInfoService {
     private final UserInfoRepository userInfoRepository;
     private final UserInfoProvider userInfoProvider;
+    private final UserInfoSelectRepository selectRepository;
     private final JwtService jwtService;
 
     @Autowired
-    public UserInfoService(UserInfoRepository userInfoRepository, UserInfoProvider userInfoProvider, JwtService jwtService) {
+    public UserInfoService(UserInfoRepository userInfoRepository, UserInfoProvider userInfoProvider, JwtService jwtService,
+                           UserInfoSelectRepository userInfoSelectRepository) {
         this.userInfoRepository = userInfoRepository;
         this.userInfoProvider = userInfoProvider;
         this.jwtService = jwtService;
+        this.selectRepository = userInfoSelectRepository;
     }
 
     /**
@@ -56,5 +59,46 @@ public class UserInfoService {
 
         return Long.toString(userId);
 
+    }
+
+    /**
+     * 회원 탈퇴
+     */
+    public Boolean deleteUserInfo(long userId) throws BaseException{
+        DeleteUserInfo user;
+        try{
+            user = selectRepository.findDeleteUserByUserId(userId).get(0);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new BaseException(FAILED_TO_GET_USER);
+        }
+        String email = user.getEmail();
+        String userNmae = user.getUserName();
+        String phoneNum = user.getPhoneNum();
+        int birthday = user.getBirthday();
+        String height = user.getHeight();
+        String weight = user.getWeight();
+        String topSize = user.getTopSize();
+        String bottomSize = user.getBottomSize();
+        String shoeSize = user.getShoeSize();
+        String refundBank = user.getRefundBank();
+        String refundName= user.getRefundName();
+        String refundAccount = user.getRefundAccount();
+        int point = user.getPoint();
+        int coupon = user.getCoupon();
+        String userRank = user.getUserRank();
+        int status = 1;
+        String dateUpdated = user.getDateUpdated().toString();
+        String dateCreated = user.getDateCreated().toString();
+        String gender = user.getGender();
+        String age = user.getAge();
+
+        UserInfo deleteInfo = new UserInfo(userId, email,userNmae,phoneNum,birthday, height,weight,
+                topSize,bottomSize,shoeSize,refundBank,refundName,refundAccount,point,coupon,
+                userRank, status,dateUpdated,dateCreated,gender,age);
+
+        userInfoRepository.save(deleteInfo);
+
+        return true;
     }
 }
