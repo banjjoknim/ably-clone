@@ -104,6 +104,9 @@ public class ProductController {
             if (e.getStatus().equals(EMPTY_JWT)) {
                 return new BaseResponse<>(EMPTY_JWT);
             }
+            if (e.getStatus().equals(NOT_FOUND_PRODUCT)) {
+                return new BaseResponse<>(NOT_FOUND_PRODUCT);
+            }
             return new BaseResponse<>(NOT_FOUND_USERS);
         }
     }
