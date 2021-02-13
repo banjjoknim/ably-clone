@@ -55,7 +55,7 @@ public class UserInfoController {
 
     @ResponseBody
     @GetMapping("/check-tokens")
-    public BaseResponse<String> requestResponse(@RequestHeader("X-ACCESS-TOKEN") String token) {
+    public BaseResponse<Boolean> requestResponse(@RequestHeader("X-ACCESS-TOKEN") String token) {
         boolean isAvailable =true;
         HashMap<String, Object> userInfo = new HashMap<>();
         String reqURL = "https://kapi.kakao.com/v2/user/me";
@@ -72,7 +72,7 @@ public class UserInfoController {
 
             if (responseCode != 200) {
                 isAvailable = false;
-                return new BaseResponse<>(INVALID_TOKEN);
+                return new BaseResponse<>(INVALID_TOKEN,isAvailable);
             }
 
 
@@ -94,14 +94,14 @@ public class UserInfoController {
         try{
             if(isAvailable) {
                 System.out.println("??");
-                return new BaseResponse<>(SUCCESS, "available");
+                return new BaseResponse<>(SUCCESS, isAvailable);
             }
             else
-                return new BaseResponse<>(INVALID_TOKEN, "unAvailable");
+                return new BaseResponse<>(INVALID_TOKEN, isAvailable);
 
         }catch (Exception e){
             e.printStackTrace();
-            return new BaseResponse<>(INVALID_TOKEN,"unAvailable");
+            return new BaseResponse<>(INVALID_TOKEN,isAvailable);
         }
 
     }
@@ -109,15 +109,15 @@ public class UserInfoController {
 
     @ResponseBody
     @GetMapping("/check-ids")
-    public BaseResponse<GetUserInfo> checkUserId(@RequestHeader("X-ACCESS-TOKEN") String token) {
+    public BaseResponse<Boolean> checkUserId(@RequestHeader("X-ACCESS-TOKEN") String token) {
         try{
            long userId= jwtService.getUserId();
             GetUserInfo userEmail = userInfoProvider.retrieveIsUser(userId);
-            return new BaseResponse<>(SUCCESS,userEmail);
+            return new BaseResponse<>(SUCCESS,true);
 
         }catch(BaseException e){
             e.printStackTrace();
-            return new BaseResponse<>(FAILED_TO_GET_USER);
+            return new BaseResponse<>(NOT_FOUND_USER,false);
         }
 
     }
