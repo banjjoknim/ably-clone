@@ -134,21 +134,28 @@ public class UserInfoController {
         long userId;
         try{
             userId = jwtService.getUserId();
-
+            System.out.println(userId);
         }catch(Exception e){
+            e.printStackTrace();
             return new BaseResponse<>(INVALID_TOKEN);
         }
 
-        //전화번호 확인
-       if(!formatChecker.isFull(param.getPhoneNum())){
+        if( !formatChecker.isFull(param.getNickname())){
+            return new BaseResponse<>(EMPTY_NICKNAME);
+        }
+        if( !formatChecker.isFull(param.getPhoneNum())){
             return new BaseResponse<>(EMPTY_PHONENUM);
         }
+        if( !formatChecker.isFull(param.getEmail())){
+            return new BaseResponse<>(EMPTY_EMAIL);
+        }
+
+
+        //전화번호 확인
         if(!formatChecker.isPhoneNum(param.getPhoneNum()))
             return new BaseResponse<>(INVALID_PHONENUM);
 
         //이메일 확인
-        if(!formatChecker.isFull(param.getEmail()))
-            return new BaseResponse<>(EMPTY_EMAIL);
         if(!formatChecker.isEmail(param.getEmail()))
             return new BaseResponse<>(INVALID_EMAIL);
 
@@ -157,6 +164,30 @@ public class UserInfoController {
             String result = userInfoService.createUserInfo(param,userId);
             return new BaseResponse<>(SUCCESS, result);
         }catch(BaseException e){
+            e.printStackTrace();
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    /**
+     * 회원 탈퇴
+     *
+     */
+    @ResponseBody
+    @DeleteMapping("")
+    public BaseResponse<Boolean> deleteUserInfo(@RequestHeader("X-ACCESS-TOKEN") String token){
+        long userId;
+        try{
+            userId = jwtService.getUserId();
+
+        }catch(Exception e){
+            return new BaseResponse<>(INVALID_TOKEN);
+        }
+
+        try{
+            boolean result = userInfoService.deleteUserInfo(userId);
+            return new BaseResponse<>(SUCCESS,result);
+        }catch (BaseException e){
             e.printStackTrace();
             return new BaseResponse<>(e.getStatus());
         }

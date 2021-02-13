@@ -1,6 +1,7 @@
 package com.softsquared.template.src.user;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.softsquared.template.DBmodel.*;
 import com.softsquared.template.src.user.models.*;
@@ -82,7 +83,7 @@ public class UserInfoSelectRepository extends QuerydslRepositorySupport {
         return queryFactory.select((Projections.constructor(GetUserRefund.class,
                 userInfo.refundName, userInfo.refundBank, userInfo.refundAccount)))
                 .from(userInfo)
-                .where(userInfo.userCode.eq(userId))
+                .where(userInfo.userId.eq(userId))
                 .fetch();
 
     }
@@ -97,10 +98,29 @@ public class UserInfoSelectRepository extends QuerydslRepositorySupport {
         return queryFactory.select((Projections.constructor(GetUserInfo.class,
                 userInfo.userName, userInfo.email)))
                 .from(userInfo)
-                .where(userInfo.userCode.eq((userId)), userInfo.status.eq(0))
+                .where(userInfo.userId.eq((userId)), userInfo.status.eq(0))
                 .fetch();
     }
 
+    /**
+     * 회원 탈퇴 회원 찾기
+     */
+    public List<DeleteUserInfo> findDeleteUserByUserId(long userId){
+        QUserInfo userInfo = QUserInfo.userInfo;
+        return queryFactory.select((Projections.constructor(DeleteUserInfo.class,
+                userInfo.email, userInfo.userName, userInfo.phoneNum,
+                userInfo.birthday,userInfo.height, userInfo.weight,
+                userInfo.topSize, userInfo.bottomSize, userInfo.shoeSize,
+                userInfo.refundBank, userInfo.refundName, userInfo.refundAccount,
+                userInfo.point,userInfo.coupon, userInfo.userRank,
+                 userInfo.dateUpdated,userInfo.dateCreated,
+                userInfo.gender, userInfo.age
+                )))
+                .from(userInfo)
+                .where(userInfo.status.eq(0), userInfo.userId.eq(userId))
+                .fetch();
+
+    }
 
 }
 

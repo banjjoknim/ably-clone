@@ -73,8 +73,12 @@ public class JwtService {
                 conn.setRequestProperty("Authorization", "Bearer " + access_Token);
 
                 int responseCode = conn.getResponseCode();
+            if(responseCode!=200){
+                throw new BaseException(INVALID_TOKEN);
+            }
                 System.out.println("responseCode : " + responseCode);
                 BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
 
                 String line = "";
                 String result = "";

@@ -34,7 +34,7 @@ public class ReviewQueryRepository {
                         review.id,
                         review.satisfaction.stringValue(),
                         userInfo.userName,
-                        userInfo.rank,
+                        userInfo.userRank,
                         Expressions.stringTemplate("DATE_FORMAT({0}, {1})", review.dateCreated, "%Y-%m-%d"),
                         review.likesCount,
                         review.purchasedOption,
@@ -44,7 +44,7 @@ public class ReviewQueryRepository {
                         review.comment
                 ))
                 .from(review)
-                .innerJoin(userInfo).on(review.userId.eq(userInfo.userCode))
+                .innerJoin(userInfo).on(review.userId.eq(userInfo.userId))
                 .where(review.productId.eq(productId))
                 .fetch();
     }
