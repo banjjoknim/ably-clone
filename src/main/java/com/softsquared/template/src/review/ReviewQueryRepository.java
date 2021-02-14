@@ -6,6 +6,7 @@ import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.softsquared.template.DBmodel.Review;
+import com.softsquared.template.config.PageRequest;
 import com.softsquared.template.src.review.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -28,7 +29,7 @@ public class ReviewQueryRepository {
         this.jpaQueryFactory = jpaQueryFactory;
     }
 
-    public List<ReviewInfo> getReviewInfos(Long productId) {
+    public List<ReviewInfo> getReviewInfos(Long productId, PageRequest pageable) {
         return jpaQueryFactory
                 .select(new QReviewInfo(
                         review.id,
@@ -46,6 +47,9 @@ public class ReviewQueryRepository {
                 .from(review)
                 .innerJoin(userInfo).on(review.userId.eq(userInfo.userId))
                 .where(review.productId.eq(productId))
+                .orderBy(review.dateCreated.desc())
+                .offset(pageable.getPage() * pageable.getSize())
+                .limit(pageable.getSize())
                 .fetch();
     }
 

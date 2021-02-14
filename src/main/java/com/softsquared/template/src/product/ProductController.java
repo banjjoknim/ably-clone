@@ -3,6 +3,8 @@ package com.softsquared.template.src.product;
 import com.softsquared.template.DBmodel.FavoriteProductId;
 import com.softsquared.template.config.BaseException;
 import com.softsquared.template.config.BaseResponse;
+import com.softsquared.template.config.Constant;
+import com.softsquared.template.config.PageRequest;
 import com.softsquared.template.src.favorite.FavoriteProductService;
 import com.softsquared.template.src.product.models.GetProductRes;
 import com.softsquared.template.src.product.models.GetProductsRes;
@@ -47,7 +49,8 @@ public class ProductController {
                                                           @RequestParam(required = false) Optional<List<Long>> colorIds, @RequestParam(required = false) Optional<List<Long>> printIds,
                                                           @RequestParam(required = false) Optional<List<Long>> fabricIds, @RequestParam(required = false) Optional<Integer> minimumTall,
                                                           @RequestParam(required = false) Optional<Integer> maximumTall, @RequestParam(required = false) Optional<List<Long>> ageGroupIds,
-                                                          @RequestParam(required = false) Optional<List<Long>> clothLengthIds, @RequestParam(required = false) ProductOrderType orderType) {
+                                                          @RequestParam(required = false) Optional<List<Long>> clothLengthIds, @RequestParam(required = false) ProductOrderType orderType,
+                                                          @RequestParam Integer page) {
 
         ProductFilterReq filterRequest = ProductFilterReq.builder()
                 .categoryId(categoryId)
@@ -63,8 +66,10 @@ public class ProductController {
                 .clothLengthIds(clothLengthIds)
                 .build();
 
+        PageRequest pageable = new PageRequest(page, Constant.DEFAULT_PAGING_SIZE);
+
         try {
-            return new BaseResponse<>(SUCCESS, productsProvider.retrieveProducts(filterRequest, orderType));
+            return new BaseResponse<>(SUCCESS, productsProvider.retrieveProducts(filterRequest, orderType, pageable));
         } catch (BaseException e) {
             if (e.getStatus().equals(NOT_FOUND_CATEGORY)) {
                 return new BaseResponse<>(NOT_FOUND_CATEGORY);
@@ -92,9 +97,10 @@ public class ProductController {
     }
 
     @GetMapping("/{productId}/reviews")
-    public BaseResponse<GetProductReviewsRes> getProductReviews(@PathVariable(value = "productId") Long productId) {
+    public BaseResponse<GetProductReviewsRes> getProductReviews(@PathVariable(value = "productId") Long productId, @RequestParam Integer page) {
+        PageRequest pageable = new PageRequest(page, Constant.DEFAULT_PAGING_SIZE);
         try {
-            return new BaseResponse<>(SUCCESS, reviewProvider.retrieveProductReviews(productId));
+            return new BaseResponse<>(SUCCESS, reviewProvider.retrieveProductReviews(productId, pageable));
         } catch (BaseException e) {
             return new BaseResponse<>(NOT_FOUND_PRODUCT);
         }
