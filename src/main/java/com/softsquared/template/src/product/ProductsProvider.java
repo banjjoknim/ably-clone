@@ -1,6 +1,7 @@
 package com.softsquared.template.src.product;
 
 import com.softsquared.template.config.BaseException;
+import com.softsquared.template.config.PageRequest;
 import com.softsquared.template.src.category.CategoryRepository;
 import com.softsquared.template.src.category.DetailCategoryRepository;
 import com.softsquared.template.src.product.models.GetProductsRes;
@@ -41,11 +42,11 @@ public class ProductsProvider {
 
     // 상품 조회
     @Transactional(readOnly = true)
-    public List<GetProductsRes> retrieveProducts(ProductFilterReq filterRequest, ProductOrderType orderType) throws BaseException {
+    public List<GetProductsRes> retrieveProducts(ProductFilterReq filterRequest, ProductOrderType orderType, PageRequest pageable) throws BaseException {
 
         validateFilters(filterRequest); // 필터 유효성 검증
 
-        return productsQueryRepository.getProductsInfos(filterRequest, orderType).stream()
+        return productsQueryRepository.getProductsInfos(filterRequest, orderType, pageable).stream()
                 .map(productsInfo -> {
                     Long userId;
                     try {

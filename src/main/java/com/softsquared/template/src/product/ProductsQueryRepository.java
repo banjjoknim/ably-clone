@@ -12,6 +12,7 @@ import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.softsquared.template.config.PageRequest;
 import com.softsquared.template.src.product.models.ProductFilterReq;
 import com.softsquared.template.src.product.models.ProductOrderType;
 import com.softsquared.template.src.product.models.ProductsInfo;
@@ -40,15 +41,14 @@ public class ProductsQueryRepository {
     }
 
     // 상품 목록 조회
-    public List<ProductsInfo> getProductsInfos(ProductFilterReq filterRequest, ProductOrderType orderType) {
+    public List<ProductsInfo> getProductsInfos(ProductFilterReq filterRequest, ProductOrderType orderType, PageRequest pageable) {
 
-        JPAQuery<ProductsInfo> infosFilterQuery = productsInfosFilterQuery(getProductsInfosQuery(), filterRequest);
+        JPAQuery<ProductsInfo> infosFilterQuery = productsInfosFilterQuery(getProductsInfosQuery(pageable), filterRequest);
         return productsInfosOrderByQuery(infosFilterQuery, orderType).fetch();
     }
 
     // 상품 목록 조회 쿼리
-    private JPAQuery<ProductsInfo> getProductsInfosQuery() {
-
+    private JPAQuery<ProductsInfo> getProductsInfosQuery(PageRequest pageable) {
         return jpaQueryFactory
                 .select(new QProductsInfo(
                         product.id,
@@ -69,7 +69,9 @@ public class ProductsQueryRepository {
                                         .where(product.id.eq(review.productId)), "reviewCount")
                 ))
                 .from(product)
-                .innerJoin(market).on(product.marketId.eq(market.id));
+                .innerJoin(market).on(product.marketId.eq(market.id))
+                .offset(pageable.getPage() * pageable.getSize())
+                .limit(pageable.getSize());
     }
 
     private JPAQuery<ProductsInfo> productsInfosFilterQuery(JPAQuery<ProductsInfo> query, ProductFilterReq request) {
