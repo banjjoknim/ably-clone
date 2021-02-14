@@ -97,9 +97,10 @@ public class ProductController {
     }
 
     @GetMapping("/{productId}/reviews")
-    public BaseResponse<GetProductReviewsRes> getProductReviews(@PathVariable(value = "productId") Long productId) {
+    public BaseResponse<GetProductReviewsRes> getProductReviews(@PathVariable(value = "productId") Long productId, @RequestParam Integer page) {
+        PageRequest pageable = new PageRequest(page, Constant.DEFAULT_PAGING_SIZE);
         try {
-            return new BaseResponse<>(SUCCESS, reviewProvider.retrieveProductReviews(productId));
+            return new BaseResponse<>(SUCCESS, reviewProvider.retrieveProductReviews(productId, pageable));
         } catch (BaseException e) {
             return new BaseResponse<>(NOT_FOUND_PRODUCT);
         }
