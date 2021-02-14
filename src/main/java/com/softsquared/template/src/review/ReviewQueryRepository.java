@@ -46,6 +46,7 @@ public class ReviewQueryRepository {
                 .from(review)
                 .innerJoin(userInfo).on(review.userId.eq(userInfo.userId))
                 .where(review.productId.eq(productId))
+                .orderBy(review.dateCreated.desc())
                 .fetch();
     }
 
