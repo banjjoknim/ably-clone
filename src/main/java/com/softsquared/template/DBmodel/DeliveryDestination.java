@@ -44,4 +44,19 @@ public class DeliveryDestination {
 
     @Column(name = "isMain", nullable = false)
     private int isMain;
+
+    public DeliveryDestination(long deId, long userId, String detailAddress, String phoneNum,
+                               String userName, String address, int status,
+                               String dateUpdated, String dateCreated, int isMain){
+        this.desId =deId;
+        this.userId = userId;
+        this.detailAddress = detailAddress;
+        this.phoneNum = phoneNum;
+        this.userName = userName;
+        this.address = address;
+        this.status =status;
+        this.dateCreated = dateCreated;
+        this.dateUpdated = dateUpdated;
+        this.isMain = isMain;
+    }
 }
