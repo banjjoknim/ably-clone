@@ -216,4 +216,31 @@ public class UserInfoController {
         }
 
     }
+
+    /**
+     * 마이페이지 조회
+     */
+    @ResponseBody
+    @GetMapping("/{userId}/mypages")
+    public BaseResponse<GetUserMyPageRes> getUserMypage(@PathVariable long userId,
+                                                        @RequestHeader("X-ACCESS-TOKEN") String token) throws BaseException{
+        long tokenUserId;
+        try{
+            tokenUserId = jwtService.getUserId();
+
+        }catch(Exception e){
+            return new BaseResponse<>(INVALID_TOKEN);
+        }
+        if(tokenUserId != userId){
+            return new BaseResponse<>(INVALID_TOKEN_USER);
+        }
+
+        try {
+            GetUserMyPageRes getUserMyPageRes= userInfoProvider.retireveMyPage(userId);
+            return new BaseResponse<>(SUCCESS,getUserMyPageRes);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new BaseResponse<>(FAILED_TO_GET_USER_MYPAGE);
+        }
+    }
 }

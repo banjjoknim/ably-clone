@@ -28,6 +28,8 @@ public enum BaseResponseStatus {
     EMPTY_USERID(false, 2001, "유저 아이디 값을 확인해주세요."),
     EMPTY_JWT(false, 2010, "JWT를 입력해주세요."),
     INVALID_TOKEN(false, 2011, "유효하지 않은 토큰입니다."),
+    INVALID_TOKEN_USER(false, 2012, "토큰의 회원과 일치하지 않습니다"),
+
     EMPTY_EMAIL(false, 2020, "이메일을 입력해주세요."),
     INVALID_EMAIL(false, 2021, "이메일 형식을 확인해주세요."),
     EMPTY_PASSWORD(false, 2030, "비밀번호를 입력해주세요."),
@@ -86,6 +88,8 @@ public enum BaseResponseStatus {
     FAILED_TO_GET_DELVIERY_DESTINATION(false, 3024, "배송지 조회에 실패하였습니다."),
     NOT_FOUND_DELIVERY_DESTINATION(false, 3025, "배송지를 입력해주세요."),
     FAILED_TO_DELETE_DELVIERY_DESTINATION(false, 3026, "배송지 조회에 실패하였습니다."),
+    FAILED_TO_GET_USER_REVIEW(false, 3027, "회원 리뷰 조회에  실패하였습니다."),
+    FAILED_TO_GET_USER_MYPAGE(false, 3028, "마이페이지 조회에  실패하였습니다."),
 
 
 

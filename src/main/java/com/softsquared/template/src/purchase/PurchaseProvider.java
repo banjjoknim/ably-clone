@@ -7,6 +7,7 @@ import com.softsquared.template.src.purchase.model.GetPurchaseRefundRes;
 import com.softsquared.template.src.user.UserInfoProvider;
 import com.softsquared.template.src.user.models.GetUserRefund;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import static com.softsquared.template.config.BaseResponseStatus.*;
@@ -17,6 +18,7 @@ public class PurchaseProvider {
     private final UserInfoProvider userInfoProvider;
     private final DeliveryProvider deliveryProvider;
 
+    @Lazy
     @Autowired
     public PurchaseProvider(PurchaseSelectRepository purchaseSelectRepository, UserInfoProvider userInfoProvider,
                             DeliveryProvider deliveryProvider){
@@ -55,6 +57,16 @@ public class PurchaseProvider {
         return mainDeliveryRes;
     }
 
+    public long retrievePurchaseCount(long userId) throws BaseException{
+        long purchaseCount;
+        try{
+            purchaseCount = purchaseSelectRepository.findPurchaseCountByUserId(userId);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new BaseException(FAILED_TO_GET_PURCHASE);
+        }
+        return purchaseCount;
+    }
 
     public GetPurchaseRefundRes changeToPurchaseRefundRes(GetUserRefund userRefund){
         GetPurchaseRefundRes getPurchaseRefund;

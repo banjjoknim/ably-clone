@@ -61,7 +61,7 @@ public class PurchaseController {
 
 
     @ResponseBody
-    @GetMapping("/refundInfos")
+    @GetMapping("/refund-infos")
     public BaseResponse<GetPurchaseRefundRes> getPurchaseRefund(){
         try{
             GetPurchaseRefundRes getPurchaseRefundRes= purchaseProvider.retrievePurchaseRefundInfo(1);
