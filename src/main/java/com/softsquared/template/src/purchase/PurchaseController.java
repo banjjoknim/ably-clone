@@ -46,6 +46,7 @@ public class PurchaseController {
             userId = jwtService.getUserId();
 
         }catch(Exception e){
+            e.printStackTrace();
             return new BaseResponse<>(INVALID_TOKEN);
         }
         try{
