@@ -4,7 +4,7 @@ import com.softsquared.template.DBmodel.Product;
 import com.softsquared.template.config.BaseException;
 import com.softsquared.template.config.statusEnum.IsPublic;
 import com.softsquared.template.src.product.models.PostProductReq;
-import com.softsquared.template.src.product.models.UpdateProductReq;
+import com.softsquared.template.src.product.models.PatchProductReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -71,7 +71,7 @@ public class ProductService {
         return stringBuilder.toString();
     }
 
-    public Long updateProduct(Long marketId, Long productId, UpdateProductReq request) throws BaseException {
+    public Long updateProduct(Long marketId, Long productId, PatchProductReq request) throws BaseException {
         Optional<Product> product = productRepository.findById(productId);
         if (product.isPresent() && !product.get().getMarketId().equals(marketId)) {
             throw new BaseException(NO_AUTHORITY);

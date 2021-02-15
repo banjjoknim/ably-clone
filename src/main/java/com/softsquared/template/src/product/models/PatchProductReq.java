@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class UpdateProductReq {
+public class PatchProductReq {
 
     private String productName;
     private Long categoryId;

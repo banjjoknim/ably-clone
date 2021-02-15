@@ -4,7 +4,7 @@ import com.softsquared.template.DBmodel.FavoriteReviewId;
 import com.softsquared.template.config.BaseException;
 import com.softsquared.template.config.BaseResponse;
 import com.softsquared.template.src.favorite.FavoriteReviewService;
-import com.softsquared.template.src.review.models.UpdateReviewReq;
+import com.softsquared.template.src.review.models.PatchReviewReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +24,7 @@ public class ReviewController {
     }
 
     @PatchMapping("/{reviewId}")
-    public BaseResponse<Long> patchReview(@PathVariable Long reviewId, @RequestBody UpdateReviewReq request) {
+    public BaseResponse<Long> patchReview(@PathVariable Long reviewId, @RequestBody PatchReviewReq request) {
         try {
             if (request.getComment() == null) {
                 throw new BaseException(COMMENT_CAN_NOT_BE_EMPTY);
