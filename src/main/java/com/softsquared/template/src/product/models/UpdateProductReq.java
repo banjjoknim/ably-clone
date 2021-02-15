@@ -4,7 +4,9 @@ import com.softsquared.template.config.statusEnum.IsOnSale;
 import com.softsquared.template.config.statusEnum.IsPublic;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 public class UpdateProductReq {

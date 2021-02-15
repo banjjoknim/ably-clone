@@ -28,15 +28,17 @@ public class ProductController {
     private final ReviewProvider reviewProvider;
     private final ReviewService reviewService;
     private final ProductService productService;
+    private final ProductImageService productImageService;
     private final FavoriteProductService favoriteProductService;
 
     @Autowired
-    public ProductController(ProductsProvider productsProvider, ProductProvider productProvider, ReviewProvider reviewProvider, ReviewService reviewService, ProductService productService, FavoriteProductService favoriteProductService) {
+    public ProductController(ProductsProvider productsProvider, ProductProvider productProvider, ReviewProvider reviewProvider, ReviewService reviewService, ProductService productService, ProductImageService productImageService, FavoriteProductService favoriteProductService) {
         this.productsProvider = productsProvider;
         this.productProvider = productProvider;
         this.reviewProvider = reviewProvider;
         this.reviewService = reviewService;
         this.productService = productService;
+        this.productImageService = productImageService;
         this.favoriteProductService = favoriteProductService;
     }
 
@@ -187,6 +189,32 @@ public class ProductController {
         try {
             Long marketId = 3L;
             return new BaseResponse<>(SUCCESS, productService.deleteProduct(marketId, productId));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    @PostMapping("/{productId}/add-contents")
+    public BaseResponse<Long> postProductImages(@PathVariable Long productId, @RequestBody PostProductImageReq request) {
+        try {
+            Long marketId = 3L;
+            if (request.getProductImages() == null) {
+                return new BaseResponse<>(SUCCESS, productId);
+            }
+            return new BaseResponse<>(SUCCESS, productImageService.addProductImage(marketId, productId, request));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    @DeleteMapping("/{productId}/remove-contents")
+    public BaseResponse<Long> deleteProductImages(@PathVariable Long productId, @RequestBody DeleteProductImageReq request) {
+        try {
+            Long marketId = 3L;
+            if (request.getProductImageIds() == null) {
+                return new BaseResponse<>(SUCCESS, productId);
+            }
+            return new BaseResponse<>(SUCCESS, productImageService.removeProductImage(marketId, productId, request));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
