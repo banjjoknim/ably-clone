@@ -16,10 +16,12 @@ import static com.softsquared.template.config.BaseResponseStatus.NO_AUTHORITY;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final ProductImageService productImageService;
 
     @Autowired
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, ProductImageService productImageService) {
         this.productRepository = productRepository;
+        this.productImageService = productImageService;
     }
 
     public Long createProduct(Long marketId, PostProductReq request) {
@@ -42,6 +44,8 @@ public class ProductService {
                 .discountRate(request.getDiscountRate())
                 .build();
         productRepository.save(product);
+
+        productImageService.createProductImage(product.getId(), request);
 
         return product.getId();
     }

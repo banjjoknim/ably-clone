@@ -4,6 +4,8 @@ package com.softsquared.template.src.product.models;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.List;
+
 @AllArgsConstructor
 @Getter
 public class PostProductReq {
@@ -21,4 +23,5 @@ public class PostProductReq {
     private Long modelId;
     private Integer price;
     private Integer discountRate;
+    private List<ProductDetailContent> productImages;
 }
