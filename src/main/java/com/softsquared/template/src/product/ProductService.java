@@ -89,6 +89,7 @@ public class ProductService {
             selectedProduct.setPrice(request.getPrice());
             selectedProduct.setDiscountRate(request.getDiscountRate());
             selectedProduct.setIsOnSale(request.getIsOnSale());
+            selectedProduct.setIsPublic(request.getIsPublic());
             productRepository.save(selectedProduct);
         });
 

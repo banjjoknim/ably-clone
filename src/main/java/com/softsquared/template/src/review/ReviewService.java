@@ -9,7 +9,8 @@ import com.softsquared.template.utils.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static com.softsquared.template.config.BaseResponseStatus.*;
+import static com.softsquared.template.config.BaseResponseStatus.NOT_FOUND_PRODUCT;
+import static com.softsquared.template.config.BaseResponseStatus.NOT_FOUND_USERS;
 
 @Service
 public class ReviewService {

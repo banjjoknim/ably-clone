@@ -63,6 +63,7 @@ public enum BaseResponseStatus {
     PRICE_CAN_NOT_BE_EMPTY(false, 2073, "가격을 입력해주세요."),
     DISCOUNT_RATE_CAN_NOT_BE_EMPTY(false, 2074, "할인율을 입력해주세요."),
     IS_ON_SALE_CAN_NOT_BE_EMPTY(false, 2075, "상품 판매 여부를 선택해주세요."),
+    IS_PUBLIC_CAN_NOT_BE_EMPTY(false, 2076, "상품 공개 여부를 선택해주세요."),
 
 
     //vivi

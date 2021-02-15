@@ -4,8 +4,6 @@ import com.softsquared.template.DBmodel.ProductDetail;
 import com.softsquared.template.config.BaseException;
 import com.softsquared.template.config.BaseResponseStatus;
 import com.softsquared.template.src.product.models.*;
-import com.softsquared.template.src.review.ReviewQueryRepository;
-import com.softsquared.template.src.review.models.GetProductReviewsRes;
 import com.softsquared.template.utils.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

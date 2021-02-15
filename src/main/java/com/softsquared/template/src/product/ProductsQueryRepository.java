@@ -13,6 +13,7 @@ import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.softsquared.template.config.PageRequest;
+import com.softsquared.template.config.statusEnum.IsPublic;
 import com.softsquared.template.src.product.models.ProductFilterReq;
 import com.softsquared.template.src.product.models.ProductOrderType;
 import com.softsquared.template.src.product.models.ProductsInfo;
@@ -70,6 +71,7 @@ public class ProductsQueryRepository {
                 ))
                 .from(product)
                 .innerJoin(market).on(product.marketId.eq(market.id))
+                .where(product.isPublic.eq(IsPublic.PUBLIC))
                 .offset(pageable.getPage() * pageable.getSize())
                 .limit(pageable.getSize());
     }

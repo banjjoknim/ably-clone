@@ -3,7 +3,7 @@ package com.softsquared.template.src.favorite;
 import com.softsquared.template.DBmodel.FavoriteProduct;
 import com.softsquared.template.DBmodel.FavoriteProductId;
 import com.softsquared.template.config.BaseException;
-import com.softsquared.template.config.BaseResponseStatus;
+import com.softsquared.template.config.statusEnum.Liked;
 import com.softsquared.template.src.product.ProductRepository;
 import com.softsquared.template.src.user.UserInfoRepository;
 import com.softsquared.template.utils.JwtService;
@@ -46,7 +46,7 @@ public class FavoriteProductService {
         }
 
         if (favoriteProduct.isPresent()) {
-            if (favoriteProduct.get().getLiked().equals(FavoriteProduct.Liked.YES)) {
+            if (favoriteProduct.get().getLiked().equals(Liked.YES)) {
                 favoriteProductRepository.updateFavoriteIsNo(userCode, productCode);
                 return favoriteProductId;
             }
@@ -59,7 +59,7 @@ public class FavoriteProductService {
     }
 
     private void createProductFavorite(FavoriteProductId favoriteProductId) {
-        FavoriteProduct favoriteProduct = new FavoriteProduct(favoriteProductId, FavoriteProduct.Liked.YES);
+        FavoriteProduct favoriteProduct = new FavoriteProduct(favoriteProductId, Liked.YES);
         favoriteProductRepository.save(favoriteProduct);
     }
 }

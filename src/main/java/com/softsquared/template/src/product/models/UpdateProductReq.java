@@ -1,6 +1,7 @@
 package com.softsquared.template.src.product.models;
 
-import com.softsquared.template.DBmodel.Product;
+import com.softsquared.template.config.statusEnum.IsOnSale;
+import com.softsquared.template.config.statusEnum.IsPublic;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -21,5 +22,6 @@ public class UpdateProductReq {
     private Long modelId;
     private Integer price;
     private Integer discountRate;
-    private Product.IsOnSale isOnSale;
+    private IsOnSale isOnSale;
+    private IsPublic isPublic;
 }

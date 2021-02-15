@@ -1,7 +1,9 @@
 package com.softsquared.template.src.review.models;
 
 
-import com.softsquared.template.DBmodel.Review;
+import com.softsquared.template.config.statusEnum.ColorComment;
+import com.softsquared.template.config.statusEnum.Satisfaction;
+import com.softsquared.template.config.statusEnum.SizeComment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -9,10 +11,10 @@ import lombok.Getter;
 @Getter
 public class PostProductReviewsReq {
 
-    private Review.Satisfaction satisfaction;
+    private Satisfaction satisfaction;
     private String purchasedOptions;
     private String form;
-    private Review.SizeComment sizeComment;
-    private Review.ColorComment colorComment;
+    private SizeComment sizeComment;
+    private ColorComment colorComment;
     private String comment;
 }

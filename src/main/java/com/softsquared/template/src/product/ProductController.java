@@ -173,6 +173,9 @@ public class ProductController {
             if (request.getIsOnSale() == null) {
                 throw new BaseException(IS_ON_SALE_CAN_NOT_BE_EMPTY);
             }
+            if (request.getIsPublic() == null) {
+                throw new BaseException(IS_PUBLIC_CAN_NOT_BE_EMPTY);
+            }
             return new BaseResponse<>(SUCCESS, productService.updateProduct(marketId, productId, request));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
