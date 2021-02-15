@@ -6,6 +6,7 @@ import com.softsquared.template.config.FormatChecker;
 import com.softsquared.template.src.deliverydestination.DeliveryProvider;
 import com.softsquared.template.src.deliverydestination.model.GetMainDeliveryRes;
 import com.softsquared.template.src.purchase.model.GetPurchaseRefundRes;
+import com.softsquared.template.utils.JwtService;
 import org.springframework.web.bind.annotation.*;
 import static com.softsquared.template.config.BaseResponseStatus.*;
 
@@ -16,15 +17,17 @@ public class PurchaseController {
     private PurchaseProvider purchaseProvider;
     private PurchaseService purchaseService;
     private DeliveryProvider deliveryProvider;
+    private JwtService jwtService;
 
     //request의 형식이 올바른지 check
     private FormatChecker formatChecker;
 
     public PurchaseController(PurchaseProvider purchaseProvider, PurchaseService purchaseService,
-                              DeliveryProvider deliveryProvider){
+                              DeliveryProvider deliveryProvider, JwtService jwtService){
         this.purchaseProvider = purchaseProvider;
         this.purchaseService = purchaseService;
         this.deliveryProvider = deliveryProvider;
+        this.jwtService = jwtService;
 
         formatChecker = new FormatChecker();
     }
@@ -37,9 +40,16 @@ public class PurchaseController {
      */
     @ResponseBody
     @GetMapping("/deliverydestinations")
-    public BaseResponse<GetMainDeliveryRes> getMainDelivery(){
+    public BaseResponse<GetMainDeliveryRes> getMainDelivery(@RequestHeader("X-ACCESS-TOKEN") String token){
+        long userId;
         try{
-            GetMainDeliveryRes getMainDeliveryRes = purchaseProvider.retrievePurchaseMainAddress(1);
+            userId = jwtService.getUserId();
+
+        }catch(Exception e){
+            return new BaseResponse<>(INVALID_TOKEN);
+        }
+        try{
+            GetMainDeliveryRes getMainDeliveryRes = purchaseProvider.retrievePurchaseMainAddress(userId);
             return new BaseResponse<>(SUCCESS, getMainDeliveryRes);
         }catch (BaseException e){
             e.printStackTrace();

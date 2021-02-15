@@ -1,10 +1,7 @@
 package com.softsquared.template.src.deliverydestination;
 
 import com.softsquared.template.config.BaseException;
-import com.softsquared.template.src.deliverydestination.model.GetDelivery;
-import com.softsquared.template.src.deliverydestination.model.GetDeliveryRes;
-import com.softsquared.template.src.deliverydestination.model.GetMainDelivery;
-import com.softsquared.template.src.deliverydestination.model.GetMainDeliveryRes;
+import com.softsquared.template.src.deliverydestination.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -56,6 +53,21 @@ public class DeliveryProvider {
             throw new BaseException(FAILED_TO_GET_DELVIERY_DESTINATION);
         }
         return mainDeliveryRes;
+    }
+
+    /**
+     * 삭제할 배송지 검색하기 --> Service로 넘어감
+     *
+     */
+    public DeleteDelivery retrieveDeleteDelivery(long desId)throws BaseException{
+        DeleteDelivery deliveryProvider;
+        try{
+            deliveryProvider = deliverySelectRepository.findDeliveryByDesId(desId).get(0);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new BaseException(FAILED_TO_GET_DELVIERY_DESTINATION);
+        }
+        return deliveryProvider;
     }
 
 
