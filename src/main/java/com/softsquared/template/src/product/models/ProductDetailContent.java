@@ -3,7 +3,6 @@ package com.softsquared.template.src.product.models;
 import com.querydsl.core.annotations.QueryProjection;
 import com.softsquared.template.DBmodel.ProductImage;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
 public class ProductDetailContent {

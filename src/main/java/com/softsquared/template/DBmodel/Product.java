@@ -1,15 +1,19 @@
 package com.softsquared.template.DBmodel;
 
 import com.softsquared.template.config.BaseEntity;
+import com.softsquared.template.config.statusEnum.IsOnSale;
+import com.softsquared.template.config.statusEnum.IsPublic;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @NoArgsConstructor
+@Setter
 @Getter
 @DynamicInsert
 @Entity
@@ -84,14 +88,15 @@ public class Product extends BaseEntity {
     @NotNull
     @Column(name = "isSale")
     @Enumerated(value = EnumType.STRING)
-    private Product.IsOnSale isOnSale;
+    private IsOnSale isOnSale;
 
-    public enum IsOnSale {
-        ON_SALE, SOLD_OUT
-    }
+    @NotNull
+    @Column(name = "isPublic")
+    @Enumerated(value = EnumType.STRING)
+    private IsPublic isPublic;
 
     @Builder
-    public Product(@NotNull String code, @NotNull String name, @NotNull Long marketId, @NotNull Long categoryId, @NotNull Long detailCategoryId, @NotNull Long ageGroupId, @NotNull Long clothLengthId, @NotNull Long colorId, @NotNull Long fabricId, @NotNull Integer tall, @NotNull Long fitId, @NotNull Long printId, @NotNull Long modelId, @NotNull Integer price, @NotNull Integer discountRate, @NotNull Product.IsOnSale isSale) {
+    public Product(@NotNull String code, @NotNull String name, @NotNull Long marketId, @NotNull Long categoryId, @NotNull Long detailCategoryId, @NotNull Long ageGroupId, @NotNull Long clothLengthId, @NotNull Long colorId, @NotNull Long fabricId, @NotNull Integer tall, @NotNull Long fitId, @NotNull Long printId, @NotNull Long modelId, @NotNull Integer price, @NotNull Integer discountRate, @NotNull IsOnSale isOnSale, @NotNull IsPublic isPublic) {
         this.code = code;
         this.name = name;
         this.marketId = marketId;
@@ -107,6 +112,7 @@ public class Product extends BaseEntity {
         this.modelId = modelId;
         this.price = price;
         this.discountRate = discountRate;
-        this.isOnSale = isSale;
+        this.isOnSale = isOnSale;
+        this.isPublic = isPublic;
     }
 }

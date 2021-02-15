@@ -30,6 +30,10 @@ public class ProductDetail {
 
     @NotNull
     @Column(name = "fabric")
+    private String fabric;
+
+    @NotNull
+    @Column(name = "color")
     private String color;
 
     @NotNull
@@ -57,9 +61,10 @@ public class ProductDetail {
     private String warranty;
 
     @Builder
-    public ProductDetail(Long productId, String country, String color, String size, String manufacturer, String washType, String builtDate, String manager, String warranty) {
+    public ProductDetail(@NotNull Long productId, @NotNull String country, @NotNull String fabric, @NotNull String color, @NotNull String size, @NotNull String manufacturer, @NotNull String washType, @NotNull String builtDate, @NotNull String manager, @NotNull String warranty) {
         this.productId = productId;
         this.country = country;
+        this.fabric = fabric;
         this.color = color;
         this.size = size;
         this.manufacturer = manufacturer;

@@ -1,8 +1,8 @@
 package com.softsquared.template.src.favorite;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.softsquared.template.DBmodel.FavoriteProduct;
 import com.softsquared.template.DBmodel.ProductImage;
+import com.softsquared.template.config.statusEnum.Liked;
 import com.softsquared.template.src.favorite.models.GetFavoriteProductRes;
 import com.softsquared.template.src.favorite.models.QGetFavoriteProductRes;
 import com.softsquared.template.src.product.ProductsQueryRepository;
@@ -34,7 +34,7 @@ public class FavoriteProductQueryRepository {
                 .from(product)
                 .innerJoin(favoriteProduct)
                 .on(product.id.eq(favoriteProduct.favoriteProductId.productCode))
-                .where(favoriteProduct.favoriteProductId.userCode.eq(userId).and(favoriteProduct.liked.eq(FavoriteProduct.Liked.YES)))
+                .where(favoriteProduct.favoriteProductId.userCode.eq(userId).and(favoriteProduct.liked.eq(Liked.YES)))
                 .fetch();
     }
 

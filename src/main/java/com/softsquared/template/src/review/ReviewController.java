@@ -1,10 +1,8 @@
 package com.softsquared.template.src.review;
 
-import com.softsquared.template.DBmodel.FavoriteProductId;
 import com.softsquared.template.DBmodel.FavoriteReviewId;
 import com.softsquared.template.config.BaseException;
 import com.softsquared.template.config.BaseResponse;
-import com.softsquared.template.config.BaseResponseStatus;
 import com.softsquared.template.src.favorite.FavoriteReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PatchMapping;
