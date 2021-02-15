@@ -1,6 +1,7 @@
 package com.softsquared.template.DBmodel;
 
 import com.softsquared.template.config.BaseEntity;
+import com.softsquared.template.config.statusEnum.Liked;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,10 +20,6 @@ public class FavoriteProduct extends BaseEntity {
     @Column(name = "liked")
     @Enumerated(EnumType.STRING)
     private Liked liked;
-
-    public enum Liked {
-        YES, NO
-    }
 
     @Builder
     public FavoriteProduct(FavoriteProductId favoriteProductId, Liked liked) {

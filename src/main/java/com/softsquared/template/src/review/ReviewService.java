@@ -9,7 +9,8 @@ import com.softsquared.template.utils.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static com.softsquared.template.config.BaseResponseStatus.*;
+import static com.softsquared.template.config.BaseResponseStatus.NOT_FOUND_PRODUCT;
+import static com.softsquared.template.config.BaseResponseStatus.NOT_FOUND_USERS;
 
 @Service
 public class ReviewService {
@@ -34,21 +35,6 @@ public class ReviewService {
         }
         if (!productRepository.existsById(productId)) {
             throw new BaseException(NOT_FOUND_PRODUCT);
-        }
-        if (request.getSatisfaction() == null) {
-            throw new BaseException(SATISFACTION_CAN_NOT_BE_EMPTY);
-        }
-        if (request.getPurchasedOptions() == null) {
-            throw new BaseException(PURCHASED_OPTIONS_CAN_NOT_EMPTY);
-        }
-        if (request.getSizeComment() == null) {
-            throw new BaseException(SIZE_COMMENT_CAN_NOT_BE_EMPTY);
-        }
-        if (request.getColorComment() == null) {
-            throw new BaseException(COLOR_COMMENT_CAN_NOT_BE_EMPTY);
-        }
-        if (request.getComment() == null) {
-            throw new BaseException(COMMENT_CAN_NOT_BE_EMPTY);
         }
 
         Review review = Review.builder()

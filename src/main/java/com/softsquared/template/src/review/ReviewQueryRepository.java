@@ -5,8 +5,10 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.softsquared.template.DBmodel.Review;
 import com.softsquared.template.config.PageRequest;
+import com.softsquared.template.config.statusEnum.ColorComment;
+import com.softsquared.template.config.statusEnum.Satisfaction;
+import com.softsquared.template.config.statusEnum.SizeComment;
 import com.softsquared.template.src.review.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -69,19 +71,19 @@ public class ReviewQueryRepository {
                                 Expressions.asNumber(JPAExpressions
                                         .select(ExpressionUtils.count(review))
                                         .from(review)
-                                        .where(review.satisfaction.eq(Review.Satisfaction.GOOD)
+                                        .where(review.satisfaction.eq(Satisfaction.GOOD)
                                                 .and(review.productId.eq(productId))))),
                         calculatePercentAboutReview(
                                 Expressions.asNumber(JPAExpressions
                                         .select(ExpressionUtils.count(review))
                                         .from(review)
-                                        .where(review.colorComment.eq(Review.ColorComment.SCREEN_SAME)
+                                        .where(review.colorComment.eq(ColorComment.SCREEN_SAME)
                                                 .and(review.productId.eq(productId))))),
                         calculatePercentAboutReview(
                                 Expressions.asNumber(JPAExpressions
                                         .select(ExpressionUtils.count(review))
                                         .from(review)
-                                        .where(review.sizeComment.eq(Review.SizeComment.FIT)
+                                        .where(review.sizeComment.eq(SizeComment.FIT)
                                                 .and(review.productId.eq(productId)))))
                 ))
                 .from(review)

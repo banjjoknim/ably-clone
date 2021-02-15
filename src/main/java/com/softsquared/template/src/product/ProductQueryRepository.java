@@ -1,20 +1,22 @@
 package com.softsquared.template.src.product;
 
 import com.querydsl.core.types.ExpressionUtils;
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.softsquared.template.DBmodel.FavoriteProduct;
-import com.softsquared.template.DBmodel.Product;
 import com.softsquared.template.DBmodel.ProductDetail;
 import com.softsquared.template.DBmodel.Review;
+import com.softsquared.template.config.statusEnum.IsOnSale;
+import com.softsquared.template.config.statusEnum.Liked;
+import com.softsquared.template.config.statusEnum.Satisfaction;
 import com.softsquared.template.src.product.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.softsquared.template.DBmodel.Product.IsOnSale.ON_SALE;
 import static com.softsquared.template.DBmodel.ProductImage.ImageType.DETAIL;
 import static com.softsquared.template.DBmodel.ProductImage.ImageType.TEXT;
 import static com.softsquared.template.DBmodel.QBasket.basket;
@@ -29,6 +31,7 @@ import static com.softsquared.template.DBmodel.QProductImage.productImage;
 import static com.softsquared.template.DBmodel.QPurchase.purchase;
 import static com.softsquared.template.DBmodel.QReview.review;
 import static com.softsquared.template.config.Constant.HUNDRED;
+import static com.softsquared.template.config.statusEnum.IsOnSale.ON_SALE;
 import static com.softsquared.template.src.product.ProductsQueryRepository.getDiscountedPrice;
 import static java.util.stream.Collectors.joining;
 
@@ -72,15 +75,11 @@ public class ProductQueryRepository {
                                 .where(purchase.purProductCode.eq(productId)),
                         JPAExpressions
                                 .select(
-                                        review.count()
-                                                .subtract(JPAExpressions
-                                                        .select(ExpressionUtils.count(review))
-                                                        .from(review)
-                                                        .where(review.satisfaction.eq(Review.Satisfaction.BAD).and(review.productId.eq(productId))))
-                                                .divide(review.count())
-                                                .multiply(Expressions.asNumber(HUNDRED))
-                                                .round()
-                                                .intValue())
+                                        new CaseBuilder()
+                                                .when(getSatisfactionRate(productId).isNotNull())
+                                                .then(getSatisfactionRate(productId))
+                                                .otherwise(Expressions.asNumber(0))
+                                )
                                 .from(review)
                                 .where(review.productId.eq(productId)),
                         market.deliveryType
@@ -91,8 +90,20 @@ public class ProductQueryRepository {
                 .fetchFirst();
     }
 
+    private NumberExpression<Integer> getSatisfactionRate(Long productId) {
+        return review.count()
+                .subtract(JPAExpressions
+                        .select(ExpressionUtils.count(review))
+                        .from(review)
+                        .where(review.satisfaction.eq(Satisfaction.BAD).and(review.productId.eq(productId))))
+                .divide(review.count())
+                .multiply(Expressions.asNumber(HUNDRED))
+                .round()
+                .intValue();
+    }
+
     public List<Integer> getPreparePeriodSharesQuery(Long productId) {
-        return List.of(98, 2, 0, 0);
+        return List.of(57, 43, 0, 0);
     }
 
     public ProductMarketInfo getProductMarketInfoQuery(Long productId) {
@@ -168,20 +179,20 @@ public class ProductQueryRepository {
 
     public Boolean getProductIsLikedQuery(Long userId, Long productId) {
 
-        FavoriteProduct.Liked liked = jpaQueryFactory
+        Liked liked = jpaQueryFactory
                 .select(favoriteProduct.liked)
                 .from(favoriteProduct)
                 .where(favoriteProduct.favoriteProductId.userCode.eq(userId).and(favoriteProduct.favoriteProductId.productCode.eq(productId)))
                 .fetchFirst();
 
-        if (FavoriteProduct.Liked.YES.equals(liked)) {
+        if (Liked.YES.equals(liked)) {
             return true;
         }
         return false;
     }
 
     public Boolean getProductIsSaleQuery(Long productId) {
-        Product.IsOnSale isSale = productRepository.findById(productId).get().getIsOnSale();
+        IsOnSale isSale = productRepository.findById(productId).get().getIsOnSale();
 
         if (isSale.equals(ON_SALE)) {
             return true;
