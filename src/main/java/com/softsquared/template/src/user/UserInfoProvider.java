@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ser.Serializers;
 import com.softsquared.template.config.Caster;
 import com.softsquared.template.config.BaseException;
 import com.softsquared.template.src.user.models.*;
+import com.softsquared.template.utils.JwtService;
+import com.softsquared.template.utils.KakaoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,14 +18,16 @@ import static com.softsquared.template.config.BaseResponseStatus.*;
 @Service
 public class UserInfoProvider {
     private UserInfoSelectRepository userInfoSelectRepository;
-     //   private final JwtService jwtService;
+    private final JwtService jwtService;
+    private final KakaoService kakaoService;
     private Caster caster;
 
 
     @Autowired
-    public UserInfoProvider(UserInfoSelectRepository userInfoSelectRepository) {
+    public UserInfoProvider(UserInfoSelectRepository userInfoSelectRepository,JwtService jwtService,KakaoService kakaoService) {
         this.userInfoSelectRepository = userInfoSelectRepository;
-      //  this.jwtService = jwtService;
+        this.jwtService = jwtService;
+        this.kakaoService = kakaoService;
         this.caster = new Caster();
     }
     /**
@@ -174,6 +178,7 @@ public class UserInfoProvider {
         }
         return refundInfo;
     }
+
 
 
     /*********************************************changedList

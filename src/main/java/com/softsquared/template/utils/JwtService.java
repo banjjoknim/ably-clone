@@ -3,6 +3,7 @@ package com.softsquared.template.utils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.softsquared.template.config.BaseException;
+import com.softsquared.template.config.BaseResponseStatus;
 import com.softsquared.template.config.secret.Secret;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -30,7 +31,7 @@ public class JwtService {
      * @param userId
      * @return String
      */
-    public String createJwt(int userId) {
+    public String createJwt(long userId) {
         Date now = new Date();
         return Jwts.builder()
                 .claim("userId", userId)
@@ -54,56 +55,28 @@ public class JwtService {
      * @throws BaseException
      */
     public long getUserId() throws BaseException {
+
         // 1. JWT 추출
-        String access_Token = getJwt();
-        if (access_Token == null || access_Token.length() == 0) {
-            throw new BaseException(EMPTY_JWT);
+        String accessToken = getJwt();
+        if (accessToken == null || accessToken.length() == 0) {
+            throw new BaseException(BaseResponseStatus.EMPTY_JWT);
         }
 
-        HashMap<String, Object> userInfo = new HashMap<>();
-        String reqURL = "https://kapi.kakao.com/v2/user/me";
-        long userId=0;
-
-
+        // 2. JWT parsing
+        Jws<Claims> claims;
         try {
-                URL url = new URL(reqURL);
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("POST");
-
-                conn.setRequestProperty("Authorization", "Bearer " + access_Token);
-
-                int responseCode = conn.getResponseCode();
-            if(responseCode!=200){
-                throw new BaseException(INVALID_TOKEN);
-            }
-                System.out.println("responseCode : " + responseCode);
-                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-
-
-                String line = "";
-                String result = "";
-
-                while ((line = br.readLine()) != null) {
-                    result += line;
-                }
-                System.out.println("response body : " + result);
-
-                JsonParser parser = new JsonParser();
-                JsonElement element = parser.parse(result);
-
-                userId= element.getAsJsonObject().get("id").getAsLong();
-
-                System.out.println(userId);
-
-
-            }catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-
-            // 3. userId 추출
-            // return claims.getBody().get("userId", Integer.class);
-            return userId;
+            claims = Jwts.parser()
+                    .setSigningKey(Secret.JWT_SECRET_KEY)
+                    .parseClaimsJws(accessToken);
+        } catch (Exception ignored) {
+            throw new BaseException(INVALID_TOKEN);
         }
+
+        int user = claims.getBody().get("userId", Integer.class);
+        // 3. userId 추출
+        return Long.valueOf(user);
+        }
+
+
     }
 

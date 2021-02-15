@@ -6,6 +6,7 @@ import com.softsquared.template.config.secret.Secret;
 import com.softsquared.template.utils.AES128;
 import com.softsquared.template.config.BaseException;
 import com.softsquared.template.src.user.models.*;
+import com.softsquared.template.utils.KakaoService;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,16 +21,26 @@ import static com.softsquared.template.config.BaseResponseStatus.*;
 public class UserInfoService {
     private final UserInfoRepository userInfoRepository;
     private final UserInfoProvider userInfoProvider;
+    private final KakaoService kakaoService;
     private final UserInfoSelectRepository selectRepository;
     private final JwtService jwtService;
 
     @Autowired
     public UserInfoService(UserInfoRepository userInfoRepository, UserInfoProvider userInfoProvider, JwtService jwtService,
-                           UserInfoSelectRepository userInfoSelectRepository) {
+                           UserInfoSelectRepository userInfoSelectRepository,KakaoService kakaoService) {
         this.userInfoRepository = userInfoRepository;
         this.userInfoProvider = userInfoProvider;
         this.jwtService = jwtService;
+        this.kakaoService = kakaoService;
         this.selectRepository = userInfoSelectRepository;
+    }
+    /**
+     * for login
+     */
+    public String createJWTToken(String kakaoToken) throws BaseException{
+        long userId = kakaoService.userIdFromKakao(kakaoToken);
+        String jwt = jwtService.createJwt(userId);
+        return jwt;
     }
 
     /**

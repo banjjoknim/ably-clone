@@ -193,4 +193,27 @@ public class UserInfoController {
         }
     }
 
+    /**
+     * 로그인
+     * 카카오 토큰 받아오고 --> JWT토큰으로 바꿈
+     */
+    @ResponseBody
+    @PostMapping("/login")
+    public BaseResponse<String> postLoginUser(@RequestHeader("X-ACCESS-TOKEN") String token){
+
+        //token 없이 들어올 떄
+        if (token == null || token.length() == 0) {
+            return new BaseResponse(EMPTY_JWT);
+        }
+
+        try{
+            String result = userInfoService.createJWTToken(token);
+            return new BaseResponse<>(SUCCESS,result);
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return new BaseResponse<>(FAILED_TO_LOGIN);
+        }
+
+    }
 }
