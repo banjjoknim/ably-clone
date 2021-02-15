@@ -114,7 +114,11 @@ public class ProductController {
             if (request.getPrice() == null) {
                 throw new BaseException(PRICE_CAN_NOT_BE_EMPTY);
             }
-            return new BaseResponse<>(SUCCESS, productService.createProduct(marketId, request));
+            Long productId = productService.createProduct(marketId, request);
+            if (request.getProductImages() != null) {
+                productImageService.createProductImage(productId, request);
+            }
+            return new BaseResponse<>(SUCCESS, productId);
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }

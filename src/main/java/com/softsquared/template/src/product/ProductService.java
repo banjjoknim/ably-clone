@@ -45,8 +45,6 @@ public class ProductService {
                 .build();
         productRepository.save(product);
 
-        productImageService.createProductImage(product.getId(), request);
-
         return product.getId();
     }
 

@@ -26,9 +26,6 @@ public class ProductImageService {
     }
 
     public void createProductImage(Long productId, PostProductReq request) {
-        if (request.getProductImages() == null) {
-            return;
-        }
         request.getProductImages().stream()
                 .map(image -> ProductImage.builder()
                         .productId(productId)
