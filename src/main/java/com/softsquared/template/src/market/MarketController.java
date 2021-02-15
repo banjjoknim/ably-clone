@@ -2,12 +2,9 @@ package com.softsquared.template.src.market;
 
 import com.softsquared.template.config.BaseException;
 import com.softsquared.template.config.BaseResponse;
-import com.softsquared.template.config.BaseResponseStatus;
+import com.softsquared.template.src.market.models.PatchMarketReq;
 import com.softsquared.template.src.market.models.PostMarketReq;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static com.softsquared.template.config.BaseResponseStatus.*;
 
@@ -37,6 +34,15 @@ public class MarketController {
                 throw new BaseException(MARKET_IMAGE_CAN_NOT_BE_EMPTY);
             }
             return new BaseResponse<>(SUCCESS, marketService.createMarket(request));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    @PatchMapping("/{marketId}")
+    public BaseResponse<Long> patchMarket(@PathVariable Long marketId, @RequestBody PatchMarketReq request) {
+        try {
+            return new BaseResponse<>(SUCCESS, marketService.updateMarket(marketId, request));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
