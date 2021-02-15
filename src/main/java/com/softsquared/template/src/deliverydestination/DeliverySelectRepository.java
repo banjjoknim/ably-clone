@@ -5,6 +5,7 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.softsquared.template.DBmodel.DeliveryDestination;
 import com.softsquared.template.DBmodel.QDeliveryDestination;
+import com.softsquared.template.src.deliverydestination.model.DeleteDelivery;
 import com.softsquared.template.src.deliverydestination.model.GetDelivery;
 import com.softsquared.template.src.deliverydestination.model.GetMainDelivery;
 import com.softsquared.template.src.deliverydestination.model.GetMainDeliveryRes;
@@ -58,4 +59,25 @@ public class DeliverySelectRepository extends QuerydslRepositorySupport {
                 .orderBy(deliveryDestination.dateCreated.desc())
                 .fetch();
     }
+
+    /**
+     * 삭제할 배송지 정보 가져오기
+     */
+    public List<DeleteDelivery> findDeliveryByDesId(long desId){
+        QDeliveryDestination deliveryDestination = QDeliveryDestination.deliveryDestination;
+
+        return queryFactory.select((Projections.constructor(DeleteDelivery.class,
+                deliveryDestination.userId, deliveryDestination.detailAddress,
+                deliveryDestination.phoneNum, deliveryDestination.userName,
+                deliveryDestination.address, deliveryDestination.dateUpdated,
+                deliveryDestination.dateCreated)))
+                .from(deliveryDestination)
+                .where(deliveryDestination.desId.eq(desId),
+                        deliveryDestination.status.eq(0))
+                .fetch();
+
+    }
+
+
+
 }

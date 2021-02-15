@@ -100,6 +100,7 @@ public enum BaseResponseStatus {
     FAILED_TO_GET_PURCHASE_PRODUCTS(false, 3023, "구매하신 제품 조회에 실패하였습니다."),
     FAILED_TO_GET_DELVIERY_DESTINATION(false, 3024, "배송지 조회에 실패하였습니다."),
     NOT_FOUND_DELIVERY_DESTINATION(false, 3025, "배송지를 입력해주세요."),
+    FAILED_TO_DELETE_DELVIERY_DESTINATION(false, 3026, "배송지 조회에 실패하였습니다."),
 
 
     //colt
