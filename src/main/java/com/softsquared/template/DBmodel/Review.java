@@ -7,13 +7,17 @@ import com.softsquared.template.config.statusEnum.SizeComment;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @NoArgsConstructor
+@Setter
 @Getter
+@DynamicUpdate
 @DynamicInsert
 @Entity
 @Table(name = "Review")
