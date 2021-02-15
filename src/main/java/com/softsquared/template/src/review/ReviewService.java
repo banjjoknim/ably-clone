@@ -60,9 +60,7 @@ public class ReviewService {
     public Long updateReview(Long reviewId, UpdateReviewReq request) throws BaseException {
         Optional<Review> review = reviewRepository.findById(reviewId);
         if (review.isPresent()) {
-            if (review.get().getUserId().longValue() != jwtService.getUserId()) {
-                throw new BaseException(NO_AUTHORITY);
-            }
+            validateUser(review);
         }
 
         review.ifPresent(selectedReview -> {
@@ -78,5 +76,20 @@ public class ReviewService {
         });
 
         return reviewId;
+    }
+
+    public Long deleteReview(Long reviewId) throws BaseException {
+        Optional<Review> review = reviewRepository.findById(reviewId);
+        validateUser(review);
+        reviewRepository.findById(reviewId)
+                .ifPresent(selectedReview -> reviewRepository.deleteById(reviewId));
+
+        return reviewId;
+    }
+
+    private void validateUser(Optional<Review> review) throws BaseException {
+        if (review.get().getUserId().longValue() != jwtService.getUserId()) {
+            throw new BaseException(NO_AUTHORITY);
+        }
     }
 }

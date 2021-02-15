@@ -44,6 +44,15 @@ public class ReviewController {
         }
     }
 
+    @DeleteMapping("/{reviewId}")
+    public BaseResponse<Long> deleteReview(@PathVariable Long reviewId) {
+        try {
+            return new BaseResponse<>(SUCCESS, reviewService.deleteReview(reviewId));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
     @PatchMapping("/{reviewId}/favorite")
     public BaseResponse<FavoriteReviewId> patchProductFavorite(@PathVariable(value = "reviewId") Long reviewId) {
         try {
