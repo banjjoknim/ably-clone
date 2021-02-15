@@ -192,15 +192,15 @@ public class ProductQueryRepository {
      * 구매하기에서 구매하고자 하는 상품에 대한 정보 출력하기 위해
      */
     public List<GetPurchaseProduct> findProductByProductId(long productId){
-        QProduct product = QProduct.product;
-        QProductImage image = QProductImage.productImage;
-        QMarket market = QMarket.market;
+//        QProduct product = QProduct.product;
+//        QProductImage image = QProductImage.productImage;
+//        QMarket market = QMarket.market;
         return jpaQueryFactory.select((Projections.constructor(GetPurchaseProduct.class,
-                image.image, market.name,product.name, product.price,
+                productImage.image, market.name,product.name, product.price,
                 product.discountRate)))
                 .from(product)
-                .innerJoin(image)
-                .on(image.productId.eq(productId), image.type.eq(ProductImage.ImageType.THUMBNAIL))
+                .innerJoin(productImage)
+                .on(productImage.productId.eq(productId), productImage.type.eq(ProductImage.ImageType.THUMBNAIL))
                 .innerJoin(market)
                 .on(product.marketId.eq(market.id))
                 .where(product.id.eq(productId))

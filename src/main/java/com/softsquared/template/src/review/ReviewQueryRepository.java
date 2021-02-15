@@ -6,7 +6,6 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.softsquared.template.DBmodel.QReview;
 import com.softsquared.template.DBmodel.Review;
 import com.softsquared.template.config.PageRequest;
 import com.softsquared.template.src.review.models.*;
@@ -114,7 +113,7 @@ public class ReviewQueryRepository {
      * 회원의 리뷰수좀 빼가겠습니당
      */
     public long findReviewCountByUserId(long userId){
-        QReview review = QReview.review;
+       // QReview review = QReview.review;
         return jpaQueryFactory.select(review.count())
                 .from(review)
                 .where(review.userId.eq(userId))
