@@ -1,7 +1,9 @@
 package com.softsquared.template.src.product;
 
 import com.querydsl.core.types.ExpressionUtils;
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.softsquared.template.DBmodel.ProductDetail;
@@ -73,15 +75,11 @@ public class ProductQueryRepository {
                                 .where(purchase.purProductCode.eq(productId)),
                         JPAExpressions
                                 .select(
-                                        review.count()
-                                                .subtract(JPAExpressions
-                                                        .select(ExpressionUtils.count(review))
-                                                        .from(review)
-                                                        .where(review.satisfaction.eq(Satisfaction.BAD).and(review.productId.eq(productId))))
-                                                .divide(review.count())
-                                                .multiply(Expressions.asNumber(HUNDRED))
-                                                .round()
-                                                .intValue())
+                                        new CaseBuilder()
+                                                .when(getSatisfactionRate(productId).isNotNull())
+                                                .then(getSatisfactionRate(productId))
+                                                .otherwise(Expressions.asNumber(0))
+                                )
                                 .from(review)
                                 .where(review.productId.eq(productId)),
                         market.deliveryType
@@ -90,6 +88,18 @@ public class ProductQueryRepository {
                 .innerJoin(market).on(product.marketId.eq(market.id))
                 .where(product.id.eq(productId))
                 .fetchFirst();
+    }
+
+    private NumberExpression<Integer> getSatisfactionRate(Long productId) {
+        return review.count()
+                .subtract(JPAExpressions
+                        .select(ExpressionUtils.count(review))
+                        .from(review)
+                        .where(review.satisfaction.eq(Satisfaction.BAD).and(review.productId.eq(productId))))
+                .divide(review.count())
+                .multiply(Expressions.asNumber(HUNDRED))
+                .round()
+                .intValue();
     }
 
     public List<Integer> getPreparePeriodSharesQuery(Long productId) {
