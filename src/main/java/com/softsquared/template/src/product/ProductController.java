@@ -25,6 +25,7 @@ public class ProductController {
 
     private final ProductsProvider productsProvider;
     private final ProductProvider productProvider;
+    private final ProductOptionProvider productOptionProvider;
     private final ReviewProvider reviewProvider;
     private final ReviewService reviewService;
     private final ProductService productService;
@@ -32,9 +33,10 @@ public class ProductController {
     private final FavoriteProductService favoriteProductService;
 
     @Autowired
-    public ProductController(ProductsProvider productsProvider, ProductProvider productProvider, ReviewProvider reviewProvider, ReviewService reviewService, ProductService productService, ProductImageService productImageService, FavoriteProductService favoriteProductService) {
+    public ProductController(ProductsProvider productsProvider, ProductProvider productProvider, ProductOptionProvider productOptionProvider, ReviewProvider reviewProvider, ReviewService reviewService, ProductService productService, ProductImageService productImageService, FavoriteProductService favoriteProductService) {
         this.productsProvider = productsProvider;
         this.productProvider = productProvider;
+        this.productOptionProvider = productOptionProvider;
         this.reviewProvider = reviewProvider;
         this.reviewService = reviewService;
         this.productService = productService;
@@ -128,6 +130,15 @@ public class ProductController {
     public BaseResponse<GetProductRes> getProduct(@PathVariable(value = "productId") Long productId) {
         try {
             return new BaseResponse<>(SUCCESS, productProvider.retrieveProduct(productId));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    @GetMapping("/{productId}/options")
+    public BaseResponse<List<GetProductOptionRes>> getProductOptions(@PathVariable Long productId) {
+        try {
+            return new BaseResponse<>(SUCCESS, productOptionProvider.retrieveProductOptions(productId));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
