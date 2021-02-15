@@ -64,6 +64,10 @@ public enum BaseResponseStatus {
     DISCOUNT_RATE_CAN_NOT_BE_EMPTY(false, 2074, "할인율을 입력해주세요."),
     IS_ON_SALE_CAN_NOT_BE_EMPTY(false, 2075, "상품 판매 여부를 선택해주세요."),
     IS_PUBLIC_CAN_NOT_BE_EMPTY(false, 2076, "상품 공개 여부를 선택해주세요."),
+    MARKET_NAME_CAN_NOT_BE_EMPTY(false, 2077, "마켓 이름을 입력해주세요."),
+    DELIVERY_TYPE_CAN_NOT_BE_EMPTY(false, 2078, "배송 타입을 선택해주세요."),
+    MARKET_TYPE_CAN_NOT_BE_EMPTY(false, 2079, "마켓 타입을 선택해주세요."),
+    MARKET_IMAGE_CAN_NOT_BE_EMPTY(false, 2081, "마켓 이미지를 선택해주세요."),
 
 
     //vivi
@@ -106,6 +110,7 @@ public enum BaseResponseStatus {
 
     //colt
     NO_AUTHORITY(false, 3050, "권한이 없습니다."),
+    DUPLICATED_MARKET_NAME(false, 3060, "중복된 마켓 이름입니다."),
 
 
 

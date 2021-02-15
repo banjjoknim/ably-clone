@@ -4,6 +4,7 @@ import com.softsquared.template.config.BaseEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -11,6 +12,7 @@ import javax.validation.constraints.NotNull;
 
 @NoArgsConstructor
 @Getter
+@DynamicInsert
 @Entity
 @Table(name = "Market")
 public class Market extends BaseEntity {
@@ -43,7 +45,7 @@ public class Market extends BaseEntity {
     private MarketType marketType;
 
     public enum DeliveryType {
-        MARKET, ABLY,
+        MARKET, ABLY
     }
 
     public enum MarketType {
