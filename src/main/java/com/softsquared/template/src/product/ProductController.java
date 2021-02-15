@@ -127,6 +127,58 @@ public class ProductController {
         }
     }
 
+    @PatchMapping("/{productId}")
+    public BaseResponse<Long> patchProduct(@PathVariable(value = "productId") Long productId, @RequestBody UpdateProductReq request) {
+        try {
+            Long marketId = 3L;
+            if (request.getProductName() == null) {
+                throw new BaseException(PRODUCT_NAME_CAN_NOT_BE_EMPTY);
+            }
+            if (request.getCategoryId() == null) {
+                throw new BaseException(CATEGORY_CAN_NOT_BE_EMPTY);
+            }
+            if (request.getDetailCategoryId() == null) {
+                throw new BaseException(DETAIL_CATEGORY_CAN_NOT_BE_EMPTY);
+            }
+            if (request.getAgeGroupId() == null) {
+                throw new BaseException(AGE_GROUP_CAN_NOT_BE_EMPTY);
+            }
+            if (request.getClothLengthId() == null) {
+                throw new BaseException(CLOTH_LENGTH_CAN_NOT_BE_EMPTY);
+            }
+            if (request.getColorId() == null) {
+                throw new BaseException(COLOR_CAN_NOT_BE_EMPTY);
+            }
+            if (request.getFabricId() == null) {
+                throw new BaseException(FABRIC_CAN_NOT_BE_EMPTY);
+            }
+            if (request.getTall() == null) {
+                throw new BaseException(TALL_CAN_NOT_BE_EMPTY);
+            }
+            if (request.getFitId() == null) {
+                throw new BaseException(FIT_CAN_NOT_BE_EMPTY);
+            }
+            if (request.getPrintId() == null) {
+                throw new BaseException(PRINT_CAN_NOT_BE_EMPTY);
+            }
+            if (request.getModelId() == null) {
+                throw new BaseException(MODEL_CAN_NOT_BE_EMPTY);
+            }
+            if (request.getPrice() == null) {
+                throw new BaseException(PRICE_CAN_NOT_BE_EMPTY);
+            }
+            if (request.getDiscountRate() == null) {
+                throw new BaseException(DISCOUNT_RATE_CAN_NOT_BE_EMPTY);
+            }
+            if (request.getIsOnSale() == null) {
+                throw new BaseException(IS_ON_SALE_CAN_NOT_BE_EMPTY);
+            }
+            return new BaseResponse<>(SUCCESS, productService.updateProduct(marketId, productId, request));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
     @GetMapping("/{productId}/reviews")
     public BaseResponse<GetProductReviewsRes> getProductReviews(@PathVariable(value = "productId") Long productId, @RequestParam Integer page) {
         PageRequest pageable = new PageRequest(page, Constant.DEFAULT_PAGING_SIZE);

@@ -1,9 +1,15 @@
 package com.softsquared.template.src.product;
 
 import com.softsquared.template.DBmodel.Product;
+import com.softsquared.template.config.BaseException;
 import com.softsquared.template.src.product.models.PostProductReq;
+import com.softsquared.template.src.product.models.UpdateProductReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+
+import static com.softsquared.template.config.BaseResponseStatus.NO_AUTHORITY;
 
 @Service
 public class ProductService {
@@ -60,5 +66,32 @@ public class ProductService {
             stringBuilder.append(number);
         }
         return stringBuilder.toString();
+    }
+
+    public Long updateProduct(Long marketId, Long productId, UpdateProductReq request) throws BaseException {
+        Optional<Product> product = productRepository.findById(productId);
+        if (product.isPresent() && !product.get().getMarketId().equals(marketId)) {
+            throw new BaseException(NO_AUTHORITY);
+        }
+
+        product.ifPresent(selectedProduct -> {
+            selectedProduct.setName(request.getProductName());
+            selectedProduct.setCategoryId(request.getCategoryId());
+            selectedProduct.setDetailCategoryId(request.getDetailCategoryId());
+            selectedProduct.setAgeGroupId(request.getAgeGroupId());
+            selectedProduct.setClothLengthId(request.getClothLengthId());
+            selectedProduct.setColorId(request.getColorId());
+            selectedProduct.setFabricId(request.getFabricId());
+            selectedProduct.setTall(request.getTall());
+            selectedProduct.setFitId(request.getFitId());
+            selectedProduct.setPrintId(request.getPrintId());
+            selectedProduct.setModelId(request.getModelId());
+            selectedProduct.setPrice(request.getPrice());
+            selectedProduct.setDiscountRate(request.getDiscountRate());
+            selectedProduct.setIsOnSale(request.getIsOnSale());
+            productRepository.save(selectedProduct);
+        });
+
+        return productId;
     }
 }

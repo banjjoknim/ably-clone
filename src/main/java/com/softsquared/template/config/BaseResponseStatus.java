@@ -61,6 +61,8 @@ public enum BaseResponseStatus {
     PRINT_CAN_NOT_BE_EMPTY(false, 2071, "프린트(무늬)를 선택해주세요."),
     MODEL_CAN_NOT_BE_EMPTY(false, 2072, "모델을 선택해주세요."),
     PRICE_CAN_NOT_BE_EMPTY(false, 2073, "가격을 입력해주세요."),
+    DISCOUNT_RATE_CAN_NOT_BE_EMPTY(false, 2074, "할인율을 입력해주세요."),
+    IS_ON_SALE_CAN_NOT_BE_EMPTY(false, 2075, "상품 판매 여부를 선택해주세요."),
 
 
     //vivi
@@ -100,6 +102,8 @@ public enum BaseResponseStatus {
     NOT_FOUND_DELIVERY_DESTINATION(false, 3025, "배송지를 입력해주세요."),
 
 
+    //colt
+    NO_AUTHORITY(false, 3050, "권한이 없습니다."),
 
 
 

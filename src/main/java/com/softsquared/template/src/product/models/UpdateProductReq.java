@@ -1,0 +1,25 @@
+package com.softsquared.template.src.product.models;
+
+import com.softsquared.template.DBmodel.Product;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor
+@Getter
+public class UpdateProductReq {
+
+    private String productName;
+    private Long categoryId;
+    private Long detailCategoryId;
+    private Long ageGroupId;
+    private Long clothLengthId;
+    private Long colorId;
+    private Long fabricId;
+    private Integer tall;
+    private Long fitId;
+    private Long printId;
+    private Long modelId;
+    private Integer price;
+    private Integer discountRate;
+    private Product.IsOnSale isOnSale;
+}
