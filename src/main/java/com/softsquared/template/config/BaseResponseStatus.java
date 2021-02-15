@@ -48,9 +48,25 @@ public enum BaseResponseStatus {
     NOT_FOUND_REVIEW(false, 2056, "존재하지 않는 리뷰입니다."),
     COMMENT_CAN_NOT_BE_EMPTY(false, 2057, "리뷰 내용을 입력해주세요."),
     SATISFACTION_CAN_NOT_BE_EMPTY(false, 2058, "만족도 평가를 입력해주세요."),
-    PURCHASED_OPTIONS_CAN_NOT_EMPTY(false, 2059, "구매 옵션을 입력해주세요."),
+    PURCHASED_OPTIONS_CAN_NOT_BE_EMPTY(false, 2059, "구매 옵션을 입력해주세요."),
     SIZE_COMMENT_CAN_NOT_BE_EMPTY(false, 2060, "사이즈 평가를 입력해주세요."),
     COLOR_COMMENT_CAN_NOT_BE_EMPTY(false, 2061, "색상 평가를 입력해주세요."),
+    PRODUCT_NAME_CAN_NOT_BE_EMPTY(false, 2062, "상품 이름을 입력해주세요."),
+    CATEGORY_CAN_NOT_BE_EMPTY(false, 2063, "카테고리를 선택해주세요."),
+    DETAIL_CATEGORY_CAN_NOT_BE_EMPTY(false, 2064, "상세 카테고리를 선택해주세요."),
+    AGE_GROUP_CAN_NOT_BE_EMPTY(false, 2065, "연령대를 선택해주세요."),
+    CLOTH_LENGTH_CAN_NOT_BE_EMPTY(false, 2066, "기장을 선택해주세요."),
+    COLOR_CAN_NOT_BE_EMPTY(false, 2067, "색상을 선택해주세요."),
+    FABRIC_CAN_NOT_BE_EMPTY(false, 2068, "소재감을 선택해주세요."),
+    TALL_CAN_NOT_BE_EMPTY(false, 2069, "키를 입력해주세요."),
+    FIT_CAN_NOT_BE_EMPTY(false, 2070, "핏감을 선택해주세요."),
+    PRINT_CAN_NOT_BE_EMPTY(false, 2071, "프린트(무늬)를 선택해주세요."),
+    MODEL_CAN_NOT_BE_EMPTY(false, 2072, "모델을 선택해주세요."),
+    PRICE_CAN_NOT_BE_EMPTY(false, 2073, "가격을 입력해주세요."),
+    DISCOUNT_RATE_CAN_NOT_BE_EMPTY(false, 2074, "할인율을 입력해주세요."),
+    IS_ON_SALE_CAN_NOT_BE_EMPTY(false, 2075, "상품 판매 여부를 선택해주세요."),
+    IS_PUBLIC_CAN_NOT_BE_EMPTY(false, 2076, "상품 공개 여부를 선택해주세요."),
+
 
     //vivi
     NOT_FOUND_USERS(false, 2080, "회원가입이 되어있지 않는 회원입니다."),
@@ -93,6 +109,8 @@ public enum BaseResponseStatus {
     FAILED_TO_GET_PRODUCT(false, 3029, "상품 조회에  실패하였습니다."),
 
 
+    //colt
+    NO_AUTHORITY(false, 3050, "권한이 없습니다."),
 
 
 

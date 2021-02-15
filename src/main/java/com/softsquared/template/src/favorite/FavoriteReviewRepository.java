@@ -1,7 +1,5 @@
 package com.softsquared.template.src.favorite;
 
-import com.softsquared.template.DBmodel.FavoriteProduct;
-import com.softsquared.template.DBmodel.FavoriteProductId;
 import com.softsquared.template.DBmodel.FavoriteReview;
 import com.softsquared.template.DBmodel.FavoriteReviewId;
 import org.springframework.data.jpa.repository.JpaRepository;

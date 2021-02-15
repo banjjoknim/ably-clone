@@ -1,6 +1,9 @@
 package com.softsquared.template.DBmodel;
 
 import com.softsquared.template.config.BaseEntity;
+import com.softsquared.template.config.statusEnum.ColorComment;
+import com.softsquared.template.config.statusEnum.Satisfaction;
+import com.softsquared.template.config.statusEnum.SizeComment;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -56,18 +59,6 @@ public class Review extends BaseEntity {
     @NotNull
     @Column(name = "likesCount")
     private Long likesCount;
-
-    public enum Satisfaction {
-        GOOD, BAD
-    }
-
-    public enum SizeComment {
-        BIG, FIT, SMALL
-    }
-
-    public enum ColorComment {
-        BRIGHT, SCREEN_SAME, DARK
-    }
 
     @Builder
     public Review(Long productId, Long userId, String comment, Satisfaction satisfaction, String purchasedOption, String form, SizeComment sizeComment, ColorComment colorComment, @NotNull Long likesCount) {

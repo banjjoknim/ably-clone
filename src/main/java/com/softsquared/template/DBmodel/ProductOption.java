@@ -31,8 +31,8 @@ public class ProductOption {
     @Enumerated(EnumType.STRING)
     private OptionRank optionRank;
 
-    enum OptionRank {
-        FIRST, SECOND
+    public enum OptionRank {
+        FIRST, SECOND, THIRD
     }
 
     @Builder

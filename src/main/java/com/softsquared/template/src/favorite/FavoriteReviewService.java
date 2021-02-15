@@ -1,10 +1,9 @@
 package com.softsquared.template.src.favorite;
 
-import com.softsquared.template.DBmodel.FavoriteProduct;
 import com.softsquared.template.DBmodel.FavoriteReview;
 import com.softsquared.template.DBmodel.FavoriteReviewId;
 import com.softsquared.template.config.BaseException;
-import com.softsquared.template.config.BaseResponseStatus;
+import com.softsquared.template.config.statusEnum.Liked;
 import com.softsquared.template.src.review.ReviewRepository;
 import com.softsquared.template.src.user.UserInfoRepository;
 import com.softsquared.template.utils.JwtService;
@@ -45,7 +44,7 @@ public class FavoriteReviewService {
         }
 
         if (favoriteReview.isPresent()) {
-            if (favoriteReview.get().getLiked().equals(FavoriteProduct.Liked.YES)) {
+            if (favoriteReview.get().getLiked().equals(Liked.YES)) {
                 favoriteReviewRepository.updateFavoriteIsNo(userId, reviewId);
                 reviewRepository.updateReviewCountMinus(reviewId);
                 return favoriteReviewId;
@@ -60,7 +59,7 @@ public class FavoriteReviewService {
     }
 
     private void createReviewFavorite(FavoriteReviewId favoriteReviewId) {
-        FavoriteReview favoriteReview = new FavoriteReview(favoriteReviewId, FavoriteProduct.Liked.YES);
+        FavoriteReview favoriteReview = new FavoriteReview(favoriteReviewId, Liked.YES);
         reviewRepository.updateReviewCountPlus(favoriteReviewId.getReviewId());
         favoriteReviewRepository.save(favoriteReview);
     }
