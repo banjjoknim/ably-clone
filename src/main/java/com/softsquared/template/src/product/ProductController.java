@@ -71,19 +71,7 @@ public class ProductController {
         try {
             return new BaseResponse<>(SUCCESS, productsProvider.retrieveProducts(filterRequest, orderType, pageable));
         } catch (BaseException e) {
-            if (e.getStatus().equals(NOT_FOUND_CATEGORY)) {
-                return new BaseResponse<>(NOT_FOUND_CATEGORY);
-            }
-            if (e.getStatus().equals(NOT_FOUND_DETAIL_CATEGORY)) {
-                return new BaseResponse<>(NOT_FOUND_DETAIL_CATEGORY);
-            }
-            if (e.getStatus().equals(NOT_FOUND_DETAIL_CATEGORY_BELONGED_CATEGORY)) {
-                return new BaseResponse<>(NOT_FOUND_DETAIL_CATEGORY_BELONGED_CATEGORY);
-            }
-            if (e.getStatus().equals(FILTER_PRICE_MUST_BE_POSITIVE)) {
-                return new BaseResponse<>(FILTER_PRICE_MUST_BE_POSITIVE);
-            }
-            return new BaseResponse<>(FILTER_TALL_MUST_BE_POSITIVE);
+            return new BaseResponse<>(e.getStatus());
         }
     }
 
@@ -92,7 +80,7 @@ public class ProductController {
         try {
             return new BaseResponse<>(SUCCESS, productProvider.retrieveProduct(productId));
         } catch (BaseException e) {
-            return new BaseResponse<>(NOT_FOUND_PRODUCT);
+            return new BaseResponse<>(e.getStatus());
         }
     }
 
@@ -102,37 +90,31 @@ public class ProductController {
         try {
             return new BaseResponse<>(SUCCESS, reviewProvider.retrieveProductReviews(productId, pageable));
         } catch (BaseException e) {
-            return new BaseResponse<>(NOT_FOUND_PRODUCT);
+            return new BaseResponse<>(e.getStatus());
         }
     }
 
     @PostMapping("/{productId}/reviews")
     public BaseResponse<Long> postProductReviews(@PathVariable(value = "productId") Long productId, @RequestBody PostProductReviewsReq request) {
         try {
+            if (request.getSatisfaction() == null) {
+                throw new BaseException(SATISFACTION_CAN_NOT_BE_EMPTY);
+            }
+            if (request.getPurchasedOptions() == null) {
+                throw new BaseException(PURCHASED_OPTIONS_CAN_NOT_BE_EMPTY);
+            }
+            if (request.getSizeComment() == null) {
+                throw new BaseException(SIZE_COMMENT_CAN_NOT_BE_EMPTY);
+            }
+            if (request.getColorComment() == null) {
+                throw new BaseException(COLOR_COMMENT_CAN_NOT_BE_EMPTY);
+            }
+            if (request.getComment() == null) {
+                throw new BaseException(COMMENT_CAN_NOT_BE_EMPTY);
+            }
             return new BaseResponse(SUCCESS, reviewService.createProductReviews(productId, request));
         } catch (BaseException e) {
-            if (e.getStatus().equals(EMPTY_JWT)) {
-                return new BaseResponse<>(EMPTY_JWT);
-            }
-            if (e.getStatus().equals(NOT_FOUND_USERS)) {
-                return new BaseResponse<>(NOT_FOUND_USERS);
-            }
-            if (e.getStatus().equals(NOT_FOUND_PRODUCT)) {
-                return new BaseResponse<>(NOT_FOUND_PRODUCT);
-            }
-            if (e.getStatus().equals(SATISFACTION_CAN_NOT_BE_EMPTY)) {
-                return new BaseResponse<>(SATISFACTION_CAN_NOT_BE_EMPTY);
-            }
-            if (e.getStatus().equals(PURCHASED_OPTIONS_CAN_NOT_EMPTY)) {
-                return new BaseResponse<>(PURCHASED_OPTIONS_CAN_NOT_EMPTY);
-            }
-            if (e.getStatus().equals(SIZE_COMMENT_CAN_NOT_BE_EMPTY)) {
-                return new BaseResponse<>(SIZE_COMMENT_CAN_NOT_BE_EMPTY);
-            }
-            if (e.getStatus().equals(COLOR_COMMENT_CAN_NOT_BE_EMPTY)) {
-                return new BaseResponse<>(COLOR_COMMENT_CAN_NOT_BE_EMPTY);
-            }
-            return new BaseResponse<>(COMMENT_CAN_NOT_BE_EMPTY);
+            return new BaseResponse<>(e.getStatus());
         }
     }
 
@@ -141,13 +123,7 @@ public class ProductController {
         try {
             return new BaseResponse<>(SUCCESS, favoriteProductService.updateProductFavorite(productId));
         } catch (BaseException e) {
-            if (e.getStatus().equals(EMPTY_JWT)) {
-                return new BaseResponse<>(EMPTY_JWT);
-            }
-            if (e.getStatus().equals(NOT_FOUND_PRODUCT)) {
-                return new BaseResponse<>(NOT_FOUND_PRODUCT);
-            }
-            return new BaseResponse<>(NOT_FOUND_USERS);
+            return new BaseResponse<>(e.getStatus());
         }
     }
 }
