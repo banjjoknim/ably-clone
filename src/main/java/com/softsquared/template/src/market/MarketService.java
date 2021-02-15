@@ -43,13 +43,19 @@ public class MarketService {
         if (marketIdFromToken != marketId) {
             throw new BaseException(NO_AUTHORITY);
         }
-        validateMarketName(request.getMarketName());
-
         Optional<Market> market = marketRepository.findById(marketId);
-        market.ifPresent(selectedMarket-> {
+        if (market.isPresent()) {
+            if (!market.get().getName().equals(request.getMarketName())) {
+                validateMarketName(request.getMarketName());
+            }
+        }
+
+        market.ifPresent(selectedMarket -> {
             selectedMarket.setName(request.getMarketName());
             selectedMarket.setImage(request.getImage());
-            selectedMarket.setInstagram(request.getInstagram());
+            if (request.getInstagram() != null) {
+                selectedMarket.setInstagram(request.getInstagram());
+            }
             selectedMarket.setDeliveryType(request.getDeliveryType());
             selectedMarket.setMarketType(request.getMarketType());
             marketRepository.save(selectedMarket);
