@@ -182,6 +182,16 @@ public class ProductController {
         }
     }
 
+    @DeleteMapping("/{productId}")
+    public BaseResponse<Long> deleteProduct(@PathVariable(value = "productId") Long productId) {
+        try {
+            Long marketId = 3L;
+            return new BaseResponse<>(SUCCESS, productService.deleteProduct(marketId, productId));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
     @GetMapping("/{productId}/reviews")
     public BaseResponse<GetProductReviewsRes> getProductReviews(@PathVariable(value = "productId") Long productId, @RequestParam Integer page) {
         PageRequest pageable = new PageRequest(page, Constant.DEFAULT_PAGING_SIZE);

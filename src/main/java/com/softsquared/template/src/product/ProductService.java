@@ -2,6 +2,7 @@ package com.softsquared.template.src.product;
 
 import com.softsquared.template.DBmodel.Product;
 import com.softsquared.template.config.BaseException;
+import com.softsquared.template.config.statusEnum.IsPublic;
 import com.softsquared.template.src.product.models.PostProductReq;
 import com.softsquared.template.src.product.models.UpdateProductReq;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,6 +91,19 @@ public class ProductService {
             selectedProduct.setDiscountRate(request.getDiscountRate());
             selectedProduct.setIsOnSale(request.getIsOnSale());
             selectedProduct.setIsPublic(request.getIsPublic());
+            productRepository.save(selectedProduct);
+        });
+
+        return productId;
+    }
+
+    public Long deleteProduct(Long marketId, Long productId) throws BaseException {
+        Optional<Product> product = productRepository.findById(productId);
+        if (product.isPresent() && !product.get().getMarketId().equals(marketId)) {
+            throw new BaseException(NO_AUTHORITY);
+        }
+        product.ifPresent(selectedProduct -> {
+            selectedProduct.setIsPublic(IsPublic.PRIVATE);
             productRepository.save(selectedProduct);
         });
 
