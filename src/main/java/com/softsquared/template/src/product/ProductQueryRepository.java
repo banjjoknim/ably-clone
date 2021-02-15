@@ -1,14 +1,13 @@
 package com.softsquared.template.src.product;
 
 import com.querydsl.core.types.ExpressionUtils;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.softsquared.template.DBmodel.FavoriteProduct;
-import com.softsquared.template.DBmodel.Product;
-import com.softsquared.template.DBmodel.ProductDetail;
-import com.softsquared.template.DBmodel.Review;
+import com.softsquared.template.DBmodel.*;
 import com.softsquared.template.src.product.models.*;
+import com.softsquared.template.src.purchase.model.GetPurchaseProduct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -189,4 +188,23 @@ public class ProductQueryRepository {
         return false;
     }
 
+    /**
+     * 구매하기에서 구매하고자 하는 상품에 대한 정보 출력하기 위해
+     */
+    public List<GetPurchaseProduct> findProductByProductId(long productId){
+        QProduct product = QProduct.product;
+        QProductImage image = QProductImage.productImage;
+        QMarket market = QMarket.market;
+        return jpaQueryFactory.select((Projections.constructor(GetPurchaseProduct.class,
+                image.image, market.name,product.name, product.price,
+                product.discountRate)))
+                .from(product)
+                .innerJoin(image)
+                .on(image.productId.eq(productId), image.type.eq(ProductImage.ImageType.THUMBNAIL))
+                .innerJoin(market)
+                .on(product.marketId.eq(market.id))
+                .where(product.id.eq(productId))
+                .fetch();
+
+    }
 }

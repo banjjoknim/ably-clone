@@ -5,9 +5,14 @@ import com.softsquared.template.config.BaseResponse;
 import com.softsquared.template.config.FormatChecker;
 import com.softsquared.template.src.deliverydestination.DeliveryProvider;
 import com.softsquared.template.src.deliverydestination.model.GetMainDeliveryRes;
+import com.softsquared.template.src.purchase.model.GetPurchaseProductReq;
+import com.softsquared.template.src.purchase.model.GetPurchaseProductRes;
 import com.softsquared.template.src.purchase.model.GetPurchaseRefundRes;
 import com.softsquared.template.utils.JwtService;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
 import static com.softsquared.template.config.BaseResponseStatus.*;
 
 @RestController
@@ -31,6 +36,34 @@ public class PurchaseController {
 
         formatChecker = new FormatChecker();
     }
+
+    /**
+     * 구매하기 주문상품 조회 --> 아직 저장하는게 아니라 단순 조회임
+     */
+    @ResponseBody
+    @GetMapping("/products")
+    public BaseResponse<GetPurchaseProductRes> getPurchaseproduct (@RequestHeader("X-ACCESS-TOKEN") String token,
+                                                                   @RequestParam long productId,
+                                                                   @RequestParam List<String> options,
+                                                                   @RequestParam List<Integer> num){
+        long userId;
+        try{
+            userId = jwtService.getUserId();
+
+        }catch(Exception e){
+            e.printStackTrace();
+            return new BaseResponse<>(INVALID_TOKEN);
+        }
+        try{
+            GetPurchaseProductRes productRes = purchaseProvider.retrievePurchaseProduct(productId,options,num);
+            return new BaseResponse<>(SUCCESS,productRes);
+        }catch (BaseException e){
+            e.printStackTrace();
+            return new BaseResponse<>(e.getStatus());
+        }
+
+    }
+
 
 
     /**
