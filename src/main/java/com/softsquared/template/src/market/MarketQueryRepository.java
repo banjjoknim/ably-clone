@@ -5,6 +5,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.softsquared.template.DBmodel.Market;
 import com.softsquared.template.DBmodel.Product;
 import com.softsquared.template.DBmodel.ProductImage;
+import com.softsquared.template.config.PageRequest;
 import com.softsquared.template.config.statusEnum.IsPublic;
 import com.softsquared.template.src.market.models.GetMarketsRes;
 import com.softsquared.template.src.market.models.QGetMarketsRes;
@@ -34,7 +35,7 @@ public class MarketQueryRepository {
     }
 
     public List<GetMarketsRes> getMarketsQuery(Market.MarketType marketType, Long categoryId,
-                                               Long ageGroupId, Long marketTagId) {
+                                               Long ageGroupId, Long marketTagId, PageRequest pageable) {
         return jpaQueryFactory
                 .select(new QGetMarketsRes(
                         market.id,
@@ -49,6 +50,8 @@ public class MarketQueryRepository {
                 .where(filterAgeGroupEq(ageGroupId))
                 .where(filterMarketTagEq(marketTagId))
                 .groupBy(market.id, market.name)
+                .offset(pageable.getPage() * pageable.getSize())
+                .limit(pageable.getSize())
                 .fetch();
     }
 

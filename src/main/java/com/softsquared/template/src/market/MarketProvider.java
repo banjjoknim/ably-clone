@@ -1,6 +1,7 @@
 package com.softsquared.template.src.market;
 
 import com.softsquared.template.DBmodel.Market;
+import com.softsquared.template.config.PageRequest;
 import com.softsquared.template.src.market.models.GetMarketsRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,8 +20,10 @@ public class MarketProvider {
         this.marketQueryRepository = marketQueryRepository;
     }
 
-    public List<GetMarketsRes> retrieveMarkets(Market.MarketType marketType, Long categoryId, Long ageGroupId, Long marketTagId) {
-        List<GetMarketsRes> markets = marketQueryRepository.getMarketsQuery(marketType, categoryId, ageGroupId, marketTagId);
+    public List<GetMarketsRes> retrieveMarkets(Market.MarketType marketType, Long categoryId,
+                                               Long ageGroupId, Long marketTagId, PageRequest pageable) {
+        List<GetMarketsRes> markets = marketQueryRepository
+                .getMarketsQuery(marketType, categoryId, ageGroupId, marketTagId, pageable);
         markets.stream()
                 .forEach(market -> market.setMarketTags(marketQueryRepository
                         .getMarketTagsQuery(market.getMarketId())));

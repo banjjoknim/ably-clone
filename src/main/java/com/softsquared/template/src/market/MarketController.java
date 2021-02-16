@@ -3,6 +3,8 @@ package com.softsquared.template.src.market;
 import com.softsquared.template.DBmodel.Market;
 import com.softsquared.template.config.BaseException;
 import com.softsquared.template.config.BaseResponse;
+import com.softsquared.template.config.Constant;
+import com.softsquared.template.config.PageRequest;
 import com.softsquared.template.src.market.models.GetMarketsRes;
 import com.softsquared.template.src.market.models.PatchMarketReq;
 import com.softsquared.template.src.market.models.PostMarketReq;
@@ -30,8 +32,11 @@ public class MarketController {
     public BaseResponse<List<GetMarketsRes>> getMarkets(@RequestParam(required = false) Market.MarketType marketType,
                                                         @RequestParam(required = false) Long categoryId,
                                                         @RequestParam(required = false) Long ageGroupId,
-                                                        @RequestParam(required = false) Long marketTagId) {
-        return new BaseResponse<>(SUCCESS, marketProvider.retrieveMarkets(marketType, categoryId, ageGroupId, marketTagId));
+                                                        @RequestParam(required = false) Long marketTagId,
+                                                        @RequestParam Integer page) {
+        PageRequest pageable = new PageRequest(page, Constant.MARKET_LIST_PAGING_SIZE);
+
+        return new BaseResponse<>(SUCCESS, marketProvider.retrieveMarkets(marketType, categoryId, ageGroupId, marketTagId, pageable));
     }
 
     @PostMapping("")
