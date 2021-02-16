@@ -9,4 +9,5 @@ import lombok.Getter;
 public class GetUserInfo {
     private String userName;
     private String email;
+    private int status;
 }

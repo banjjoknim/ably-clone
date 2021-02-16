@@ -58,12 +58,13 @@ public class UserInfoService {
 
         String phoneNum = param.getPhoneNum();
         int birthday = param.getBirthday();
+        int status = 0;
 
         String dateCreated = (new Timestamp(System.currentTimeMillis())).toString();
         String dateUpdated = (new Timestamp(System.currentTimeMillis())).toString();
 
-        newUser = new UserInfo(10,email,userName,phoneNum,birthday,
-                0,0,"WELCOME",0,dateCreated,dateUpdated, gender, age);
+        newUser = new UserInfo(userId,email,userName,phoneNum,birthday,
+                0,0,"WELCOME",status,dateCreated,dateUpdated, gender, age);
 
         userInfoRepository.save(newUser);
 
