@@ -5,6 +5,7 @@ import com.softsquared.template.config.BaseException;
 import com.softsquared.template.config.BaseResponse;
 import com.softsquared.template.config.Constant;
 import com.softsquared.template.config.PageRequest;
+import com.softsquared.template.src.market.models.GetMarketMainInfoRes;
 import com.softsquared.template.src.market.models.GetMarketsRes;
 import com.softsquared.template.src.market.models.PatchMarketReq;
 import com.softsquared.template.src.market.models.PostMarketReq;
@@ -37,6 +38,15 @@ public class MarketController {
         PageRequest pageable = new PageRequest(page, Constant.MARKET_LIST_PAGING_SIZE);
 
         return new BaseResponse<>(SUCCESS, marketProvider.retrieveMarkets(marketType, categoryId, ageGroupId, marketTagId, pageable));
+    }
+
+    @GetMapping("/{marketId}/main-info")
+    public BaseResponse<GetMarketMainInfoRes> getMarketMainInfo(@PathVariable Long marketId) {
+        try {
+            return new BaseResponse<>(SUCCESS, marketProvider.retrieveMarketMainInfo(marketId));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
     }
 
     @PostMapping("")
