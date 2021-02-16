@@ -33,15 +33,18 @@ public class MarketQueryRepository {
         this.jpaQueryFactory = jpaQueryFactory;
     }
 
-    public List<GetMarketsRes> getMarketsQuery(Market.MarketType marketType) {
+    public List<GetMarketsRes> getMarketsQuery(Market.MarketType marketType, Long categoryId) {
         return jpaQueryFactory
                 .select(new QGetMarketsRes(
                         market.id,
                         market.name
                 ))
                 .from(market)
+                .innerJoin(product).on(market.id.eq(product.marketId))
                 .where(market.isPublic.eq(IsPublic.PUBLIC))
                 .where(filterMarketTypeEq(marketType))
+                .where(filterCategoryEq(categoryId))
+                .groupBy(market.id, market.name)
                 .fetch();
     }
 
@@ -90,6 +93,10 @@ public class MarketQueryRepository {
             return market.marketType.eq(Market.MarketType.BRAND);
         }
         return null;
+    }
+
+    private BooleanExpression filterCategoryEq(Long categoryId) {
+        return product.categoryId.eq(categoryId);
     }
 
 }

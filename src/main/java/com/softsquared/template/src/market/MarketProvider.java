@@ -19,8 +19,8 @@ public class MarketProvider {
         this.marketQueryRepository = marketQueryRepository;
     }
 
-    public List<GetMarketsRes> retrieveMarkets(Market.MarketType marketType) {
-        List<GetMarketsRes> markets = marketQueryRepository.getMarketsQuery(marketType);
+    public List<GetMarketsRes> retrieveMarkets(Market.MarketType marketType, Long categoryId) {
+        List<GetMarketsRes> markets = marketQueryRepository.getMarketsQuery(marketType, categoryId);
         markets.stream()
                 .forEach(market -> market.setMarketTags(marketQueryRepository
                         .getMarketTagsQuery(market.getMarketId())));
