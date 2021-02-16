@@ -4,7 +4,7 @@ import com.softsquared.template.DBmodel.Review;
 import com.softsquared.template.config.BaseException;
 import com.softsquared.template.src.product.ProductRepository;
 import com.softsquared.template.src.review.models.PostProductReviewsReq;
-import com.softsquared.template.src.review.models.UpdateReviewReq;
+import com.softsquared.template.src.review.models.PatchReviewReq;
 import com.softsquared.template.src.user.UserInfoRepository;
 import com.softsquared.template.utils.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +57,7 @@ public class ReviewService {
         return review.getId();
     }
 
-    public Long updateReview(Long reviewId, UpdateReviewReq request) throws BaseException {
+    public Long updateReview(Long reviewId, PatchReviewReq request) throws BaseException {
         Optional<Review> review = reviewRepository.findById(reviewId);
         if (review.isPresent()) {
             validateUser(review);

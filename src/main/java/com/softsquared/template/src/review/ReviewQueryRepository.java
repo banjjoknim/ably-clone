@@ -1,10 +1,16 @@
 package com.softsquared.template.src.review;
 
 import com.querydsl.core.types.ExpressionUtils;
+
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.CaseBuilder;
+
 import com.querydsl.core.types.Projections;
+
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.softsquared.template.config.PageRequest;
 import com.softsquared.template.config.statusEnum.ColorComment;
@@ -17,11 +23,13 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static com.softsquared.template.DBmodel.QMarket.market;
 import static com.softsquared.template.DBmodel.QProduct.product;
 import static com.softsquared.template.DBmodel.QReview.review;
 import static com.softsquared.template.DBmodel.QReviewImage.reviewImage;
 import static com.softsquared.template.DBmodel.QUserInfo.userInfo;
 import static com.softsquared.template.config.Constant.HUNDRED;
+import static com.softsquared.template.config.Constant.REVIEW_SUMMARY_SATISFACTION_TRUNCATE_POSITION;
 
 @Repository
 public class ReviewQueryRepository {
@@ -110,6 +118,53 @@ public class ReviewQueryRepository {
                 .intValue();
     }
 
+    public MarketReviewSummary getMarketReviews(Long marketId, Long categoryId) {
+        return jpaQueryFactory
+                .select(new QMarketReviewSummary(
+                        new CaseBuilder()
+                                .when(calculateSatisfactionFromMarketReview(marketId, categoryId).isNull())
+                                .then(Expressions.asNumber(0.0))
+                                .otherwise(calculateSatisfactionFromMarketReview(marketId, categoryId)),
+                        calculateMarketReviewCount(marketId, categoryId)
+                ))
+                .from(market)
+                .where(market.id.eq(marketId))
+                .fetchFirst();
+    }
+
+    private JPQLQuery<Long> calculateMarketReviewCount(Long marketId, Long categoryId) {
+        return JPAExpressions
+                .select(review.count())
+                .from(review)
+                .innerJoin(product).on(review.productId.eq(product.id))
+                .where(marketEq(marketId))
+                .where(categoryEq(categoryId));
+    }
+
+    private NumberExpression<Double> calculateSatisfactionFromMarketReview(Long marketId, Long categoryId) {
+        return Expressions.stringTemplate("TRUNCATE({0}, {1})",
+                Expressions.asNumber(JPAExpressions.select(review.count()
+                        .multiply(HUNDRED)
+                        .divide(Expressions.asNumber(calculateMarketReviewCount(marketId, categoryId))))
+                        .from(review)
+                        .innerJoin(product).on(review.productId.eq(product.id))
+                        .where(marketEq(marketId))
+                        .where(categoryEq(categoryId))
+                        .where(review.satisfaction.eq(Satisfaction.GOOD))),
+                REVIEW_SUMMARY_SATISFACTION_TRUNCATE_POSITION)
+                .castToNum(Double.class);
+    }
+
+    private BooleanExpression categoryEq(Long categoryId) {
+        if (categoryId != null) {
+            return product.categoryId.eq(categoryId);
+        }
+        return null;
+    }
+
+    private BooleanExpression marketEq(Long marketId) {
+        return product.marketId.eq(marketId);
+
     /**
      * 안뇽하세요 콜트님
      * 회원의 리뷰수좀 빼가겠습니당
@@ -120,6 +175,5 @@ public class ReviewQueryRepository {
                 .from(review)
                 .where(review.userId.eq(userId))
                 .fetchCount();
-
     }
 }

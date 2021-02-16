@@ -7,8 +7,12 @@ import com.softsquared.template.src.category.DetailCategoryRepository;
 import com.softsquared.template.src.product.models.GetProductsRes;
 import com.softsquared.template.src.product.models.ProductFilterReq;
 import com.softsquared.template.src.product.models.ProductOrderType;
+
+import com.softsquared.template.src.product.models.ProductsInfo;
+
 import com.softsquared.template.src.purchase.model.GetPurchaseProduct;
 import com.softsquared.template.src.purchase.model.GetPurchaseProductReq;
+
 import com.softsquared.template.utils.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +24,7 @@ import java.util.List;
 import static com.softsquared.template.config.BaseResponseStatus.*;
 import static java.util.stream.Collectors.toList;
 
+@Transactional(readOnly = true)
 @Service
 public class ProductsProvider {
 
@@ -43,25 +48,33 @@ public class ProductsProvider {
     }
 
     // 상품 조회
-    @Transactional(readOnly = true)
     public List<GetProductsRes> retrieveProducts(ProductFilterReq filterRequest, ProductOrderType orderType, PageRequest pageable) throws BaseException {
 
         validateFilters(filterRequest); // 필터 유효성 검증
 
         return productsQueryRepository.getProductsInfos(filterRequest, orderType, pageable).stream()
-                .map(productsInfo -> {
-                    Long userId;
-                    try {
-                        userId = jwtService.getUserId();
-                    } catch (BaseException e) {
-                        userId = 0L;
-                    }
-                    Long productId = productsInfo.getProductId();
-                    boolean isLiked = productQueryRepository.getProductIsLikedQuery(userId, productId);
-                    boolean isNew = (new Date().getTime() - productRepository.findById(productId).get().getDateCreated().getTime()) <= 1000 * 60 * 60 * 24; // 등록된지 하루 이내이면 true
-                    return new GetProductsRes(productsInfo, productImageQueryRepository.getProductThumbnailsQuery(productId), isLiked, isNew);
-                })
+                .map(productsInfo -> getGetProductsRes(productsInfo))
                 .collect(toList()); // 필터 적용된 결과 리스트 조회
+    }
+
+    // 마켓 상품 조회
+    public List<GetProductsRes> retrieveMarketProducts(Long marketId, ProductOrderType orderType, PageRequest pageable) {
+        return productsQueryRepository.getMarketProductsInfos(marketId, orderType, pageable).stream()
+                .map(productsInfo -> getGetProductsRes(productsInfo))
+                .collect(toList());
+    }
+
+    private GetProductsRes getGetProductsRes(ProductsInfo productsInfo) {
+        Long userId;
+        try {
+            userId = jwtService.getUserId();
+        } catch (BaseException e) {
+            userId = 0L;
+        }
+        Long productId = productsInfo.getProductId();
+        boolean isLiked = productQueryRepository.getProductIsLikedQuery(userId, productId);
+        boolean isNew = (new Date().getTime() - productRepository.findById(productId).get().getDateCreated().getTime()) <= 1000 * 60 * 60 * 24; // 등록된지 하루 이내이면 true
+        return new GetProductsRes(productsInfo, productImageQueryRepository.getProductThumbnailsQuery(productId), isLiked, isNew);
     }
 
     // 필터 유효성 검증

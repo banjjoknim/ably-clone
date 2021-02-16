@@ -41,11 +41,18 @@ public class ProductsQueryRepository {
         this.jpaQueryFactory = jpaQueryFactory;
     }
 
-    // 상품 목록 조회
+    // 카테고리 상품 목록 조회
     public List<ProductsInfo> getProductsInfos(ProductFilterReq filterRequest, ProductOrderType orderType, PageRequest pageable) {
 
         JPAQuery<ProductsInfo> infosFilterQuery = productsInfosFilterQuery(getProductsInfosQuery(pageable), filterRequest);
         return productsInfosOrderByQuery(infosFilterQuery, orderType).fetch();
+    }
+
+    // 마켓 상품 목록 조회
+    public List<ProductsInfo> getMarketProductsInfos(Long marketId, ProductOrderType orderType, PageRequest pageable) {
+        return productsInfosOrderByQuery(getProductsInfosQuery(pageable)
+                .where(product.marketId.eq(marketId)), orderType)
+                .fetch();
     }
 
     // 상품 목록 조회 쿼리

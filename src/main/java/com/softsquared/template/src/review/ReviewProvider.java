@@ -4,10 +4,7 @@ import com.softsquared.template.config.BaseException;
 import com.softsquared.template.config.BaseResponseStatus;
 import com.softsquared.template.config.PageRequest;
 import com.softsquared.template.src.product.ProductRepository;
-import com.softsquared.template.src.review.models.GetProductReviewsRes;
-import com.softsquared.template.src.review.models.ReviewImageInfo;
-import com.softsquared.template.src.review.models.ReviewInfo;
-import com.softsquared.template.src.review.models.ReviewSummary;
+import com.softsquared.template.src.review.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,6 +46,11 @@ public class ReviewProvider {
                 })
                 .collect(toList());
     }
+
+
+    public GetMarketReviewRes retrieveMarketReview(Long marketId, Long categoryId) {
+        MarketReviewSummary marketReviewSummary = reviewQueryRepository.getMarketReviews(marketId, categoryId);
+        return new GetMarketReviewRes(marketReviewSummary, null);
 
     /**
      * 회원이 작성한 리뷰 수

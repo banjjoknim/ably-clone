@@ -145,7 +145,7 @@ public class ProductController {
     }
 
     @PatchMapping("/{productId}")
-    public BaseResponse<Long> patchProduct(@PathVariable(value = "productId") Long productId, @RequestBody UpdateProductReq request) {
+    public BaseResponse<Long> patchProduct(@PathVariable(value = "productId") Long productId, @RequestBody PatchProductReq request) {
         try {
             Long marketId = 3L;
             if (request.getProductName() == null) {

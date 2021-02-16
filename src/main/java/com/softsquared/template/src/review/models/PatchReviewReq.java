@@ -12,7 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class UpdateReviewReq {
+public class PatchReviewReq {
 
     private String comment;
     private Satisfaction satisfaction;
