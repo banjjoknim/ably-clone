@@ -2,6 +2,7 @@ package com.softsquared.template.src.purchase;
 
 import com.softsquared.template.DBmodel.ProductImage;
 import com.softsquared.template.config.BaseException;
+import com.softsquared.template.config.Caster;
 import com.softsquared.template.src.deliverydestination.DeliveryProvider;
 import com.softsquared.template.src.deliverydestination.model.GetMainDeliveryRes;
 import com.softsquared.template.src.product.ProductProvider;
@@ -25,6 +26,7 @@ public class PurchaseProvider {
     private final UserInfoProvider userInfoProvider;
     private final DeliveryProvider deliveryProvider;
     private final ProductsProvider productsProvider;
+    private final Caster caster;
 
     @Lazy
     @Autowired
@@ -34,6 +36,7 @@ public class PurchaseProvider {
         this.userInfoProvider = userInfoProvider;
         this.deliveryProvider = deliveryProvider;
         this.productsProvider = productsProvider;
+        this.caster = new Caster();
 
     }
 
@@ -80,7 +83,9 @@ public class PurchaseProvider {
         String totalNumStr = "주문 상품 총"+totalNum+"개";
         String marketNameStr = marketName+" 배송상품 " +totalNum+"개";
 
-        GetPurchaseProductRes productRes = new GetPurchaseProductRes(totalNumStr,marketNameStr,catedList);
+
+        GetPurchaseProductRes productRes = new GetPurchaseProductRes(totalNumStr,marketNameStr,catedList,price*totalNum,
+                realPrice*totalNum,(-1)*(realPrice-price)*totalNum,0);
         return productRes;
     }
 

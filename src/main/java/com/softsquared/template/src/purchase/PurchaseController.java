@@ -5,9 +5,7 @@ import com.softsquared.template.config.BaseResponse;
 import com.softsquared.template.config.FormatChecker;
 import com.softsquared.template.src.deliverydestination.DeliveryProvider;
 import com.softsquared.template.src.deliverydestination.model.GetMainDeliveryRes;
-import com.softsquared.template.src.purchase.model.GetPurchaseProductReq;
-import com.softsquared.template.src.purchase.model.GetPurchaseProductRes;
-import com.softsquared.template.src.purchase.model.GetPurchaseRefundRes;
+import com.softsquared.template.src.purchase.model.*;
 import com.softsquared.template.utils.JwtService;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,6 +34,16 @@ public class PurchaseController {
 
         formatChecker = new FormatChecker();
     }
+
+//    /**
+//     * 구매하기 (결제하기 버튼 클릭 이후)
+//     */
+//    @ResponseBody
+//    @PostMapping("")
+//    public BaseResponse<PostPurchaseRes> postPurchase(@RequestHeader("X-ACCESS-TOKEN") String token,
+//                                                      @RequestBody PostPurchaseReq param){
+//
+//    }
 
     /**
      * 구매하기 주문상품 조회 --> 아직 저장하는게 아니라 단순 조회임
@@ -95,17 +103,29 @@ public class PurchaseController {
     }
 
 
-
+    /**
+     * 환불 정보 조회
+     * @return
+     */
     @ResponseBody
     @GetMapping("/refund-infos")
-    public BaseResponse<GetPurchaseRefundRes> getPurchaseRefund(){
+    public BaseResponse<GetPurchaseRefundRes> getPurchaseRefund(@RequestHeader("X-ACCESS-TOKEN") String token){
+        long userId;
         try{
-            GetPurchaseRefundRes getPurchaseRefundRes= purchaseProvider.retrievePurchaseRefundInfo(1);
+            userId = jwtService.getUserId();
+
+        }catch(Exception e){
+            e.printStackTrace();
+            return new BaseResponse<>(INVALID_TOKEN);
+        }
+        try{
+            GetPurchaseRefundRes getPurchaseRefundRes= purchaseProvider.retrievePurchaseRefundInfo(userId);
             return new BaseResponse<>(SUCCESS, getPurchaseRefundRes);
         }catch(BaseException e){
             e.printStackTrace();
             return new BaseResponse<>(e.getStatus());
         }
     }
+
 
 }

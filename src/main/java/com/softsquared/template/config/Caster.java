@@ -1,6 +1,7 @@
 package com.softsquared.template.config;
 
-import java.util.Date;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Response넘겨줄 때 데이터 정제하기 위해
@@ -47,6 +48,32 @@ public class Caster {
             default : result = "input error";
         }
         return result;
+    }
+
+    /**
+     * 원 , 추가
+     */
+    public String priceString(int price){
+        String[] str = (Integer.toString(price)).split("");
+        ArrayList<String> arr = new ArrayList<>();
+        String result="";
+        for(int i= str.length-1;i>=0;i--){
+            arr.add(str[i]);
+            if(i%3==2)
+                arr.add(",");
+        }
+        if(arr.get(arr.size()-1).equals(","))
+            arr.remove(arr.size()-1);
+        Collections.sort(arr, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                return -1;
+            }
+        });
+        for(int i=0;i<arr.size();i++){
+            result+=arr.get(i);
+        }
+        return result+"원";
     }
 
 }

@@ -9,4 +9,6 @@ public class GetMainDeliveryRes {
     private String nameNum;
     private String mainAddress;
     private String subAddress;
+
+    private long desId;
 }

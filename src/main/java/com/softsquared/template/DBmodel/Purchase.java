@@ -51,4 +51,16 @@ public class Purchase extends BaseEntity {
     @Column(name = "userId", nullable = false)
     private long userId;
 
+    public Purchase(int coupon,int point, int price, long desId, long paymentCode,
+                    long purProductCode,int status, long userId){
+        this.coupon = coupon;
+        this.point = point;
+        this.price = price;
+        this.desId = desId;
+        this.paymentCode = paymentCode;
+        this.status = status;
+        this.userId = userId;
+        this.purProductCode =purProductCode;
+    }
+
 }
