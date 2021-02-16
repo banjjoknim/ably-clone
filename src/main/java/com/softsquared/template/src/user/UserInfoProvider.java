@@ -162,15 +162,28 @@ public class UserInfoProvider {
      * 회원가입 유무 확인
      */
     public Boolean retrieveIsUser(long userId) throws BaseException{
-        GetUserInfo userInfo ;
+        List<GetUserInfo> userInfoList ;
+        GetUserInfo userInfo;
         boolean isExits;
         try{
-            userInfo= userInfoSelectRepository.findUserByUserId(userId).get(0);
-            isExits = true;
+            userInfoList= userInfoSelectRepository.findUserByUserId(userId);
+            if(userInfoList ==null || userInfoList.size()==0){
+                //해당 회원을 찾을 수 없을 때
+                return false;
+            }
+
+            userInfo = userInfoList.get(0);
+            if(userInfo.getStatus() ==0){
+                //회원이 정상적임
+                isExits=true;
+            }else{
+                //회원이 삭제됨
+                isExits= false;
+            }
         }catch(Exception e){
             e.printStackTrace();
-//            throw new BaseException(NOT_FOUND_USERS);
-            isExits = false;
+           throw new BaseException(NOT_FOUND_USERS);
+
         }
         return isExits;
     }

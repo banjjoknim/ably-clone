@@ -120,9 +120,10 @@ public class UserInfoController {
             Boolean isExist = userInfoProvider.retrieveIsUser(userId);
 
             if(isExist==true){
-                return new BaseResponse<>(SUCCESS_UNEXIST,isExist);
-            }else{
+                //회원이 존재
                 return new BaseResponse<>(SUCCESS_EXIST,isExist);
+            }else{
+                return new BaseResponse<>(SUCCESS_UNEXIST,isExist);
             }
 
         }catch(BaseException e){

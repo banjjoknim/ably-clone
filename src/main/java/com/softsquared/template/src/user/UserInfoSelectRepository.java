@@ -96,9 +96,9 @@ public class UserInfoSelectRepository extends QuerydslRepositorySupport {
     public List<GetUserInfo> findUserByUserId(long userId){
         QUserInfo userInfo = QUserInfo.userInfo;
         return queryFactory.select((Projections.constructor(GetUserInfo.class,
-                userInfo.userName, userInfo.email)))
+                userInfo.userName, userInfo.email,userInfo.status)))
                 .from(userInfo)
-                .where(userInfo.userId.eq((userId)), userInfo.status.eq(0))
+                .where(userInfo.userId.eq((userId)))
                 .fetch();
     }
 
