@@ -2,6 +2,7 @@ package com.softsquared.template.src.market;
 
 import com.softsquared.template.DBmodel.Market;
 import com.softsquared.template.config.BaseException;
+import com.softsquared.template.config.statusEnum.IsPublic;
 import com.softsquared.template.src.market.models.PatchMarketReq;
 import com.softsquared.template.src.market.models.PostMarketReq;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,10 +40,7 @@ public class MarketService {
     }
 
     public Long updateMarket(Long marketId, PatchMarketReq request) throws BaseException {
-        Long marketIdFromToken = 11L;
-        if (marketIdFromToken != marketId) {
-            throw new BaseException(NO_AUTHORITY);
-        }
+        validateMarketAuthority(marketId);
         Optional<Market> market = marketRepository.findById(marketId);
         if (market.isPresent()) {
             if (!market.get().getName().equals(request.getMarketName())) {
@@ -67,6 +65,23 @@ public class MarketService {
     private void validateMarketName(String marketName) throws BaseException {
         if (marketRepository.existsByName(marketName)) {
             throw new BaseException(DUPLICATED_MARKET_NAME);
+        }
+    }
+
+    public Long deleteMarket(Long marketId) throws BaseException {
+        validateMarketAuthority(marketId);
+        marketRepository.findById(marketId)
+                .ifPresent(selectedMarket -> {
+                    selectedMarket.setIsPublic(IsPublic.PRIVATE);
+                    marketRepository.save(selectedMarket);
+                });
+        return marketId;
+    }
+
+    private void validateMarketAuthority(Long marketId) throws BaseException {
+        Long marketIdFromToken = 15L;
+        if (marketIdFromToken != marketId) {
+            throw new BaseException(NO_AUTHORITY);
         }
     }
 }

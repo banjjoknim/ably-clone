@@ -41,6 +41,15 @@ public class MarketController {
         }
     }
 
+    @DeleteMapping("/{marketId}")
+    public BaseResponse<Long> deleteMarket(@PathVariable Long marketId) {
+        try {
+            return new BaseResponse<>(SUCCESS, marketService.deleteMarket(marketId));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
     private void validateMarketRequest(String marketName, Market.DeliveryType deliveryType, Market.MarketType marketType, String image) throws BaseException {
         if (marketName == null) {
             throw new BaseException(MARKET_NAME_CAN_NOT_BE_EMPTY);
