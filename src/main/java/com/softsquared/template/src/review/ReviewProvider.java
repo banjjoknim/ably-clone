@@ -47,8 +47,8 @@ public class ReviewProvider {
                 .collect(toList());
     }
 
-    public GetMarketReviewRes retrieveMarketReview(Long marketId) {
-        MarketReviewSummary marketReviewSummary = reviewQueryRepository.getMarketReviews(marketId);
+    public GetMarketReviewRes retrieveMarketReview(Long marketId, Long categoryId) {
+        MarketReviewSummary marketReviewSummary = reviewQueryRepository.getMarketReviews(marketId, categoryId);
         return new GetMarketReviewRes(marketReviewSummary, null);
     }
 

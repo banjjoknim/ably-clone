@@ -67,8 +67,8 @@ public class MarketController {
     }
 
     @GetMapping("/{marketId}/reviews")
-    public BaseResponse<GetMarketReviewRes> getMarketReview(@PathVariable Long marketId) {
-        return new BaseResponse<>(SUCCESS, marketProvider.retrieveMarketReview(marketId));
+    public BaseResponse<GetMarketReviewRes> getMarketReview(@PathVariable Long marketId, @RequestParam(required = false) Long categoryId) {
+        return new BaseResponse<>(SUCCESS, marketProvider.retrieveMarketReview(marketId, categoryId));
     }
 
     @PostMapping("")

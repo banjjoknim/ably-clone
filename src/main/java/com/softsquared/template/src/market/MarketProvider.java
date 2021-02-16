@@ -70,7 +70,7 @@ public class MarketProvider {
         return productsProvider.retrieveMarketProducts(marketId, orderType, pageable);
     }
 
-    public GetMarketReviewRes retrieveMarketReview(Long marketId) {
-        return reviewProvider.retrieveMarketReview(marketId);
+    public GetMarketReviewRes retrieveMarketReview(Long marketId, Long categoryId) {
+        return reviewProvider.retrieveMarketReview(marketId, categoryId);
     }
 }
