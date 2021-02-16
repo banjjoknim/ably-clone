@@ -156,9 +156,11 @@ public class UserInfoController {
         if(!formatChecker.isPhoneNum(param.getPhoneNum()))
             return new BaseResponse<>(INVALID_PHONENUM);
 
-        //이메일 확인
-        if(!formatChecker.isEmail(param.getEmail()))
-            return new BaseResponse<>(INVALID_EMAIL);
+        if(param.getEmail()!=null) {
+            //이메일 확인
+            if (!formatChecker.isEmail(param.getEmail()))
+                return new BaseResponse<>(INVALID_EMAIL);
+        }
 
 
         try{
