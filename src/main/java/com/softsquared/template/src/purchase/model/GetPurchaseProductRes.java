@@ -8,6 +8,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class GetPurchaseProductRes {
-    private int totalNum;
+    private String totalNum;
+    private String marketName;
     private List<GetPurchaseProductCasted> productList;
 }

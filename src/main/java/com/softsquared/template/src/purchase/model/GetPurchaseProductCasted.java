@@ -10,6 +10,6 @@ public class GetPurchaseProductCasted {
     private String marketName;
     private String productName;
     private int price;
-    private int count;
+    private String count;
     private String option;
 }

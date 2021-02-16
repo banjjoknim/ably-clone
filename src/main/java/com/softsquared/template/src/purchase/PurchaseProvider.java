@@ -52,6 +52,10 @@ public class PurchaseProvider {
         String img = getPurchaseProduct.getImg();
         String marketName = getPurchaseProduct.getMarketName();
         String productName = getPurchaseProduct.getProductName();
+        if(productName.length()>=20){
+            productName.substring(0,21);
+            productName+="...";
+        }
         int realPrice = getPurchaseProduct.getPrice();
         int discount = getPurchaseProduct.getDiscount();
         int price = (int)(realPrice*(1-discount*0.01));
@@ -61,19 +65,22 @@ public class PurchaseProvider {
             //해당 제품에 대한 정보 가져오기
 
             int count =num.get(i);
+            String countStr = count+"개";
             int totalPrice = price*count;
 
             String option = options.get(i);
 
             totalNum+=count;
 
-            GetPurchaseProductCasted cated = new GetPurchaseProductCasted(img,marketName,productName,totalPrice,count,option);
+            GetPurchaseProductCasted cated = new GetPurchaseProductCasted(img,marketName,productName,totalPrice,countStr,option);
 
             catedList.add(cated);
 
         }
+        String totalNumStr = "주문 상품 총"+totalNum+"개";
+        String marketNameStr = marketName+" 배송상품 " +totalNum+"개";
 
-        GetPurchaseProductRes productRes = new GetPurchaseProductRes(totalNum,catedList);
+        GetPurchaseProductRes productRes = new GetPurchaseProductRes(totalNumStr,marketNameStr,catedList);
         return productRes;
     }
 
