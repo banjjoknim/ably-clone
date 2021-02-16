@@ -3,9 +3,13 @@ package com.softsquared.template.src.market;
 import com.softsquared.template.DBmodel.Market;
 import com.softsquared.template.config.BaseException;
 import com.softsquared.template.config.BaseResponse;
+import com.softsquared.template.src.market.models.GetMarketsRes;
 import com.softsquared.template.src.market.models.PatchMarketReq;
 import com.softsquared.template.src.market.models.PostMarketReq;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static com.softsquared.template.config.BaseResponseStatus.*;
 
@@ -13,10 +17,18 @@ import static com.softsquared.template.config.BaseResponseStatus.*;
 @RequestMapping("/markets")
 public class MarketController {
 
+    private final MarketProvider marketProvider;
     private final MarketService marketService;
 
-    public MarketController(MarketService marketService) {
+    @Autowired
+    public MarketController(MarketProvider marketProvider, MarketService marketService) {
+        this.marketProvider = marketProvider;
         this.marketService = marketService;
+    }
+
+    @GetMapping("")
+    public BaseResponse<List<GetMarketsRes>> getMarkets(@RequestParam(required = false) Market.MarketType marketType) {
+        return new BaseResponse<>(SUCCESS, marketProvider.retrieveMarkets(marketType));
     }
 
     @PostMapping("")
