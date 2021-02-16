@@ -76,19 +76,19 @@ public class DeliveryController {
         if(token == null || token.length()==0)
             return new BaseResponse<>(EMPTY_JWT);
 
-        if(formatChecker.isFull(param.getPhoneNum())){
+        if(!formatChecker.isFull(param.getPhoneNum())){
             return new BaseResponse<>(EMPTY_PHONENUM);
         }
-        if(formatChecker.isFull(param.getName())){
+        if(!formatChecker.isFull(param.getName())){
             return new BaseResponse<>(EMPTY_DELIVERY_NAME);
         }
-        if(formatChecker.isFull(param.getAddress())){
+        if(!formatChecker.isFull(param.getAddress())){
             return new BaseResponse<>(EMPTY_ADDRESS);
         }
-        if(formatChecker.isFull(param.getDetailAddress())){
+        if(!formatChecker.isFull(param.getDetailAddress())){
             return new BaseResponse<>(EMPTY_DETAIL_ADDRESS);
         }
-        if(formatChecker.isPhoneNum(param.getPhoneNum())){
+        if(!formatChecker.isPhoneNum(param.getPhoneNum())){
             return new BaseResponse<>(EMPTY_DETAIL_ADDRESS);
         }
 
