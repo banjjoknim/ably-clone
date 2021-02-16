@@ -16,7 +16,7 @@ import javax.persistence.*;
 public class Purchase extends BaseEntity {
     @Id // PK를 의미하는 어노테이션
     @Column(name = "purId", nullable = false, updatable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+   // @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long purId;
 
     @Column(name = "coupon")
@@ -51,7 +51,7 @@ public class Purchase extends BaseEntity {
     @Column(name = "userId", nullable = false)
     private long userId;
 
-    public Purchase(int coupon,int point, int price, long desId, long paymentCode,
+    public Purchase(long purId,int coupon,int point, int price, long desId, long paymentCode,
                     long purProductCode,int status, long userId){
         this.coupon = coupon;
         this.point = point;
@@ -61,6 +61,7 @@ public class Purchase extends BaseEntity {
         this.status = status;
         this.userId = userId;
         this.purProductCode =purProductCode;
+        this.purId = purId;
     }
 
 }

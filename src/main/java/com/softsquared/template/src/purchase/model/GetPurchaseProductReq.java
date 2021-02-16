@@ -14,4 +14,5 @@ public class GetPurchaseProductReq {
     private List<String> options;
     private List<Integer> num;
 
+
 }

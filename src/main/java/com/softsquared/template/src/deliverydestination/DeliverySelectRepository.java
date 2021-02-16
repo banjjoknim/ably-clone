@@ -94,4 +94,19 @@ public class DeliverySelectRepository extends QuerydslRepositorySupport {
 
 
     }
+
+    /**
+     * desId로 정보 가져오기
+     */
+    public List<GetDelivery> findDeliveryInfoByDesId(long desId) {
+        QDeliveryDestination deliveryDestination = QDeliveryDestination.deliveryDestination;
+
+        return queryFactory.select((Projections.constructor(GetDelivery.class,
+                deliveryDestination.userName, deliveryDestination.address,
+                deliveryDestination.detailAddress, deliveryDestination.phoneNum,
+                deliveryDestination.isMain)))
+                .from(deliveryDestination)
+                .where(deliveryDestination.status.eq(0), deliveryDestination.desId.eq(desId))
+                .fetch();
+    }
 }

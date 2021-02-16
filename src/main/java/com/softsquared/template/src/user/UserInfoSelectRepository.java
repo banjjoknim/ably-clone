@@ -46,6 +46,7 @@ public class UserInfoSelectRepository extends QuerydslRepositorySupport {
         QProduct product = QProduct.product;
         QPurchaseProduct purchaseProduct = QPurchaseProduct.purchaseProduct;
 
+
         return queryFactory.select((Projections.constructor(GetUserPurchaseProduct.class,
                 product.id, purchaseProduct.purStatus, product.price,
                 product.name, purchaseProduct.options)))
@@ -53,7 +54,7 @@ public class UserInfoSelectRepository extends QuerydslRepositorySupport {
                 .join(product)
                 .on(purchaseProduct.productId.eq(product.id))
                 .where(purchaseProduct.purchaseId.eq(purId))
-                .orderBy(purchaseProduct.dateCreated.desc())
+//                .orderBy(purc.desc())
                 .fetch();
     }
 

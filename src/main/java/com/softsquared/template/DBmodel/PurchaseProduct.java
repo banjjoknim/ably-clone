@@ -14,7 +14,7 @@ import javax.persistence.*;
 @Data
 @Entity
 @Table(name = "PurchaseProduct")
-public class PurchaseProduct extends BaseEntity {
+public class PurchaseProduct {
     @Id
     @Column(name = "purProductId", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,7 +41,7 @@ public class PurchaseProduct extends BaseEntity {
     @Column(name = "count", nullable = false, updatable = false)
     private int count;
 
-    @Column(name = "status", nullable = false, updatable = false)
+    @Column(name = "isDeleted", nullable = false, updatable = false)
     private int status;
 
     //배송 상태
@@ -49,6 +49,17 @@ public class PurchaseProduct extends BaseEntity {
     @Column(name = "purStatus", nullable = false)
     private char purStatus;
 
+
+    public PurchaseProduct(long purchaseId, long productId,int price,
+                           String options, int count, int status,char purStatus){
+        this.purchaseId = purchaseId;
+        this.productId = productId;
+        this.price = price;
+        this.options = options;
+        this.count = count;
+        this.status = status;
+        this.purStatus = purStatus;
+    }
 
 
 

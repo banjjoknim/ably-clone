@@ -35,15 +35,30 @@ public class PurchaseController {
         formatChecker = new FormatChecker();
     }
 
-//    /**
-//     * 구매하기 (결제하기 버튼 클릭 이후)
-//     */
-//    @ResponseBody
-//    @PostMapping("")
-//    public BaseResponse<PostPurchaseRes> postPurchase(@RequestHeader("X-ACCESS-TOKEN") String token,
-//                                                      @RequestBody PostPurchaseReq param){
-//
-//    }
+    /**
+     * 구매하기 (결제하기 버튼 클릭 이후)
+     */
+    @ResponseBody
+    @PostMapping("")
+    public BaseResponse<PostPurchaseRes> postPurchase(@RequestHeader("X-ACCESS-TOKEN") String token,
+                                                      @RequestBody PostPurchaseReq param){
+        long userId;
+        try{
+            userId = jwtService.getUserId();
+
+        }catch(Exception e){
+            e.printStackTrace();
+            return new BaseResponse<>(INVALID_TOKEN);
+        }
+        try{
+            PostPurchaseRes postPurchaseRes = purchaseService.createPurchase(param,userId);
+            return new BaseResponse<>(SUCCESS,postPurchaseRes);
+        }catch (BaseException e){
+            e.printStackTrace();
+            return new BaseResponse<>(e.getStatus());
+        }
+
+    }
 
     /**
      * 구매하기 주문상품 조회 --> 아직 저장하는게 아니라 단순 조회임

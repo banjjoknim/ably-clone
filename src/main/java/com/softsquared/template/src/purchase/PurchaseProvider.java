@@ -89,6 +89,21 @@ public class PurchaseProvider {
         return productRes;
     }
 
+    /**
+     * 단순 제품 정보 조회
+     * service 에서 사용
+     */
+    public GetPurchaseProduct retrieveProductInfo(long productId) throws BaseException{
+
+        GetPurchaseProduct getPurchaseProduct;
+        try{
+            getPurchaseProduct = productsProvider.retrieveProductWithProductId(productId);
+        }catch (Exception e){
+            throw new BaseException(FAILED_TO_GET_PRODUCT);
+        }
+
+        return getPurchaseProduct;
+    }
 
 
     public GetPurchaseRefundRes retrievePurchaseRefundInfo(long userId) throws BaseException{
@@ -129,6 +144,20 @@ public class PurchaseProvider {
         }
         return purchaseCount;
     }
+    /**
+     * 마지막 id 가져오기
+     *
+     */
+    public long retrieveLastId() throws BaseException{
+        List<Long> purIdList;
+        try{
+            purIdList = purchaseSelectRepository.findPurIdList();
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new BaseException(FAILED_TO_GET_PURCHASE);
+        }
+        return purIdList.get(purIdList.size()-1);
+    }
 
     public GetPurchaseRefundRes changeToPurchaseRefundRes(GetUserRefund userRefund){
         GetPurchaseRefundRes getPurchaseRefund;
@@ -142,4 +171,7 @@ public class PurchaseProvider {
 
         return getPurchaseRefund;
     }
+
+
+
 }

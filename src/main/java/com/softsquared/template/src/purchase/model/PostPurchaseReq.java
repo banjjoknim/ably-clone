@@ -8,7 +8,12 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class PostPurchaseReq {
-    private String productId;
+    private long productId;
     private List<String> options;
     private List<Integer> num;
+
+    private long desId;
+    private long paymentCode;
+
+    private int totalPrice;
 }
