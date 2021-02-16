@@ -9,6 +9,7 @@ import com.softsquared.template.config.BaseResponseStatus;
 import com.softsquared.template.config.FormatChecker;
 import com.softsquared.template.src.user.models.*;
 import com.softsquared.template.utils.JwtService;
+import com.softsquared.template.utils.KakaoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,13 +29,16 @@ public class UserInfoController {
     private final UserInfoService userInfoService;
     private final JwtService jwtService;
     private final FormatChecker formatChecker;
+    private final KakaoService kakaoService;
 
     @Autowired
-    public UserInfoController(UserInfoProvider userInfoProvider,JwtService jwtService, UserInfoService userInfoService) {
+    public UserInfoController(UserInfoProvider userInfoProvider,JwtService jwtService, UserInfoService userInfoService,
+                              KakaoService kakaoService) {
         this.userInfoProvider = userInfoProvider;
         this.userInfoService = userInfoService;
         this.jwtService = jwtService;
         formatChecker = new FormatChecker();
+        this.kakaoService = kakaoService;
     }
 
     /**
@@ -133,7 +137,7 @@ public class UserInfoController {
                                                       @RequestBody PostUserInfoReq param){
         long userId;
         try{
-            userId = jwtService.getUserId();
+            userId = kakaoService.userIdFromKakao(token);
             System.out.println(userId);
         }catch(Exception e){
             e.printStackTrace();
