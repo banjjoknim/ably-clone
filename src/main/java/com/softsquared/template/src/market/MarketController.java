@@ -27,8 +27,10 @@ public class MarketController {
     }
 
     @GetMapping("")
-    public BaseResponse<List<GetMarketsRes>> getMarkets(@RequestParam(required = false) Market.MarketType marketType, @RequestParam(required = false) Long categoryId) {
-        return new BaseResponse<>(SUCCESS, marketProvider.retrieveMarkets(marketType, categoryId));
+    public BaseResponse<List<GetMarketsRes>> getMarkets(@RequestParam(required = false) Market.MarketType marketType,
+                                                        @RequestParam(required = false) Long categoryId,
+                                                        @RequestParam(required = false) Long ageGroupId) {
+        return new BaseResponse<>(SUCCESS, marketProvider.retrieveMarkets(marketType, categoryId, ageGroupId));
     }
 
     @PostMapping("")
