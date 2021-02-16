@@ -6,9 +6,8 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class PostPurchaseRes {
-    private String purId;
+    private long purId;
     private String name;
     private String address;
-    private String detailAddress;
     private String phoneNum;
 }

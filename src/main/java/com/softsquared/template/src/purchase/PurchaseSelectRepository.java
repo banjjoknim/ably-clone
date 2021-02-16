@@ -34,5 +34,14 @@ public class PurchaseSelectRepository extends QuerydslRepositorySupport {
                 .fetchCount();
 
     }
+    /**
+     * purId 리스트 가져오기
+     */
+    public List<Long> findPurIdList(){
+        QPurchase purchase = QPurchase.purchase;
+        return queryFactory.select(purchase.purId)
+                .from(purchase)
+                .fetch();
+    }
 
 }

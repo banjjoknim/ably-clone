@@ -84,6 +84,21 @@ public class DeliveryProvider {
         return isMainList;
     }
 
+    /**
+     * desId를 통해서 정보 가져오기
+     * for purchase response
+     */
+    public GetDelivery retrieveDelivery(long desId) throws BaseException{
+        GetDelivery getDelivery;
+        try{
+            getDelivery = deliverySelectRepository.findDeliveryInfoByDesId(desId).get(0);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new BaseException(FAILED_TO_GET_DELVIERY_DESTINATION);
+        }
+        return getDelivery;
+    }
+
 
 
 
