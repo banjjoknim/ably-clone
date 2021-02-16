@@ -9,12 +9,15 @@ import com.softsquared.template.src.market.models.GetMarketMainInfoRes;
 import com.softsquared.template.src.market.models.GetMarketsRes;
 import com.softsquared.template.src.market.models.PatchMarketReq;
 import com.softsquared.template.src.market.models.PostMarketReq;
+import com.softsquared.template.src.product.models.GetProductsRes;
+import com.softsquared.template.src.product.models.ProductOrderType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 import static com.softsquared.template.config.BaseResponseStatus.*;
+import static com.softsquared.template.config.Constant.DEFAULT_PAGING_SIZE;
 
 @RestController
 @RequestMapping("/markets")
@@ -44,6 +47,19 @@ public class MarketController {
     public BaseResponse<GetMarketMainInfoRes> getMarketMainInfo(@PathVariable Long marketId) {
         try {
             return new BaseResponse<>(SUCCESS, marketProvider.retrieveMarketMainInfo(marketId));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    @GetMapping("/{marketId}/products")
+    public BaseResponse<List<GetProductsRes>> getMarketProducts(@PathVariable Long marketId,
+                                                                @RequestParam(required = false) ProductOrderType orderType,
+                                                                @RequestParam Integer page) {
+        PageRequest pageable = new PageRequest(page, DEFAULT_PAGING_SIZE);
+
+        try {
+            return new BaseResponse<>(SUCCESS, marketProvider.retrieveMarketProducts(marketId, orderType, pageable));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }

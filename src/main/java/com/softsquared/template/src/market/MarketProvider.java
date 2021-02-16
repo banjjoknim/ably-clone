@@ -6,6 +6,9 @@ import com.softsquared.template.config.PageRequest;
 import com.softsquared.template.config.statusEnum.IsPublic;
 import com.softsquared.template.src.market.models.GetMarketMainInfoRes;
 import com.softsquared.template.src.market.models.GetMarketsRes;
+import com.softsquared.template.src.product.ProductsProvider;
+import com.softsquared.template.src.product.models.GetProductsRes;
+import com.softsquared.template.src.product.models.ProductOrderType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,13 +22,15 @@ import static com.softsquared.template.config.BaseResponseStatus.NOT_FOUND_MARKE
 @Service
 public class MarketProvider {
 
-    private final MarketRepository marketRepository;
+    private final ProductsProvider productsProvider;
     private final MarketQueryRepository marketQueryRepository;
+    private final MarketRepository marketRepository;
 
     @Autowired
-    public MarketProvider(MarketRepository marketRepository, MarketQueryRepository marketQueryRepository) {
-        this.marketRepository = marketRepository;
+    public MarketProvider(ProductsProvider productsProvider, MarketQueryRepository marketQueryRepository, MarketRepository marketRepository) {
+        this.productsProvider = productsProvider;
         this.marketQueryRepository = marketQueryRepository;
+        this.marketRepository = marketRepository;
     }
 
     public List<GetMarketsRes> retrieveMarkets(Market.MarketType marketType, Long categoryId,
@@ -51,5 +56,13 @@ public class MarketProvider {
         marketMainInfo.setMarketTags(marketQueryRepository.getMarketTagsQuery(marketId));
 
         return marketMainInfo;
+    }
+
+    public List<GetProductsRes> retrieveMarketProducts(Long marketId, ProductOrderType orderType, PageRequest pageable) throws BaseException {
+        Optional<Market> market = marketRepository.findById(marketId);
+        if (!market.isPresent()) {
+            throw new BaseException(NOT_FOUND_MARKET);
+        }
+        return productsProvider.retrieveMarketProducts(marketId, orderType, pageable);
     }
 }

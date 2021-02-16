@@ -77,7 +77,7 @@ public class MarketQueryRepository {
     }
 
     public List<String> getMarketThumbnailsQuery(Long marketId) {
-        List<Product> products = getMarketProductsQuery(marketId);
+        List<Product> products = getMarketProductsForListQuery(marketId);
         return products.stream()
                 .map(selectedProduct ->
                         jpaQueryFactory
@@ -90,7 +90,7 @@ public class MarketQueryRepository {
                 .collect(toList());
     }
 
-    private List<Product> getMarketProductsQuery(Long marketId) {
+    private List<Product> getMarketProductsForListQuery(Long marketId) {
         return jpaQueryFactory
                 .selectFrom(product)
                 .where(product.marketId.eq(marketId))
