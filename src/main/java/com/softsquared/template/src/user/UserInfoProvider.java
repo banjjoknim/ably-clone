@@ -3,6 +3,8 @@ package com.softsquared.template.src.user;
 import com.fasterxml.jackson.databind.ser.Serializers;
 import com.softsquared.template.config.Caster;
 import com.softsquared.template.config.BaseException;
+import com.softsquared.template.src.purchase.PurchaseProvider;
+import com.softsquared.template.src.review.ReviewProvider;
 import com.softsquared.template.src.user.models.*;
 import com.softsquared.template.utils.JwtService;
 import com.softsquared.template.utils.KakaoService;
@@ -20,14 +22,20 @@ public class UserInfoProvider {
     private UserInfoSelectRepository userInfoSelectRepository;
     private final JwtService jwtService;
     private final KakaoService kakaoService;
+    private final ReviewProvider reviewProvider;
+    private final PurchaseProvider purchaseProvider;
     private Caster caster;
 
 
     @Autowired
-    public UserInfoProvider(UserInfoSelectRepository userInfoSelectRepository,JwtService jwtService,KakaoService kakaoService) {
+    public UserInfoProvider(UserInfoSelectRepository userInfoSelectRepository,JwtService jwtService,
+                            KakaoService kakaoService,ReviewProvider reviewProvider,
+                            PurchaseProvider purchaseProvider) {
         this.userInfoSelectRepository = userInfoSelectRepository;
         this.jwtService = jwtService;
         this.kakaoService = kakaoService;
+        this.reviewProvider = reviewProvider;
+        this.purchaseProvider = purchaseProvider;
         this.caster = new Caster();
     }
     /**
@@ -153,15 +161,31 @@ public class UserInfoProvider {
     /**
      * 회원가입 유무 확인
      */
-    public GetUserInfo retrieveIsUser(long userId) throws BaseException{
-        GetUserInfo userInfo ;
+    public Boolean retrieveIsUser(long userId) throws BaseException{
+        List<GetUserInfo> userInfoList ;
+        GetUserInfo userInfo;
+        boolean isExits;
         try{
-            userInfo= userInfoSelectRepository.findUserByUserId(userId).get(0);
+            userInfoList= userInfoSelectRepository.findUserByUserId(userId);
+            if(userInfoList ==null || userInfoList.size()==0){
+                //해당 회원을 찾을 수 없을 때
+                return false;
+            }
+
+            userInfo = userInfoList.get(0);
+            if(userInfo.getStatus() ==0){
+                //회원이 정상적임
+                isExits=true;
+            }else{
+                //회원이 삭제됨
+                isExits= false;
+            }
         }catch(Exception e){
             e.printStackTrace();
-            throw new BaseException(NOT_FOUND_USERS);
+           throw new BaseException(NOT_FOUND_USERS);
+
         }
-        return userInfo;
+        return isExits;
     }
 
 
@@ -180,6 +204,28 @@ public class UserInfoProvider {
     }
 
 
+    /**
+     * 회원의 마이페이지 조회
+     */
+    public GetUserMyPageRes retireveMyPage(long userId) throws BaseException{
+        GetUserMyPage getUserMyPage;
+        try{
+            getUserMyPage = userInfoSelectRepository.findMyPageByUserId(userId).get(0);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new BaseException(FAILED_TO_GET_USER);
+        }
+        String name = getUserMyPage.getName();
+        String rank = getUserMyPage.getRank();
+        int point= getUserMyPage.getPoint();
+        int coupon = getUserMyPage.getCoupon();
+
+        long purchase = purchaseProvider.retrievePurchaseCount(userId);
+        long review = reviewProvider.retrieveUserReview(userId);
+
+        return new GetUserMyPageRes(name, rank,point,coupon,purchase,review);
+
+    }
 
     /*********************************************changedList
 

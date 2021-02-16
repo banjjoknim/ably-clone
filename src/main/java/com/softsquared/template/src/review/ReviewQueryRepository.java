@@ -1,8 +1,12 @@
 package com.softsquared.template.src.review;
 
 import com.querydsl.core.types.ExpressionUtils;
+
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
+
+import com.querydsl.core.types.Projections;
+
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.JPAExpressions;
@@ -13,6 +17,7 @@ import com.softsquared.template.config.statusEnum.ColorComment;
 import com.softsquared.template.config.statusEnum.Satisfaction;
 import com.softsquared.template.config.statusEnum.SizeComment;
 import com.softsquared.template.src.review.models.*;
+import com.softsquared.template.src.user.models.GetUserMyPage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -159,5 +164,16 @@ public class ReviewQueryRepository {
 
     private BooleanExpression marketEq(Long marketId) {
         return product.marketId.eq(marketId);
+
+    /**
+     * 안뇽하세요 콜트님
+     * 회원의 리뷰수좀 빼가겠습니당
+     */
+    public long findReviewCountByUserId(long userId){
+       // QReview review = QReview.review;
+        return jpaQueryFactory.select(review.count())
+                .from(review)
+                .where(review.userId.eq(userId))
+                .fetchCount();
     }
 }

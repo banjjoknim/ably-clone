@@ -5,10 +5,10 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class GetMainDeliveryRes {
-    private String nameNum;
-    private String mainAddress;
-    private String subAddress;
+public class PostDeliveryReq {
+    private String name;
+    private String address;
+    private String detailAddress;
+    private String phoneNum;
 
-    private long desId;
 }

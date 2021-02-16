@@ -9,6 +9,7 @@ import com.softsquared.template.config.BaseResponseStatus;
 import com.softsquared.template.config.FormatChecker;
 import com.softsquared.template.src.user.models.*;
 import com.softsquared.template.utils.JwtService;
+import com.softsquared.template.utils.KakaoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,13 +29,16 @@ public class UserInfoController {
     private final UserInfoService userInfoService;
     private final JwtService jwtService;
     private final FormatChecker formatChecker;
+    private final KakaoService kakaoService;
 
     @Autowired
-    public UserInfoController(UserInfoProvider userInfoProvider,JwtService jwtService, UserInfoService userInfoService) {
+    public UserInfoController(UserInfoProvider userInfoProvider,JwtService jwtService, UserInfoService userInfoService,
+                              KakaoService kakaoService) {
         this.userInfoProvider = userInfoProvider;
         this.userInfoService = userInfoService;
         this.jwtService = jwtService;
         formatChecker = new FormatChecker();
+        this.kakaoService = kakaoService;
     }
 
     /**
@@ -111,13 +115,20 @@ public class UserInfoController {
     @GetMapping("/check-ids")
     public BaseResponse<Boolean> checkUserId(@RequestHeader("X-ACCESS-TOKEN") String token) {
         try{
-           long userId= jwtService.getUserId();
-            GetUserInfo userEmail = userInfoProvider.retrieveIsUser(userId);
-            return new BaseResponse<>(SUCCESS,true);
+           long userId= kakaoService.userIdFromKakao(token);
+           boolean result = true;
+            Boolean isExist = userInfoProvider.retrieveIsUser(userId);
+
+            if(isExist==true){
+                //회원이 존재
+                return new BaseResponse<>(SUCCESS_EXIST,isExist);
+            }else{
+                return new BaseResponse<>(SUCCESS_UNEXIST,isExist);
+            }
 
         }catch(BaseException e){
             e.printStackTrace();
-            return new BaseResponse<>(NOT_FOUND_USER,false);
+            return new BaseResponse<>(e.getStatus());
         }
 
     }
@@ -133,7 +144,7 @@ public class UserInfoController {
                                                       @RequestBody PostUserInfoReq param){
         long userId;
         try{
-            userId = jwtService.getUserId();
+            userId = kakaoService.userIdFromKakao(token);
             System.out.println(userId);
         }catch(Exception e){
             e.printStackTrace();
@@ -146,18 +157,17 @@ public class UserInfoController {
         if( !formatChecker.isFull(param.getPhoneNum())){
             return new BaseResponse<>(EMPTY_PHONENUM);
         }
-        if( !formatChecker.isFull(param.getEmail())){
-            return new BaseResponse<>(EMPTY_EMAIL);
-        }
 
 
         //전화번호 확인
         if(!formatChecker.isPhoneNum(param.getPhoneNum()))
             return new BaseResponse<>(INVALID_PHONENUM);
 
-        //이메일 확인
-        if(!formatChecker.isEmail(param.getEmail()))
-            return new BaseResponse<>(INVALID_EMAIL);
+        if(param.getEmail()!=null) {
+            //이메일 확인
+            if (!formatChecker.isEmail(param.getEmail()))
+                return new BaseResponse<>(INVALID_EMAIL);
+        }
 
 
         try{
@@ -215,5 +225,32 @@ public class UserInfoController {
             return new BaseResponse<>(FAILED_TO_LOGIN);
         }
 
+    }
+
+    /**
+     * 마이페이지 조회
+     */
+    @ResponseBody
+    @GetMapping("/{userId}/mypages")
+    public BaseResponse<GetUserMyPageRes> getUserMypage(@PathVariable long userId,
+                                                        @RequestHeader("X-ACCESS-TOKEN") String token) throws BaseException{
+        long tokenUserId;
+        try{
+            tokenUserId = jwtService.getUserId();
+
+        }catch(Exception e){
+            return new BaseResponse<>(INVALID_TOKEN);
+        }
+        if(tokenUserId != userId){
+            return new BaseResponse<>(INVALID_TOKEN_USER);
+        }
+
+        try {
+            GetUserMyPageRes getUserMyPageRes= userInfoProvider.retireveMyPage(userId);
+            return new BaseResponse<>(SUCCESS,getUserMyPageRes);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new BaseResponse<>(FAILED_TO_GET_USER_MYPAGE);
+        }
     }
 }

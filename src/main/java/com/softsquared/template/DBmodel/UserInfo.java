@@ -18,7 +18,7 @@ public class UserInfo {
     @Column(name = "userId", nullable = false, updatable = false)
     private long userId;
 
-    @Column(name = "email", nullable = false, updatable = false)
+    @Column(name = "email")
     private String email;
 
     @Column(name = "userName", nullable = false)

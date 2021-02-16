@@ -5,9 +5,12 @@ import com.softsquared.template.config.BaseResponse;
 import com.softsquared.template.config.FormatChecker;
 import com.softsquared.template.src.deliverydestination.DeliveryProvider;
 import com.softsquared.template.src.deliverydestination.model.GetMainDeliveryRes;
-import com.softsquared.template.src.purchase.model.GetPurchaseRefundRes;
+import com.softsquared.template.src.purchase.model.*;
 import com.softsquared.template.utils.JwtService;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
 import static com.softsquared.template.config.BaseResponseStatus.*;
 
 @RestController
@@ -31,6 +34,47 @@ public class PurchaseController {
 
         formatChecker = new FormatChecker();
     }
+
+//    /**
+//     * 구매하기 (결제하기 버튼 클릭 이후)
+//     */
+//    @ResponseBody
+//    @PostMapping("")
+//    public BaseResponse<PostPurchaseRes> postPurchase(@RequestHeader("X-ACCESS-TOKEN") String token,
+//                                                      @RequestBody PostPurchaseReq param){
+//
+//    }
+
+    /**
+     * 구매하기 주문상품 조회 --> 아직 저장하는게 아니라 단순 조회임
+     */
+    @ResponseBody
+    @GetMapping("/products")
+    public BaseResponse<GetPurchaseProductRes> getPurchaseproduct (@RequestHeader("X-ACCESS-TOKEN") String token,
+                                                                   @RequestParam long productId,
+                                                                   @RequestParam List<String> options,
+                                                                   @RequestParam List<Integer> num){
+        long userId;
+        try{
+            userId = jwtService.getUserId();
+
+        }catch(Exception e){
+            e.printStackTrace();
+            return new BaseResponse<>(INVALID_TOKEN);
+        }
+        if(options.size() != num.size()){
+            return new BaseResponse<>(INVALID_SIZEOF_LIST);
+        }
+        try{
+            GetPurchaseProductRes productRes = purchaseProvider.retrievePurchaseProduct(productId,options,num);
+            return new BaseResponse<>(SUCCESS,productRes);
+        }catch (BaseException e){
+            e.printStackTrace();
+            return new BaseResponse<>(e.getStatus());
+        }
+
+    }
+
 
 
     /**
@@ -59,17 +103,29 @@ public class PurchaseController {
     }
 
 
-
+    /**
+     * 환불 정보 조회
+     * @return
+     */
     @ResponseBody
-    @GetMapping("/refundInfos")
-    public BaseResponse<GetPurchaseRefundRes> getPurchaseRefund(){
+    @GetMapping("/refund-infos")
+    public BaseResponse<GetPurchaseRefundRes> getPurchaseRefund(@RequestHeader("X-ACCESS-TOKEN") String token){
+        long userId;
         try{
-            GetPurchaseRefundRes getPurchaseRefundRes= purchaseProvider.retrievePurchaseRefundInfo(1);
+            userId = jwtService.getUserId();
+
+        }catch(Exception e){
+            e.printStackTrace();
+            return new BaseResponse<>(INVALID_TOKEN);
+        }
+        try{
+            GetPurchaseRefundRes getPurchaseRefundRes= purchaseProvider.retrievePurchaseRefundInfo(userId);
             return new BaseResponse<>(SUCCESS, getPurchaseRefundRes);
         }catch(BaseException e){
             e.printStackTrace();
             return new BaseResponse<>(e.getStatus());
         }
     }
+
 
 }

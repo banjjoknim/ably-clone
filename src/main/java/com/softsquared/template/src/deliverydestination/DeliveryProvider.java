@@ -70,6 +70,20 @@ public class DeliveryProvider {
         return deliveryProvider;
     }
 
+    /**
+     * 해당 회원의 존재하는 배송지 조
+     *
+     */
+    public List<Integer> retrieveExistDeliveryDestination(long userId) throws BaseException{
+        List<Integer> isMainList;
+        try{
+            isMainList = deliverySelectRepository.findIsMainByUserId(userId);
+        }catch(Exception e){
+            isMainList = null;
+        }
+        return isMainList;
+    }
+
 
 
 
@@ -95,10 +109,11 @@ public class DeliveryProvider {
           String   nameNum = main.getUserName() + "  " + main.getPhoneNum();
           String   mainAddress = main.getMainAddress();
            String  subAddress = main.getSubAddress();
+           long desId = main.getMainDel();
 
 
 
-        result = new GetMainDeliveryRes(nameNum,mainAddress,subAddress);
+        result = new GetMainDeliveryRes(nameNum,mainAddress,subAddress,desId);
         return result;
     }
 }
