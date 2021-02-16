@@ -1,11 +1,16 @@
 package com.softsquared.template.src.deliverydestination;
 
+import com.fasterxml.jackson.databind.ser.Serializers;
 import com.softsquared.template.DBmodel.DeliveryDestination;
 import com.softsquared.template.config.*;
 import com.softsquared.template.config.BaseException;
 import com.softsquared.template.src.deliverydestination.model.DeleteDelivery;
+import com.softsquared.template.src.deliverydestination.model.PostDeliveryReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
+import java.util.List;
 
 import static com.softsquared.template.config.BaseResponseStatus.FAILED_TO_GET_DELVIERY_DESTINATION;
 
@@ -51,6 +56,53 @@ public class DeliveryService {
         return true;
 
 
+    }
+
+    /**
+     * 배송지 추가
+     */
+    public Integer createDeliveryDestination(long userId, PostDeliveryReq param) throws BaseException{
+        List<Integer> isMainList;
+        try{
+            isMainList = deliveryProvider.retrieveExistDeliveryDestination(userId);
+        }catch (Exception e){
+            e.printStackTrace();
+            isMainList = null;
+        }
+        long desuserId= userId;
+        String detailAddress = param.getDetailAddress();
+        String phoneNum = param.getPhoneNum();
+        String userName = param.getName();
+        String address = param.getAddress();
+        String dateCreated = (new Timestamp(System.currentTimeMillis())).toString();
+        String dateUpdated = "0000-00-00 00:00:00";
+        int status =0;
+        int isMain=0;
+        boolean hasMain=false;
+
+        if(isMainList == null || isMainList.size()==0){
+            isMain = 0;
+        }
+        else{
+            for(int i=0;i<isMainList.size();i++){
+                if(isMainList.get(i) == 1) {
+                    isMain = 0;
+                    hasMain = true;
+                    break;
+                }
+            }
+            if(hasMain == false)
+                isMain = 1;
+        }
+        System.out.println("here");
+
+        DeliveryDestination deliveryDestination = new DeliveryDestination(
+                userId,detailAddress, phoneNum,userName,address,0,dateUpdated,dateCreated,isMain);
+
+        deliveryRepository.save(deliveryDestination);
+
+
+        return isMain;
     }
 
 }

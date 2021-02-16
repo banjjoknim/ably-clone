@@ -50,4 +50,19 @@ public class ReviewProvider {
                 .collect(toList());
     }
 
+    /**
+     * 회원이 작성한 리뷰 수
+     */
+    public long retrieveUserReview(long userId) throws BaseException{
+        long reviewCount;
+        try{
+            reviewCount = reviewQueryRepository.findReviewCountByUserId(userId);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new BaseException(BaseResponseStatus.FAILED_TO_GET_USER_REVIEW);
+        }
+
+        return reviewCount;
+    }
+
 }

@@ -20,15 +20,16 @@ public class DeliverySelectRepository extends QuerydslRepositorySupport {
     private final JPAQueryFactory queryFactory;
 
     @Autowired
-    public DeliverySelectRepository(JPAQueryFactory queryFactory){
+    public DeliverySelectRepository(JPAQueryFactory queryFactory) {
         super(DeliveryDestination.class);
-        this.queryFactory=queryFactory;
+        this.queryFactory = queryFactory;
     }
+
     /**
      * 회원의 배송지 목록 찾기
      * for retrieveUserDelivery
      */
-    public List<GetDelivery> findDeliveryByUserId(long userId){
+    public List<GetDelivery> findDeliveryByUserId(long userId) {
         QDeliveryDestination deliveryDestination = QDeliveryDestination.deliveryDestination;
 
         return queryFactory.select((Projections.constructor(GetDelivery.class,
@@ -45,7 +46,7 @@ public class DeliverySelectRepository extends QuerydslRepositorySupport {
     /**
      * 회원의 기본 배송지 찾기
      */
-    public List<GetMainDelivery> findMainDeliveryByUserId(long userId){
+    public List<GetMainDelivery> findMainDeliveryByUserId(long userId) {
         QDeliveryDestination deliveryDestination = QDeliveryDestination.deliveryDestination;
 
         return queryFactory.select((Projections.constructor(GetMainDelivery.class,
@@ -63,7 +64,7 @@ public class DeliverySelectRepository extends QuerydslRepositorySupport {
     /**
      * 삭제할 배송지 정보 가져오기
      */
-    public List<DeleteDelivery> findDeliveryByDesId(long desId){
+    public List<DeleteDelivery> findDeliveryByDesId(long desId) {
         QDeliveryDestination deliveryDestination = QDeliveryDestination.deliveryDestination;
 
         return queryFactory.select((Projections.constructor(DeleteDelivery.class,
@@ -78,6 +79,18 @@ public class DeliverySelectRepository extends QuerydslRepositorySupport {
 
     }
 
+    /**
+     * 해당 유저가 기본 배송지를 가지고 있는지 검사하기 위함
+     */
+    public List<Integer> findIsMainByUserId(long userId) {
+        QDeliveryDestination deliveryDestination = QDeliveryDestination.deliveryDestination;
+
+        return queryFactory.select(deliveryDestination.isMain)
+                .from(deliveryDestination)
+                .where(deliveryDestination.userId.eq(userId),
+                        deliveryDestination.status.eq(0))
+                .fetch();
 
 
+    }
 }

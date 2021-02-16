@@ -2,22 +2,22 @@ package com.softsquared.template.src.product;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.alias.Alias;
-import com.querydsl.core.types.ExpressionUtils;
-import com.querydsl.core.types.Order;
-import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.*;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.softsquared.template.DBmodel.*;
 import com.softsquared.template.config.PageRequest;
 import com.softsquared.template.config.statusEnum.IsPublic;
 import com.softsquared.template.src.product.models.ProductFilterReq;
 import com.softsquared.template.src.product.models.ProductOrderType;
 import com.softsquared.template.src.product.models.ProductsInfo;
 import com.softsquared.template.src.product.models.QProductsInfo;
+import com.softsquared.template.src.purchase.model.GetPurchaseProduct;
+import com.softsquared.template.src.user.models.GetUserMyPage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -166,5 +166,7 @@ public class ProductsQueryRepository {
                 .divide(HUNDRED)
                 .multiply(Expressions.asNumber(HUNDRED).subtract(product.discountRate));
     }
+
+
 
 }

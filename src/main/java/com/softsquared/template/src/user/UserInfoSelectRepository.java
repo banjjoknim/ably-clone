@@ -122,5 +122,20 @@ public class UserInfoSelectRepository extends QuerydslRepositorySupport {
 
     }
 
+    /**
+     * 회원 마이페이지 정보 찾기
+     */
+    public List<GetUserMyPage> findMyPageByUserId(long userId){
+        QUserInfo userInfo = QUserInfo.userInfo;
+        return queryFactory.select((Projections.constructor(GetUserMyPage.class,
+                userInfo.userName, userInfo.userRank,userInfo.point,
+                userInfo.coupon)))
+                .where(userInfo.status.eq(0), userInfo.userId.eq(userId))
+                .from(userInfo)
+                .fetch();
+
+
+    }
+
 }
 

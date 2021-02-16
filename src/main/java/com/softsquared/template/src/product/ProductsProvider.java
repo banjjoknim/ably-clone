@@ -7,6 +7,8 @@ import com.softsquared.template.src.category.DetailCategoryRepository;
 import com.softsquared.template.src.product.models.GetProductsRes;
 import com.softsquared.template.src.product.models.ProductFilterReq;
 import com.softsquared.template.src.product.models.ProductOrderType;
+import com.softsquared.template.src.purchase.model.GetPurchaseProduct;
+import com.softsquared.template.src.purchase.model.GetPurchaseProductReq;
 import com.softsquared.template.utils.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -111,4 +113,17 @@ public class ProductsProvider {
         }
     }
 
+    /**
+     * 구매할 상품의 정보 추출
+     */
+    public GetPurchaseProduct retrieveProductWithProductId(long productId) throws BaseException{
+        GetPurchaseProduct product;
+        try{
+            product = productQueryRepository.findProductByProductId(productId).get(0);
+        }catch(Exception e){
+            e.printStackTrace();
+            throw new BaseException(FAILED_TO_GET_PRODUCT);
+        }
+        return product;
+    }
 }

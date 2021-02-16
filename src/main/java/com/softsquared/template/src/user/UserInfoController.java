@@ -146,9 +146,6 @@ public class UserInfoController {
         if( !formatChecker.isFull(param.getPhoneNum())){
             return new BaseResponse<>(EMPTY_PHONENUM);
         }
-        if( !formatChecker.isFull(param.getEmail())){
-            return new BaseResponse<>(EMPTY_EMAIL);
-        }
 
 
         //전화번호 확인
@@ -215,5 +212,32 @@ public class UserInfoController {
             return new BaseResponse<>(FAILED_TO_LOGIN);
         }
 
+    }
+
+    /**
+     * 마이페이지 조회
+     */
+    @ResponseBody
+    @GetMapping("/{userId}/mypages")
+    public BaseResponse<GetUserMyPageRes> getUserMypage(@PathVariable long userId,
+                                                        @RequestHeader("X-ACCESS-TOKEN") String token) throws BaseException{
+        long tokenUserId;
+        try{
+            tokenUserId = jwtService.getUserId();
+
+        }catch(Exception e){
+            return new BaseResponse<>(INVALID_TOKEN);
+        }
+        if(tokenUserId != userId){
+            return new BaseResponse<>(INVALID_TOKEN_USER);
+        }
+
+        try {
+            GetUserMyPageRes getUserMyPageRes= userInfoProvider.retireveMyPage(userId);
+            return new BaseResponse<>(SUCCESS,getUserMyPageRes);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new BaseResponse<>(FAILED_TO_GET_USER_MYPAGE);
+        }
     }
 }

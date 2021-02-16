@@ -1,13 +1,21 @@
 package com.softsquared.template.src.purchase;
 
+import com.softsquared.template.DBmodel.ProductImage;
 import com.softsquared.template.config.BaseException;
 import com.softsquared.template.src.deliverydestination.DeliveryProvider;
 import com.softsquared.template.src.deliverydestination.model.GetMainDeliveryRes;
-import com.softsquared.template.src.purchase.model.GetPurchaseRefundRes;
+import com.softsquared.template.src.product.ProductProvider;
+import com.softsquared.template.src.product.ProductsProvider;
+import com.softsquared.template.src.purchase.model.*;
 import com.softsquared.template.src.user.UserInfoProvider;
 import com.softsquared.template.src.user.models.GetUserRefund;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import static com.softsquared.template.config.BaseResponseStatus.*;
 
@@ -16,15 +24,66 @@ public class PurchaseProvider {
     private final PurchaseSelectRepository purchaseSelectRepository;
     private final UserInfoProvider userInfoProvider;
     private final DeliveryProvider deliveryProvider;
+    private final ProductsProvider productsProvider;
 
+    @Lazy
     @Autowired
     public PurchaseProvider(PurchaseSelectRepository purchaseSelectRepository, UserInfoProvider userInfoProvider,
-                            DeliveryProvider deliveryProvider){
+                            DeliveryProvider deliveryProvider,ProductsProvider productsProvider){
         this.purchaseSelectRepository =purchaseSelectRepository;
         this.userInfoProvider = userInfoProvider;
         this.deliveryProvider = deliveryProvider;
+        this.productsProvider = productsProvider;
 
     }
+
+    /**
+     * 구매하기의 구매 상품 조회
+     */
+    public GetPurchaseProductRes retrievePurchaseProduct(long productId, List<String> options, List<Integer> num) throws BaseException{
+        int totalNum=0;
+        List<GetPurchaseProductCasted> catedList = new ArrayList<>();
+        GetPurchaseProduct getPurchaseProduct;
+        try{
+            getPurchaseProduct = productsProvider.retrieveProductWithProductId(productId);
+        }catch (Exception e){
+            throw new BaseException(FAILED_TO_GET_PRODUCT);
+        }
+        String img = getPurchaseProduct.getImg();
+        String marketName = getPurchaseProduct.getMarketName();
+        String productName = getPurchaseProduct.getProductName();
+        if(productName.length()>=20){
+            productName.substring(0,21);
+            productName+="...";
+        }
+        int realPrice = getPurchaseProduct.getPrice();
+        int discount = getPurchaseProduct.getDiscount();
+        int price = (int)(realPrice*(1-discount*0.01));
+
+        for(int i=0;i<options.size();i++){
+
+            //해당 제품에 대한 정보 가져오기
+
+            int count =num.get(i);
+            String countStr = count+"개";
+            int totalPrice = price*count;
+
+            String option = options.get(i);
+
+            totalNum+=count;
+
+            GetPurchaseProductCasted cated = new GetPurchaseProductCasted(img,marketName,productName,totalPrice,countStr,option);
+
+            catedList.add(cated);
+
+        }
+        String totalNumStr = "주문 상품 총"+totalNum+"개";
+        String marketNameStr = marketName+" 배송상품 " +totalNum+"개";
+
+        GetPurchaseProductRes productRes = new GetPurchaseProductRes(totalNumStr,marketNameStr,catedList);
+        return productRes;
+    }
+
 
 
     public GetPurchaseRefundRes retrievePurchaseRefundInfo(long userId) throws BaseException{
@@ -55,6 +114,16 @@ public class PurchaseProvider {
         return mainDeliveryRes;
     }
 
+    public long retrievePurchaseCount(long userId) throws BaseException{
+        long purchaseCount;
+        try{
+            purchaseCount = purchaseSelectRepository.findPurchaseCountByUserId(userId);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new BaseException(FAILED_TO_GET_PURCHASE);
+        }
+        return purchaseCount;
+    }
 
     public GetPurchaseRefundRes changeToPurchaseRefundRes(GetUserRefund userRefund){
         GetPurchaseRefundRes getPurchaseRefund;
