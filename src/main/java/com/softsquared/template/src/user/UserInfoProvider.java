@@ -161,15 +161,18 @@ public class UserInfoProvider {
     /**
      * 회원가입 유무 확인
      */
-    public GetUserInfo retrieveIsUser(long userId) throws BaseException{
+    public Boolean retrieveIsUser(long userId) throws BaseException{
         GetUserInfo userInfo ;
+        boolean isExits;
         try{
             userInfo= userInfoSelectRepository.findUserByUserId(userId).get(0);
+            isExits = true;
         }catch(Exception e){
             e.printStackTrace();
-            throw new BaseException(NOT_FOUND_USERS);
+//            throw new BaseException(NOT_FOUND_USERS);
+            isExits = false;
         }
-        return userInfo;
+        return isExits;
     }
 
 

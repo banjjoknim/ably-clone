@@ -115,13 +115,19 @@ public class UserInfoController {
     @GetMapping("/check-ids")
     public BaseResponse<Boolean> checkUserId(@RequestHeader("X-ACCESS-TOKEN") String token) {
         try{
-           long userId= jwtService.getUserId();
-            GetUserInfo userEmail = userInfoProvider.retrieveIsUser(userId);
-            return new BaseResponse<>(SUCCESS,true);
+           long userId= kakaoService.userIdFromKakao(token);
+           boolean result = true;
+            Boolean isExist = userInfoProvider.retrieveIsUser(userId);
+
+            if(isExist==true){
+                return new BaseResponse<>(SUCCESS_UNEXIST,isExist);
+            }else{
+                return new BaseResponse<>(SUCCESS_EXIST,isExist);
+            }
 
         }catch(BaseException e){
             e.printStackTrace();
-            return new BaseResponse<>(NOT_FOUND_USER,false);
+            return new BaseResponse<>(e.getStatus());
         }
 
     }

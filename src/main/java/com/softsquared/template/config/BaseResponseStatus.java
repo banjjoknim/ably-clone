@@ -21,6 +21,10 @@ public enum BaseResponseStatus {
     //vivi
     SUCCESS_CHECK_DELIVERY_DESTINATION(true, 1100, "배송지를 입력해주세요."),
     SUCCESS_CHECK_REFUND_INFO(true, 1101, "환불받을 계좌를 입력해주세요"),
+    SUCCESS_EXIST(true, 1102, "존재하는 회원입니다"),
+    SUCCESS_UNEXIST(true, 1103, "존재하지 않는 회원입니다."),
+
+
 
 
     // 2000 : Request 오류
