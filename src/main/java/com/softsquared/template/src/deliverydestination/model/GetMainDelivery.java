@@ -11,4 +11,7 @@ public class GetMainDelivery {
     private String mainAddress;
     private String subAddress;
     private String phoneNum;
+
+    private long mainDel;
 }
+

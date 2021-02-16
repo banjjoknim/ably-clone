@@ -109,10 +109,11 @@ public class DeliveryProvider {
           String   nameNum = main.getUserName() + "  " + main.getPhoneNum();
           String   mainAddress = main.getMainAddress();
            String  subAddress = main.getSubAddress();
+           long desId = main.getMainDel();
 
 
 
-        result = new GetMainDeliveryRes(nameNum,mainAddress,subAddress);
+        result = new GetMainDeliveryRes(nameNum,mainAddress,subAddress,desId);
         return result;
     }
 }

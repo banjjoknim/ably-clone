@@ -51,7 +51,8 @@ public class DeliverySelectRepository extends QuerydslRepositorySupport {
 
         return queryFactory.select((Projections.constructor(GetMainDelivery.class,
                 deliveryDestination.userName, deliveryDestination.address,
-                deliveryDestination.detailAddress, deliveryDestination.phoneNum
+                deliveryDestination.detailAddress, deliveryDestination.phoneNum,
+                deliveryDestination.desId
 
         )))
                 .from(deliveryDestination)
