@@ -9,6 +9,8 @@ import com.softsquared.template.src.market.models.GetMarketsRes;
 import com.softsquared.template.src.product.ProductsProvider;
 import com.softsquared.template.src.product.models.GetProductsRes;
 import com.softsquared.template.src.product.models.ProductOrderType;
+import com.softsquared.template.src.review.ReviewProvider;
+import com.softsquared.template.src.review.models.GetMarketReviewRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,12 +25,14 @@ import static com.softsquared.template.config.BaseResponseStatus.NOT_FOUND_MARKE
 public class MarketProvider {
 
     private final ProductsProvider productsProvider;
+    private final ReviewProvider reviewProvider;
     private final MarketQueryRepository marketQueryRepository;
     private final MarketRepository marketRepository;
 
     @Autowired
-    public MarketProvider(ProductsProvider productsProvider, MarketQueryRepository marketQueryRepository, MarketRepository marketRepository) {
+    public MarketProvider(ProductsProvider productsProvider, ReviewProvider reviewProvider, MarketQueryRepository marketQueryRepository, MarketRepository marketRepository) {
         this.productsProvider = productsProvider;
+        this.reviewProvider = reviewProvider;
         this.marketQueryRepository = marketQueryRepository;
         this.marketRepository = marketRepository;
     }
@@ -64,5 +68,9 @@ public class MarketProvider {
             throw new BaseException(NOT_FOUND_MARKET);
         }
         return productsProvider.retrieveMarketProducts(marketId, orderType, pageable);
+    }
+
+    public GetMarketReviewRes retrieveMarketReview(Long marketId) {
+        return reviewProvider.retrieveMarketReview(marketId);
     }
 }

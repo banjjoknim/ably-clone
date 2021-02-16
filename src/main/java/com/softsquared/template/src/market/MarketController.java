@@ -11,6 +11,7 @@ import com.softsquared.template.src.market.models.PatchMarketReq;
 import com.softsquared.template.src.market.models.PostMarketReq;
 import com.softsquared.template.src.product.models.GetProductsRes;
 import com.softsquared.template.src.product.models.ProductOrderType;
+import com.softsquared.template.src.review.models.GetMarketReviewRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -63,6 +64,11 @@ public class MarketController {
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
+    }
+
+    @GetMapping("/{marketId}/reviews")
+    public BaseResponse<GetMarketReviewRes> getMarketReview(@PathVariable Long marketId) {
+        return new BaseResponse<>(SUCCESS, marketProvider.retrieveMarketReview(marketId));
     }
 
     @PostMapping("")

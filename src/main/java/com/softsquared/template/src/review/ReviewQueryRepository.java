@@ -4,6 +4,7 @@ import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.softsquared.template.config.PageRequest;
 import com.softsquared.template.config.statusEnum.ColorComment;
@@ -15,11 +16,13 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static com.softsquared.template.DBmodel.QMarket.market;
 import static com.softsquared.template.DBmodel.QProduct.product;
 import static com.softsquared.template.DBmodel.QReview.review;
 import static com.softsquared.template.DBmodel.QReviewImage.reviewImage;
 import static com.softsquared.template.DBmodel.QUserInfo.userInfo;
 import static com.softsquared.template.config.Constant.HUNDRED;
+import static com.softsquared.template.config.Constant.REVIEW_SUMMARY_SATISFACTION_TRUNCATE_POSITION;
 
 @Repository
 public class ReviewQueryRepository {
@@ -106,5 +109,36 @@ public class ReviewQueryRepository {
                 .divide(review.count())
                 .multiply(HUNDRED)
                 .intValue();
+    }
+
+    public MarketReviewSummary getMarketReviews(Long marketId) {
+        return jpaQueryFactory
+                .select(new QMarketReviewSummary(
+                        Expressions.stringTemplate("TRUNCATE({0}, {1})",
+                                Expressions.asNumber(JPAExpressions.select(review.count()
+                                        .multiply(HUNDRED)
+                                        .divide(Expressions.asNumber(calculateMarketReviewCount(marketId))))
+                                        .from(review)
+                                        .innerJoin(product).on(review.productId.eq(product.id))
+                                        .where(review.satisfaction.eq(Satisfaction.GOOD).and(product.marketId.eq(marketId)))),
+                                REVIEW_SUMMARY_SATISFACTION_TRUNCATE_POSITION)
+                                .castToNum(Double.class),
+                        JPAExpressions
+                                .select(review.count())
+                                .from(review)
+                                .innerJoin(product).on(review.productId.eq(product.id))
+                                .where(product.marketId.eq(marketId))
+                ))
+                .from(market)
+                .where(market.id.eq(marketId))
+                .fetchFirst();
+    }
+
+    private JPQLQuery<Long> calculateMarketReviewCount(Long marketId) {
+        return JPAExpressions
+                .select(review.count())
+                .from(review)
+                .innerJoin(product).on(review.productId.eq(product.id))
+                .where(product.marketId.eq(marketId));
     }
 }
