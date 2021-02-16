@@ -54,6 +54,9 @@ public class PurchaseController {
             e.printStackTrace();
             return new BaseResponse<>(INVALID_TOKEN);
         }
+        if(options.size() != num.size()){
+            return new BaseResponse<>(INVALID_SIZEOF_LIST);
+        }
         try{
             GetPurchaseProductRes productRes = purchaseProvider.retrievePurchaseProduct(productId,options,num);
             return new BaseResponse<>(SUCCESS,productRes);

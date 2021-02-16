@@ -146,9 +146,6 @@ public class UserInfoController {
         if( !formatChecker.isFull(param.getPhoneNum())){
             return new BaseResponse<>(EMPTY_PHONENUM);
         }
-        if( !formatChecker.isFull(param.getEmail())){
-            return new BaseResponse<>(EMPTY_EMAIL);
-        }
 
 
         //전화번호 확인

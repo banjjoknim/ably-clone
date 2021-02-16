@@ -70,6 +70,20 @@ public class DeliveryProvider {
         return deliveryProvider;
     }
 
+    /**
+     * 해당 회원의 존재하는 배송지 조
+     *
+     */
+    public List<Integer> retrieveExistDeliveryDestination(long userId) throws BaseException{
+        List<Integer> isMainList;
+        try{
+            isMainList = deliverySelectRepository.findIsMainByUserId(userId);
+        }catch(Exception e){
+            isMainList = null;
+        }
+        return isMainList;
+    }
+
 
 
 

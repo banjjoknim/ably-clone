@@ -38,6 +38,14 @@ public enum BaseResponseStatus {
     DO_NOT_MATCH_PASSWORD(false, 2033, "비밀번호와 비밀번호확인 값이 일치하지 않습니다."),
     EMPTY_NICKNAME(false, 2040, "닉네임을 입력해주세요."),
 
+    EMPTY_DELIVERY_NAME(false, 2041, "받는분 이름을 입력해주세요."),
+    EMPTY_ADDRESS(false, 2042, "우편번호를 입력해주세요."),
+    EMPTY_DETAIL_ADDRESS(false, 2043, "상세 주소를 입력해주세요."),
+
+    INVALID_SIZEOF_LIST(false, 2044, "옵션과 수량의 배열 길이가 맞지 않습니다."),
+
+
+
     // colt
     NOT_FOUND_CATEGORY(false, 2050, "존재하지 않는 상위 카테고리입니다."),
     NOT_FOUND_DETAIL_CATEGORY(false, 2051, "존재하지 않는 하위 카테고리입니다."),
