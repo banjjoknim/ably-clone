@@ -1,30 +1,29 @@
 package com.softsquared.template.src.review;
 
 import com.querydsl.core.types.ExpressionUtils;
-
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
-
-import com.querydsl.core.types.Projections;
-
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.softsquared.template.DBmodel.ProductImage;
 import com.softsquared.template.config.PageRequest;
 import com.softsquared.template.config.statusEnum.ColorComment;
 import com.softsquared.template.config.statusEnum.Satisfaction;
 import com.softsquared.template.config.statusEnum.SizeComment;
 import com.softsquared.template.src.review.models.*;
-import com.softsquared.template.src.user.models.GetUserMyPage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static com.querydsl.core.types.ExpressionUtils.count;
 import static com.softsquared.template.DBmodel.QMarket.market;
 import static com.softsquared.template.DBmodel.QProduct.product;
+import static com.softsquared.template.DBmodel.QProductImage.productImage;
+import static com.softsquared.template.DBmodel.QPurchase.purchase;
 import static com.softsquared.template.DBmodel.QReview.review;
 import static com.softsquared.template.DBmodel.QReviewImage.reviewImage;
 import static com.softsquared.template.DBmodel.QUserInfo.userInfo;
@@ -118,7 +117,7 @@ public class ReviewQueryRepository {
                 .intValue();
     }
 
-    public MarketReviewSummary getMarketReviews(Long marketId, Long categoryId) {
+    public MarketReviewSummary getMarketReviewSummary(Long marketId, Long categoryId) {
         return jpaQueryFactory
                 .select(new QMarketReviewSummary(
                         new CaseBuilder()
@@ -164,13 +163,46 @@ public class ReviewQueryRepository {
 
     private BooleanExpression marketEq(Long marketId) {
         return product.marketId.eq(marketId);
+    }
+
+    public List<MarketReview> getMarketReviews(Long marketId) {
+        return jpaQueryFactory
+                .select(new QMarketReview(
+                        product.id,
+                        product.name,
+                        JPAExpressions
+                                .select(count(purchase))
+                                .from(purchase)
+                                .where(purchase.purProductCode.eq(product.id)),
+                        review.satisfaction,
+                        userInfo.userName,
+                        userInfo.userRank,
+                        Expressions.stringTemplate("DATE_FORMAT({0}, {1})", review.dateCreated, "%Y-%m-%d"),
+                        review.comment
+                ))
+                .from(product)
+                .innerJoin(review).on(product.id.eq(review.productId))
+                .innerJoin(userInfo).on(review.userId.eq(userInfo.userId))
+                .where(product.marketId.eq(marketId))
+                .fetch();
+    }
+
+    public String getMarketReviewImage(Long marketId) {
+        return jpaQueryFactory
+                .select(productImage.image)
+                .from(productImage)
+                .innerJoin(product).on(productImage.productId.eq(product.id))
+                .where(product.marketId.eq(marketId))
+                .where(productImage.type.eq(ProductImage.ImageType.THUMBNAIL))
+                .fetchFirst();
+    }
 
     /**
      * 안뇽하세요 콜트님
      * 회원의 리뷰수좀 빼가겠습니당
      */
-    public long findReviewCountByUserId(long userId){
-       // QReview review = QReview.review;
+    public long findReviewCountByUserId(long userId) {
+        // QReview review = QReview.review;
         return jpaQueryFactory.select(review.count())
                 .from(review)
                 .where(review.userId.eq(userId))
