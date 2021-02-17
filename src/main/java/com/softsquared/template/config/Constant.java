@@ -9,5 +9,5 @@ public class Constant {
     public static final String WHITE_SPACE = " ";
     public static final Long ZERO = 0L;
     public static final Long ONE = 1L;
-    public static final Integer REVIEW_SUMMARY_SATISFACTION_TRUNCATE_POSITION = 1;
+    public static final Integer REVIEW_SUMMARY_SATISFACTION_TRUNCATE_POSITION = 2;
 }

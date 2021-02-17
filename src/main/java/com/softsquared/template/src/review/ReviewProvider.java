@@ -49,22 +49,29 @@ public class ReviewProvider {
 
 
     public GetMarketReviewRes retrieveMarketReview(Long marketId, Long categoryId) {
-        MarketReviewSummary marketReviewSummary = reviewQueryRepository.getMarketReviews(marketId, categoryId);
-        return new GetMarketReviewRes(marketReviewSummary, null);
+        MarketReviewSummary marketReviewSummary = reviewQueryRepository.getMarketReviewSummary(marketId, categoryId);
+        List<MarketReview> marketReviews = reviewQueryRepository.getMarketReviews(marketId, categoryId);
+        marketReviews.stream()
+                .forEach(marketReview -> {
+                    String marketReviewImage = reviewQueryRepository.getMarketReviewImage(marketId);
+                    marketReview.setProductThumbnail(marketReviewImage);
+                });
+        return new GetMarketReviewRes(marketReviewSummary, marketReviews);
+    }
 
     /**
      * 회원이 작성한 리뷰 수
      */
-    public long retrieveUserReview(long userId) throws BaseException{
+    public long retrieveUserReview(long userId) throws BaseException {
         long reviewCount;
-        try{
+        try {
             reviewCount = reviewQueryRepository.findReviewCountByUserId(userId);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             throw new BaseException(BaseResponseStatus.FAILED_TO_GET_USER_REVIEW);
         }
 
         return reviewCount;
     }
-
 }
+
