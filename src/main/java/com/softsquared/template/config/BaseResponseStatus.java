@@ -134,6 +134,7 @@ public enum BaseResponseStatus {
     NO_AUTHORITY(false, 3050, "권한이 없습니다."),
     DUPLICATED_MARKET_NAME(false, 3060, "중복된 마켓 이름입니다."),
     NOT_FOUND_MARKET(false, 3061, "존재하지 않는 마켓입니다."),
+    NOT_FOUND_MODEL(false, 3062, "존재하지 않는 모델입니다."),
 
 
     // 4000 : Database 오류
