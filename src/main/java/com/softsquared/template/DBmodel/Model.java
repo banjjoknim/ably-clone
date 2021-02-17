@@ -1,6 +1,7 @@
 package com.softsquared.template.DBmodel;
 
 import com.softsquared.template.config.BaseEntity;
+import com.softsquared.template.config.statusEnum.IsPublic;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -51,8 +52,13 @@ public class Model extends BaseEntity {
     @Column(name = "marketId")
     private Long marketId;
 
+    @NotNull
+    @Column(name = "isPublic")
+    @Enumerated(EnumType.STRING)
+    private IsPublic isPublic;
+
     @Builder
-    public Model(@NotNull String name, @NotNull String image, @NotNull Integer tall, @NotNull Integer topSize, @NotNull Integer bottomSize, @NotNull Integer shoeSize, @NotNull Long marketId) {
+    public Model(@NotNull String name, @NotNull String image, @NotNull Integer tall, @NotNull Integer topSize, @NotNull Integer bottomSize, @NotNull Integer shoeSize, @NotNull Long marketId, @NotNull IsPublic isPublic) {
         this.name = name;
         this.image = image;
         this.tall = tall;
@@ -60,5 +66,6 @@ public class Model extends BaseEntity {
         this.bottomSize = bottomSize;
         this.shoeSize = shoeSize;
         this.marketId = marketId;
+        this.isPublic = isPublic;
     }
 }
