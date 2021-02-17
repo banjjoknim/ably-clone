@@ -136,7 +136,7 @@ public class ProductController {
     }
 
     @GetMapping("/{productId}/options")
-    public BaseResponse<List<GetProductOptionRes>> getProductOptions(@PathVariable Long productId) {
+    public BaseResponse<GetProductOptionEachRankRes> getProductOptions(@PathVariable Long productId) {
         try {
             return new BaseResponse<>(SUCCESS, productOptionProvider.retrieveProductOptions(productId));
         } catch (BaseException e) {

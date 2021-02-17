@@ -10,6 +10,7 @@ public class GetProductOptionRes {
 
     private Long optionId;
     private String optionName;
+    private Integer optionPrice;
     private ProductOption.OptionRank optionRank;
 
 }
