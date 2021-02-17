@@ -70,7 +70,11 @@ public class MarketProvider {
         return productsProvider.retrieveMarketProducts(marketId, orderType, pageable);
     }
 
-    public GetMarketReviewRes retrieveMarketReview(Long marketId, Long categoryId) {
+    public GetMarketReviewRes retrieveMarketReview(Long marketId, Long categoryId) throws BaseException {
+        Optional<Market> market = marketRepository.findById(marketId);
+        if (!market.isPresent()) {
+            throw new BaseException(NOT_FOUND_MARKET);
+        }
         return reviewProvider.retrieveMarketReview(marketId, categoryId);
     }
 }
