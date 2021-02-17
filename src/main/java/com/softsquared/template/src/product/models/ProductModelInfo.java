@@ -9,12 +9,12 @@ public class ProductModelInfo {
     private String modelImage;
     private String modelName;
     private Integer tall;
-    private Integer topSize;
-    private Integer bottomSize;
+    private String topSize;
+    private String bottomSize;
     private Integer shoeSize;
 
     @QueryProjection
-    public ProductModelInfo(String modelImage, String modelName, Integer tall, Integer topSize, Integer bottomSize, Integer shoeSize) {
+    public ProductModelInfo(String modelImage, String modelName, Integer tall, String topSize, String bottomSize, Integer shoeSize) {
         this.modelImage = modelImage;
         this.modelName = modelName;
         this.tall = tall;

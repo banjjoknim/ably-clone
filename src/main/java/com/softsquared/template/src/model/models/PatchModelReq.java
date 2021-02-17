@@ -12,7 +12,7 @@ public class PatchModelReq {
     private String modelName;
     private String modelImage;
     private Integer tall;
-    private Integer topSize;
-    private Integer bottomSize;
+    private String topSize;
+    private String bottomSize;
     private Integer shoeSize;
 }
