@@ -15,6 +15,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @Setter
 @Getter
+@DynamicInsert
 @Entity
 @Table(name = "Model")
 public class Model extends BaseEntity {

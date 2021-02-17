@@ -42,6 +42,15 @@ public class ModelController {
         }
     }
 
+    @DeleteMapping("/{modelId}")
+    public BaseResponse<Long> deleteModel(@PathVariable Long modelId) {
+        try {
+            return new BaseResponse<>(SUCCESS, modelService.deleteModel(modelId));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
     private void validateModelRequest(String modelName, String modelImage, Integer tall, Integer topSize, Integer bottomSize, Integer shoeSize) throws BaseException {
         if (modelName == null) {
             throw new BaseException(MODEL_NAME_CAN_NOT_BE_EMPTY);

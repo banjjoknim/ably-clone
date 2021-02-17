@@ -2,16 +2,19 @@ package com.softsquared.template.src.model;
 
 import com.softsquared.template.DBmodel.Model;
 import com.softsquared.template.config.BaseException;
+import com.softsquared.template.config.statusEnum.IsPublic;
 import com.softsquared.template.src.market.MarketRepository;
 import com.softsquared.template.src.model.models.PatchModelReq;
 import com.softsquared.template.src.model.models.PostModelReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 import static com.softsquared.template.config.BaseResponseStatus.*;
 
+@Transactional
 @Service
 public class ModelService {
 
@@ -26,9 +29,7 @@ public class ModelService {
 
     public Long createModel(PostModelReq request) throws BaseException {
         Long marketIdFromToken = 3L; // todo: 토큰으로부터 마켓 ID 추출해야 함.
-        if (marketRepository.findById(marketIdFromToken).isEmpty()) {
-            throw new BaseException(NOT_FOUND_MARKET);
-        }
+        validateMarketIsExists(marketIdFromToken);
         Model model = Model.builder()
                 .name(request.getModelName())
                 .image(request.getModelImage())
@@ -45,16 +46,10 @@ public class ModelService {
 
     public Long updateModel(Long modelId, PatchModelReq request) throws BaseException {
         Long marketIdFromToken = 3L; // todo: 토큰으로부터 마켓 ID 추출해야 함.
-        if (marketRepository.findById(marketIdFromToken).isEmpty()) {
-            throw new BaseException(NOT_FOUND_MARKET);
-        }
+        validateMarketIsExists(marketIdFromToken);
         Optional<Model> model = modelRepository.findById(modelId);
-        if (model.isEmpty()) {
-            throw new BaseException(NOT_FOUND_MODEL);
-        }
-        if (!model.get().getMarketId().equals(marketIdFromToken)) {
-            throw new BaseException(NO_AUTHORITY);
-        }
+        validateModelIsExists(model);
+        validateAuthority(marketIdFromToken, model);
         model.ifPresent(selectedModel -> {
             selectedModel.setName(request.getModelName());
             selectedModel.setImage(request.getModelImage());
@@ -66,5 +61,35 @@ public class ModelService {
         });
 
         return modelId;
+    }
+
+    public Long deleteModel(Long modelId) throws BaseException {
+        Long marketIdFromToken = 3L; // todo: 토큰으로부터 마켓 ID 추출해야 함.
+        validateMarketIsExists(marketIdFromToken);
+        Optional<Model> model = modelRepository.findById(modelId);
+        validateModelIsExists(model);
+        validateAuthority(marketIdFromToken, model);
+        model.get().setIsPublic(IsPublic.PRIVATE);
+        modelRepository.save(model.get());
+
+        return modelId;
+    }
+
+    private void validateAuthority(Long marketIdFromToken, Optional<Model> model) throws BaseException {
+        if (!model.get().getMarketId().equals(marketIdFromToken)) {
+            throw new BaseException(NO_AUTHORITY);
+        }
+    }
+
+    private void validateModelIsExists(Optional<Model> model) throws BaseException {
+        if (model.isEmpty()) {
+            throw new BaseException(NOT_FOUND_MODEL);
+        }
+    }
+
+    private void validateMarketIsExists(Long marketIdFromToken) throws BaseException {
+        if (marketRepository.findById(marketIdFromToken).isEmpty()) {
+            throw new BaseException(NOT_FOUND_MARKET);
+        }
     }
 }
