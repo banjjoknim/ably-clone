@@ -50,7 +50,7 @@ public class ReviewProvider {
 
     public GetMarketReviewRes retrieveMarketReview(Long marketId, Long categoryId) {
         MarketReviewSummary marketReviewSummary = reviewQueryRepository.getMarketReviewSummary(marketId, categoryId);
-        List<MarketReview> marketReviews = reviewQueryRepository.getMarketReviews(marketId);
+        List<MarketReview> marketReviews = reviewQueryRepository.getMarketReviews(marketId, categoryId);
         marketReviews.stream()
                 .forEach(marketReview -> {
                     String marketReviewImage = reviewQueryRepository.getMarketReviewImage(marketId);

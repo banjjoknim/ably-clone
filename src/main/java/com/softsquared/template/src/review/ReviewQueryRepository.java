@@ -165,7 +165,7 @@ public class ReviewQueryRepository {
         return product.marketId.eq(marketId);
     }
 
-    public List<MarketReview> getMarketReviews(Long marketId) {
+    public List<MarketReview> getMarketReviews(Long marketId, Long categoryId) {
         return jpaQueryFactory
                 .select(new QMarketReview(
                         product.id,
@@ -183,7 +183,7 @@ public class ReviewQueryRepository {
                 .from(product)
                 .innerJoin(review).on(product.id.eq(review.productId))
                 .innerJoin(userInfo).on(review.userId.eq(userInfo.userId))
-                .where(product.marketId.eq(marketId))
+                .where(marketEq(marketId).and(categoryEq(categoryId)))
                 .fetch();
     }
 
