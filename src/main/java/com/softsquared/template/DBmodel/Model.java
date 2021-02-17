@@ -39,11 +39,11 @@ public class Model extends BaseEntity {
 
     @NotNull
     @Column(name = "topSize")
-    private Integer topSize;
+    private String topSize;
 
     @NotNull
     @Column(name = "bottomSize")
-    private Integer bottomSize;
+    private String bottomSize;
 
     @NotNull
     @Column(name = "shoeSize")
@@ -59,7 +59,7 @@ public class Model extends BaseEntity {
     private IsPublic isPublic;
 
     @Builder
-    public Model(@NotNull String name, @NotNull String image, @NotNull Integer tall, @NotNull Integer topSize, @NotNull Integer bottomSize, @NotNull Integer shoeSize, @NotNull Long marketId, @NotNull IsPublic isPublic) {
+    public Model(@NotNull String name, @NotNull String image, @NotNull Integer tall, @NotNull String topSize, @NotNull String bottomSize, @NotNull Integer shoeSize, @NotNull Long marketId, @NotNull IsPublic isPublic) {
         this.name = name;
         this.image = image;
         this.tall = tall;
