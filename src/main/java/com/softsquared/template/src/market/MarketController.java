@@ -1,6 +1,7 @@
 package com.softsquared.template.src.market;
 
 import com.softsquared.template.DBmodel.Market;
+import com.softsquared.template.DBmodel.Model;
 import com.softsquared.template.config.BaseException;
 import com.softsquared.template.config.BaseResponse;
 import com.softsquared.template.config.Constant;
@@ -9,6 +10,8 @@ import com.softsquared.template.src.market.models.GetMarketMainInfoRes;
 import com.softsquared.template.src.market.models.GetMarketsRes;
 import com.softsquared.template.src.market.models.PatchMarketReq;
 import com.softsquared.template.src.market.models.PostMarketReq;
+import com.softsquared.template.src.model.ModelProvider;
+import com.softsquared.template.src.model.models.GetModelRes;
 import com.softsquared.template.src.product.models.GetProductsRes;
 import com.softsquared.template.src.product.models.ProductOrderType;
 import com.softsquared.template.src.review.models.GetMarketReviewRes;
@@ -26,11 +29,13 @@ public class MarketController {
 
     private final MarketProvider marketProvider;
     private final MarketService marketService;
+    private final ModelProvider modelProvider;
 
     @Autowired
-    public MarketController(MarketProvider marketProvider, MarketService marketService) {
+    public MarketController(MarketProvider marketProvider, MarketService marketService, ModelProvider modelProvider) {
         this.marketProvider = marketProvider;
         this.marketService = marketService;
+        this.modelProvider = modelProvider;
     }
 
     @GetMapping("")
@@ -70,6 +75,15 @@ public class MarketController {
     public BaseResponse<GetMarketReviewRes> getMarketReview(@PathVariable Long marketId, @RequestParam(required = false) Long categoryId) {
         try {
             return new BaseResponse<>(SUCCESS, marketProvider.retrieveMarketReview(marketId, categoryId));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    @GetMapping("/{marketId}/models")
+    public BaseResponse<List<GetModelRes>> getMarketModels(@PathVariable Long marketId) {
+        try {
+            return new BaseResponse<>(SUCCESS, modelProvider.retrieveMarketModels(marketId));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
