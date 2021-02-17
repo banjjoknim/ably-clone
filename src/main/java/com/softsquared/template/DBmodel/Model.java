@@ -1,6 +1,7 @@
 package com.softsquared.template.DBmodel;
 
 import com.softsquared.template.config.BaseEntity;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
@@ -44,13 +45,18 @@ public class Model extends BaseEntity {
     @Column(name = "shoeSize")
     private Integer shoeSize;
 
-    @Autowired
-    public Model(String name, String image, Integer tall, Integer topSize, Integer bottomSize, Integer shoeSize) {
+    @NotNull
+    @Column(name = "marketId")
+    private Long marketId;
+
+    @Builder
+    public Model(@NotNull String name, @NotNull String image, @NotNull Integer tall, @NotNull Integer topSize, @NotNull Integer bottomSize, @NotNull Integer shoeSize, @NotNull Long marketId) {
         this.name = name;
         this.image = image;
         this.tall = tall;
         this.topSize = topSize;
         this.bottomSize = bottomSize;
         this.shoeSize = shoeSize;
+        this.marketId = marketId;
     }
 }
