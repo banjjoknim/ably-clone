@@ -101,8 +101,9 @@ public class PurchaseService {
         String name = getDelivery.getUserName();
         String address = getDelivery.getMainAddress()+" "+getDelivery.getSubAddress();
         String phoneNum = getDelivery.getPhoneNum();
+        String purIdStr = "주문번호 "+purId;
 
-        PostPurchaseRes postPurchaseRes= new PostPurchaseRes(purId,name,address,phoneNum);
+        PostPurchaseRes postPurchaseRes= new PostPurchaseRes(purIdStr,name,address,phoneNum);
 
         return postPurchaseRes;
     }

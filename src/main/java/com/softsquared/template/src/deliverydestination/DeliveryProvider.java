@@ -102,6 +102,7 @@ public class DeliveryProvider {
 
 
 
+
     public List<GetDeliveryRes> changedDelToRes(List<GetDelivery> list){
         List<GetDeliveryRes> changedList;
         changedList = list.stream().map( GetUserDelivery -> {
@@ -110,8 +111,9 @@ public class DeliveryProvider {
             String subAdress = GetUserDelivery.getSubAddress();
             String phoneNum = GetUserDelivery.getPhoneNum();
             boolean isMain = (GetUserDelivery.getIsMain() ==1)? true : false;
+            long desId = GetUserDelivery.getDesId();
 
-            return new GetDeliveryRes(userName,mainAdress,subAdress,phoneNum,isMain);
+            return new GetDeliveryRes(userName,mainAdress,subAdress,phoneNum,isMain,desId);
 
         }).collect(Collectors.toList());
 

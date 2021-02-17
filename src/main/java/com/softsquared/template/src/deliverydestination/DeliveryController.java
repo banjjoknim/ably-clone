@@ -3,6 +3,7 @@ package com.softsquared.template.src.deliverydestination;
 import com.softsquared.template.config.BaseException;
 import com.softsquared.template.config.*;
 import com.softsquared.template.src.deliverydestination.model.GetDeliveryRes;
+import com.softsquared.template.src.deliverydestination.model.PatchDeliveryReq;
 import com.softsquared.template.src.deliverydestination.model.PostDeliveryReq;
 import com.softsquared.template.utils.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,9 +56,23 @@ public class DeliveryController {
 
     @ResponseBody
     @DeleteMapping("/{deliverydestinationsid}")
-    public BaseResponse<Boolean> deletedDelivery(@PathVariable long deliverydestinationsid){
+    public BaseResponse<Boolean> deletedDelivery(@RequestHeader("X-ACCESS-TOKEN") String token,@PathVariable long deliverydestinationsid){
+        boolean result = true;
+        long userId;
         try{
-            boolean result = deliveryService.deleteDeliveryDestination(deliverydestinationsid);
+            userId = jwtService.getUserId();
+
+        }catch(Exception e){
+            return new BaseResponse<>(INVALID_TOKEN);
+        }
+        try{
+            long delUserId = deliveryService.deleteDeliveryDestination(deliverydestinationsid);
+            if(delUserId == userId)
+                result = true;
+            else {
+                result = false;
+                return new BaseResponse<>(INVALID_TOKEN_USER);
+            }
             return new BaseResponse<>(SUCCESS,result);
         }catch (Exception e){
             e.printStackTrace();
@@ -108,6 +123,39 @@ public class DeliveryController {
                 result = "기본 배송지로 생성되었습니다";
             else
                 result = "기본 배송지가 아닌 일반 배송지로 생성되었습니다";
+
+            return new BaseResponse<>(SUCCESS,result);
+
+        }catch (BaseException e){
+            e.printStackTrace();
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    /**
+     * 배송지 수정
+     */
+    @ResponseBody
+    @PatchMapping("")
+    public BaseResponse<String> patchDeliveryDestination(@RequestHeader("X-ACCESS-TOKEN") String token,
+                                                         @RequestBody PatchDeliveryReq param){
+        if(token == null || token.length()==0)
+            return new BaseResponse<>(EMPTY_JWT);
+        long userId;
+        int isMain;
+        try{
+            userId = jwtService.getUserId();
+        }catch (Exception e){
+            return new BaseResponse<>(INVALID_TOKEN);
+        }
+
+        try{
+            String result="";
+            isMain = deliveryService.modifyDeliveryDestination(param,userId);
+            if(isMain==1)
+                result = "기본 배송지 수정이 완료되었습니다";
+            else
+                result = "일반 배송지 수정이 완료되었습니다";
 
             return new BaseResponse<>(SUCCESS,result);
 

@@ -2,9 +2,12 @@ package com.softsquared.template.src.deliverydestination;
 
 import com.fasterxml.jackson.databind.ser.Serializers;
 import com.softsquared.template.DBmodel.DeliveryDestination;
+import com.softsquared.template.DBmodel.QUserInfo;
 import com.softsquared.template.config.*;
 import com.softsquared.template.config.BaseException;
 import com.softsquared.template.src.deliverydestination.model.DeleteDelivery;
+import com.softsquared.template.src.deliverydestination.model.GetDelivery;
+import com.softsquared.template.src.deliverydestination.model.PatchDeliveryReq;
 import com.softsquared.template.src.deliverydestination.model.PostDeliveryReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,7 +15,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.util.List;
 
-import static com.softsquared.template.config.BaseResponseStatus.FAILED_TO_GET_DELVIERY_DESTINATION;
+import static com.softsquared.template.config.BaseResponseStatus.*;
 
 @Service
 public class DeliveryService {
@@ -28,7 +31,7 @@ public class DeliveryService {
     /**
      * 배송지 삭제하기
      */
-    public boolean deleteDeliveryDestination(long desId) throws BaseException{
+    public long deleteDeliveryDestination(long desId) throws BaseException{
         DeleteDelivery deleteDelivery;
         DeliveryDestination newDes;
 
@@ -51,9 +54,13 @@ public class DeliveryService {
                 phoneNUm,userName,
                 address,1,dateUpdated,dateCreated,0);
 
-        deliveryRepository.save(newDes);
+        try {
+            deliveryRepository.save(newDes);
+        }catch (Exception e){
+            throw new BaseException(FAILED_TO_DELETE_DELIVRY);
+        }
 
-        return true;
+        return userId;
 
 
     }
@@ -102,6 +109,34 @@ public class DeliveryService {
         deliveryRepository.save(deliveryDestination);
 
 
+        return isMain;
+    }
+
+    public int modifyDeliveryDestination(PatchDeliveryReq param,long userId) throws BaseException{
+
+        String detailAddress = param.getDetailAddress();
+        String phoneNum = param.getPhoneNum();
+        String userName = param.getName();
+        String address = param.getAddress();
+        String dateCreated = (new Timestamp(System.currentTimeMillis())).toString();
+        String dateUpdated = (new Timestamp(System.currentTimeMillis())).toString();
+        GetDelivery getDelivery;
+        System.out.println(param.getDesId()+"?????");
+        try{
+            getDelivery = deliveryProvider.retrieveDelivery(param.getDesId());
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new BaseException(FAILED_TO_GET_DELVIERY_DESTINATION);
+        }
+        int isMain = getDelivery.getIsMain();
+        try {
+            DeliveryDestination deliveryDestination = new DeliveryDestination(param.getDesId(),
+                    userId, detailAddress, phoneNum, userName, address, 0, dateUpdated, dateCreated, isMain);
+            deliveryRepository.save(deliveryDestination);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new BaseException(FAILED_TO_PATCH_DELIVRY);
+        }
         return isMain;
     }
 

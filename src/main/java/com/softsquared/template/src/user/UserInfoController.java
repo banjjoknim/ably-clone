@@ -253,4 +253,14 @@ public class UserInfoController {
             return new BaseResponse<>(FAILED_TO_GET_USER_MYPAGE);
         }
     }
+//
+//    /**
+//     * 환불 정보 수정
+//     */
+//    @ResponseBody
+//    @PatchMapping
+//    public BaseResponse<String> patchRefundInfo(@RequestHeader("X-ACCESS-TOKEN") String token,
+//                                                @RequestBody PatchUserRefunInfo param){
+//
+//    }
 }

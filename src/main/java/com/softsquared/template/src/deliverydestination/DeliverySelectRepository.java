@@ -35,7 +35,7 @@ public class DeliverySelectRepository extends QuerydslRepositorySupport {
         return queryFactory.select((Projections.constructor(GetDelivery.class,
                 deliveryDestination.userName, deliveryDestination.address,
                 deliveryDestination.detailAddress, deliveryDestination.phoneNum,
-                deliveryDestination.isMain
+                deliveryDestination.isMain, deliveryDestination.desId
         )))
                 .from(deliveryDestination)
                 .where(deliveryDestination.userId.eq(userId), deliveryDestination.status.eq(0))
@@ -104,7 +104,7 @@ public class DeliverySelectRepository extends QuerydslRepositorySupport {
         return queryFactory.select((Projections.constructor(GetDelivery.class,
                 deliveryDestination.userName, deliveryDestination.address,
                 deliveryDestination.detailAddress, deliveryDestination.phoneNum,
-                deliveryDestination.isMain)))
+                deliveryDestination.isMain,deliveryDestination.desId)))
                 .from(deliveryDestination)
                 .where(deliveryDestination.status.eq(0), deliveryDestination.desId.eq(desId))
                 .fetch();

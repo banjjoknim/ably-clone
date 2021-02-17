@@ -11,4 +11,5 @@ public class GetDeliveryRes {
     private String subAddress;
     private String phoneNum;
     private boolean isMain;
+    private long desId;
 }

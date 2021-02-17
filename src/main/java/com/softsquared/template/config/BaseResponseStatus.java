@@ -128,6 +128,8 @@ public enum BaseResponseStatus {
     FAILED_TO_GET_USER_REVIEW(false, 3027, "회원 리뷰 조회에  실패하였습니다."),
     FAILED_TO_GET_USER_MYPAGE(false, 3028, "마이페이지 조회에  실패하였습니다."),
     FAILED_TO_GET_PRODUCT(false, 3029, "상품 조회에  실패하였습니다."),
+    FAILED_TO_DELETE_DELIVRY(false, 3030, "배송지 삭제에 실패하였습니다"),
+    FAILED_TO_PATCH_DELIVRY(false, 3031, "배송지 수정에 실패하였습니다"),
 
 
     //colt

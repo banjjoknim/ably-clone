@@ -12,5 +12,6 @@ public class GetDelivery {
     private String subAddress;
     private String phoneNum;
     private int isMain;
+    private long desId;
 
 }
