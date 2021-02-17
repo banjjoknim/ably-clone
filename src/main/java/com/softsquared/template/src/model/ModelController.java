@@ -51,7 +51,7 @@ public class ModelController {
         }
     }
 
-    private void validateModelRequest(String modelName, String modelImage, Integer tall, Integer topSize, Integer bottomSize, Integer shoeSize) throws BaseException {
+    private void validateModelRequest(String modelName, String modelImage, Integer tall, String topSize, String bottomSize, Integer shoeSize) throws BaseException {
         if (modelName == null) {
             throw new BaseException(MODEL_NAME_CAN_NOT_BE_EMPTY);
         }

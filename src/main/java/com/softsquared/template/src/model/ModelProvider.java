@@ -3,7 +3,7 @@ package com.softsquared.template.src.model;
 import com.softsquared.template.DBmodel.Market;
 import com.softsquared.template.DBmodel.Model;
 import com.softsquared.template.config.BaseException;
-import com.softsquared.template.config.BaseResponseStatus;
+import com.softsquared.template.config.statusEnum.IsPublic;
 import com.softsquared.template.src.market.MarketRepository;
 import com.softsquared.template.src.model.models.GetModelRes;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ public class ModelProvider {
         if (market.isEmpty()) {
             throw new BaseException(NOT_FOUND_MARKET);
         }
-        List<Model> models = modelRepository.findModelsByMarketId(marketId);
+        List<Model> models = modelRepository.findModelsByMarketIdAndIsPublic(marketId, IsPublic.PUBLIC);
 
         return models.stream()
                 .map(model -> new GetModelRes(model.getName(), model.getImage(), model.getTall(),
