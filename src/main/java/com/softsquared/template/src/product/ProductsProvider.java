@@ -7,12 +7,8 @@ import com.softsquared.template.src.category.DetailCategoryRepository;
 import com.softsquared.template.src.product.models.GetProductsRes;
 import com.softsquared.template.src.product.models.ProductFilterReq;
 import com.softsquared.template.src.product.models.ProductOrderType;
-
 import com.softsquared.template.src.product.models.ProductsInfo;
-
 import com.softsquared.template.src.purchase.model.GetPurchaseProduct;
-import com.softsquared.template.src.purchase.model.GetPurchaseProductReq;
-
 import com.softsquared.template.utils.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -64,7 +60,7 @@ public class ProductsProvider {
                 .collect(toList());
     }
 
-    private GetProductsRes getGetProductsRes(ProductsInfo productsInfo) {
+    public GetProductsRes getGetProductsRes(ProductsInfo productsInfo) {
         Long userId;
         try {
             userId = jwtService.getUserId();
