@@ -12,13 +12,13 @@ import java.util.Comparator;
 @AllArgsConstructor
 @Getter
 @Setter
-public class GetRecommendedProductsRes implements Comparator<GetRecommendedProductsRes> {
+public class RecommendedProductInfo implements Comparator<RecommendedProductInfo> {
 
     private Product product;
     private double similarityScore;
 
     @Override
-    public int compare(GetRecommendedProductsRes o1, GetRecommendedProductsRes o2) {
+    public int compare(RecommendedProductInfo o1, RecommendedProductInfo o2) {
         if (o1.similarityScore >= o2.similarityScore) {
             return 1;
         }
