@@ -6,7 +6,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class PostPaymentReq {
-    private String imp_id;
-    private int imp_price;
+    private String uid;
+    private int price;
 
 }
