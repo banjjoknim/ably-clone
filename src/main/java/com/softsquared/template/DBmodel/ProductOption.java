@@ -3,11 +3,13 @@ package com.softsquared.template.DBmodel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @NoArgsConstructor
+@Setter
 @Getter
 @Entity
 @Table(name = "ProductOption")
@@ -27,6 +29,10 @@ public class ProductOption {
     private String optionName;
 
     @NotNull
+    @Column(name = "price")
+    private Integer price;
+
+    @NotNull
     @Column(name = "optionRank")
     @Enumerated(EnumType.STRING)
     private OptionRank optionRank;
@@ -36,9 +42,10 @@ public class ProductOption {
     }
 
     @Builder
-    public ProductOption(Long productId, String optionName, OptionRank optionRank) {
+    public ProductOption(Long productId, String optionName, Integer price, OptionRank optionRank) {
         this.productId = productId;
         this.optionName = optionName;
+        this.price = price;
         this.optionRank = optionRank;
     }
 }
