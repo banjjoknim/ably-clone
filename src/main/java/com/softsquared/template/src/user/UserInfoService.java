@@ -2,12 +2,9 @@ package com.softsquared.template.src.user;
 
 import com.softsquared.template.DBmodel.UserInfo;
 import com.softsquared.template.utils.JwtService;
-import com.softsquared.template.config.secret.Secret;
-import com.softsquared.template.utils.AES128;
 import com.softsquared.template.config.BaseException;
 import com.softsquared.template.src.user.models.*;
 import com.softsquared.template.utils.KakaoService;
-import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -113,4 +110,38 @@ public class UserInfoService {
 
         return true;
     }
+
+    /**
+     * 환불 계좌 수정
+     */
+    public String modifyUserRefundInfo(PatchUserRefunInfoReq param, long userId) throws BaseException{
+        PatchUserRefundInfo userInfo;
+        try{
+            userInfo = userInfoProvider.retireveUserInfoForRefund(userId);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new BaseException(FAILED_TO_GET_USER);
+        }
+
+        String refundAccount = param.getRefundAccount();
+        String refundName = param.getRefundName();
+        String refundBank = param.getRefundBank();
+        String dateUpdated = (new Timestamp(System.currentTimeMillis())).toString();
+
+
+        UserInfo userinfo  = new UserInfo(userId,userInfo.getUserName(),userInfo.getPhoneNum(),
+                refundBank,refundName,refundAccount,userInfo.getPoint(),userInfo.getCoupon(),
+                userInfo.getUserRank(),0,dateUpdated,userInfo.getDateCreated());
+
+        try {
+            userInfoRepository.save(userinfo);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new BaseException(FAILED_TO_PATCH_REUNDINFO);
+        }
+
+        return "success";
+
+    }
+
 }

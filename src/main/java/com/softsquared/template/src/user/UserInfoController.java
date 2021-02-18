@@ -1,11 +1,7 @@
 package com.softsquared.template.src.user;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.softsquared.template.config.BaseException;
 import com.softsquared.template.config.BaseResponse;
-import com.softsquared.template.config.BaseResponseStatus;
 import com.softsquared.template.config.FormatChecker;
 import com.softsquared.template.src.user.models.*;
 import com.softsquared.template.utils.JwtService;
@@ -253,14 +249,38 @@ public class UserInfoController {
             return new BaseResponse<>(FAILED_TO_GET_USER_MYPAGE);
         }
     }
-//
-//    /**
-//     * 환불 정보 수정
-//     */
-//    @ResponseBody
-//    @PatchMapping
-//    public BaseResponse<String> patchRefundInfo(@RequestHeader("X-ACCESS-TOKEN") String token,
-//                                                @RequestBody PatchUserRefunInfo param){
-//
-//    }
+
+    /**
+     * 환불 정보 수정
+     */
+    @ResponseBody
+    @PatchMapping("/{userId}/refund-infos")
+    public BaseResponse<String> patchRefundInfo(@RequestHeader("X-ACCESS-TOKEN") String token,
+                                                @RequestBody PatchUserRefunInfoReq param){
+
+        long tokenUserId;
+        try{
+            tokenUserId = jwtService.getUserId();
+
+        }catch(Exception e){
+            return new BaseResponse<>(INVALID_TOKEN);
+        }
+
+        if(!formatChecker.isFull(param.getRefundAccount()))
+            return new BaseResponse<>(EMPTY_REFUND_ACCOUNT);
+        if(!formatChecker.isFull(param.getRefundName()))
+            return new BaseResponse<>(EMPTY_REFUND_NAME);
+        if(!formatChecker.isFull(param.getRefundBank()))
+            return new BaseResponse<>(EMPTY_REFUND_BANK);
+
+
+
+        try{
+            String result = userInfoService.modifyUserRefundInfo(param,tokenUserId);
+            return new BaseResponse<>(SUCCESS);
+        }catch (BaseException e){
+            e.printStackTrace();
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
 }

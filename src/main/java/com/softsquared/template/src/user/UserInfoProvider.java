@@ -226,6 +226,20 @@ public class UserInfoProvider {
         return new GetUserMyPageRes(name, rank,point,coupon,purchase,review);
 
     }
+    /**
+     * 회원 조회--> 환불 정보 수정하기 위해
+     */
+    public PatchUserRefundInfo retireveUserInfoForRefund(long userId) throws BaseException{
+        PatchUserRefundInfo userInfo;
+        try{
+            userInfo = userInfoSelectRepository.findUserRefundInfoByUserId(userId).get(0);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new BaseException(FAILED_TO_GET_USER);
+        }
+
+        return userInfo;
+    }
 
     /*********************************************changedList
 

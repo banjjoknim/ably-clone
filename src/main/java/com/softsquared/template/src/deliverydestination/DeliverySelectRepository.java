@@ -109,4 +109,23 @@ public class DeliverySelectRepository extends QuerydslRepositorySupport {
                 .where(deliveryDestination.status.eq(0), deliveryDestination.desId.eq(desId))
                 .fetch();
     }
+
+    /**
+     * 기본 배송지의 모든 정보 가져오기 --> 기본 배송지 수정을 위해
+     */
+    public List<GetDelivery> findMainDeliveryInfoByDesId(long userId) {
+        QDeliveryDestination deliveryDestination = QDeliveryDestination.deliveryDestination;
+
+        return queryFactory.select((Projections.constructor(GetDelivery.class,
+                deliveryDestination.userName, deliveryDestination.address,
+                deliveryDestination.detailAddress, deliveryDestination.phoneNum,
+                deliveryDestination.isMain,deliveryDestination.desId)))
+                .from(deliveryDestination)
+                .where(deliveryDestination.status.eq(0), deliveryDestination.userId.eq(userId),
+                        deliveryDestination.isMain.eq(1))
+                .fetch();
+    }
+
+
+
 }

@@ -99,6 +99,21 @@ public class DeliveryProvider {
         return getDelivery;
     }
 
+    /**
+     * 기본배송지 모든 정보 가져오기
+     * --> for 기본 배송지 변경
+     */
+    public GetDelivery retrieveMainDeliveryInfo(long userId) throws BaseException{
+        GetDelivery getDelivery;
+        try{
+            getDelivery = deliverySelectRepository.findMainDeliveryInfoByDesId(userId).get(0);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new BaseException(FAILED_TO_GET_DELVIERY_DESTINATION);
+        }
+        return getDelivery;
+    }
+
 
 
 

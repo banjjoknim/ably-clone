@@ -4,6 +4,7 @@ import com.softsquared.template.config.BaseException;
 import com.softsquared.template.config.*;
 import com.softsquared.template.src.deliverydestination.model.GetDeliveryRes;
 import com.softsquared.template.src.deliverydestination.model.PatchDeliveryReq;
+import com.softsquared.template.src.deliverydestination.model.PatchMainDelivery;
 import com.softsquared.template.src.deliverydestination.model.PostDeliveryReq;
 import com.softsquared.template.utils.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +55,10 @@ public class DeliveryController {
         }
     }
 
+    /**
+     * 배송지 삭제
+     *
+     */
     @ResponseBody
     @DeleteMapping("/{deliverydestinationsid}")
     public BaseResponse<Boolean> deletedDelivery(@RequestHeader("X-ACCESS-TOKEN") String token,@PathVariable long deliverydestinationsid){
@@ -163,6 +168,33 @@ public class DeliveryController {
             e.printStackTrace();
             return new BaseResponse<>(e.getStatus());
         }
+    }
+
+    /**
+     * 기본 배송지 변경
+     */
+    @ResponseBody
+    @PatchMapping("/change-defaults")
+    public BaseResponse<String> patchMainDelivery(@RequestHeader("X-ACCESS-TOKEN") String token,
+                                                  @RequestBody PatchMainDelivery param){
+        if(token == null || token.length()==0)
+            return new BaseResponse<>(EMPTY_JWT);
+        long userId;
+        int isMain;
+        try{
+            userId = jwtService.getUserId();
+        }catch (Exception e){
+            return new BaseResponse<>(INVALID_TOKEN);
+        }
+
+        try{
+            String result = deliveryService.modifyMainDeliveryDestination(param,userId);
+            return new BaseResponse<>(SUCCESS,result);
+        }catch (BaseException e){
+            e.printStackTrace();
+            return new BaseResponse<>(e.getStatus());
+        }
+
     }
 
 
