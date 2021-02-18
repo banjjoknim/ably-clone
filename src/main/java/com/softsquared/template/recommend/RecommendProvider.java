@@ -67,7 +67,7 @@ public class RecommendProvider {
                 .filter(product -> !product.getId().equals(productId))
                 .filter(product -> product.getIsPublic().equals(IsPublic.PUBLIC))
                 .map(product -> {
-                    double[] compareProductScoreVector = new Vectorizer().getVector(lastViewedProduct.get(), product);
+                    double[] compareProductScoreVector = new Vectorizer().getScoreVector(lastViewedProduct.get(), product);
                     VectorCalculator vectorCalculator = new VectorCalculator(compareProductScoreVector);
                     return new RecommendedProductInfo(product, vectorCalculator.calculateCosineSimilarity());
                 })

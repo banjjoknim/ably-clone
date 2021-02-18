@@ -14,7 +14,7 @@ public class Vectorizer {
     private double fitScore;
     private double printScore;
 
-    public double[] getVector(Product lastViewedProduct, Product recommendedProduct) {
+    public double[] getScoreVector(Product lastViewedProduct, Product recommendedProduct) {
         if (lastViewedProduct.getMarketId().equals(recommendedProduct.getMarketId())) {
             marketScore = 1;
         }
@@ -36,7 +36,8 @@ public class Vectorizer {
         if (lastViewedProduct.getFabricId().equals(recommendedProduct.getFabricId())) {
             fabricScore = 1;
         }
-        if (lastViewedProduct.getTall().equals(recommendedProduct.getTall())) {
+        if (lastViewedProduct.getTall() * 0.9 <= recommendedProduct.getTall() &&
+                recommendedProduct.getTall() <= lastViewedProduct.getTall() * 1.1) {
             tallScore = 1;
         }
         if (lastViewedProduct.getFitId().equals(recommendedProduct.getFitId())) {
