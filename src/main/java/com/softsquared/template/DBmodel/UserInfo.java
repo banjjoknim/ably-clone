@@ -126,4 +126,20 @@ public class UserInfo {
         this.coupon = coupon;
 
     }
+    public UserInfo(long userId,String userName, String phoneNum,String refundBank, String refundName,
+                    String refundAccount,int point, int coupon,String userRank,int status,
+                    String dateUpdated, String dateCreated){
+        this.userId = userId;
+        this.userName = userName;
+        this.phoneNum = phoneNum;
+        this.refundBank = refundBank;
+        this.refundName = refundName;
+        this.refundAccount = refundAccount;
+        this.dateCreated = dateCreated;
+        this.dateUpdated = dateUpdated;
+        this.status= status;
+        this.userRank = userRank;
+        this.point = point;
+        this.coupon = coupon;
+    }
 }

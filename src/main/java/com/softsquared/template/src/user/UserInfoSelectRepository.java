@@ -138,5 +138,19 @@ public class UserInfoSelectRepository extends QuerydslRepositorySupport {
 
     }
 
+    /**
+     * 환불계좌 수정을 위한 정보 가져오기
+     */
+    public List<PatchUserRefundInfo> findUserRefundInfoByUserId(long userId){
+        QUserInfo userInfo = QUserInfo.userInfo;
+        return queryFactory.select((Projections.constructor(PatchUserRefundInfo.class,
+                userInfo.userName, userInfo.phoneNum, userInfo.point,
+                userInfo.coupon,userInfo.userRank,userInfo.dateCreated)))
+                .where(userInfo.status.eq(0), userInfo.userId.eq(userId))
+                .from(userInfo)
+                .fetch();
+    }
+
+
 }
 

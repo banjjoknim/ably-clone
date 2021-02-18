@@ -39,7 +39,7 @@ public class DeliveryDestination {
     @Column(name = "dateUpdated", nullable = false)
     private String dateUpdated;
 
-    @Column(name = "dateCreated", nullable = false)
+    @Column(name = "dateCreated", nullable = false, updatable = false)
     private String dateCreated;
 
     @Column(name = "isMain", nullable = false)
@@ -73,4 +73,5 @@ public class DeliveryDestination {
         this.dateUpdated = dateUpdated;
         this.isMain = isMain;
     }
+
 }

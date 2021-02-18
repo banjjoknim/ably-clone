@@ -48,6 +48,11 @@ public enum BaseResponseStatus {
 
     INVALID_SIZEOF_LIST(false, 2044, "옵션과 수량의 배열 길이가 맞지 않습니다."),
 
+    EMPTY_REFUND_ACCOUNT(false, 2045, "환불 계좌를 입력해주세요"),
+    EMPTY_REFUND_NAME(false, 2046, "환불 이름을 입력해주세요"),
+    EMPTY_REFUND_BANK(false, 2047, "환불 은행을 입력해주세요"),
+
+
 
 
     // colt
@@ -128,6 +133,10 @@ public enum BaseResponseStatus {
     FAILED_TO_GET_USER_REVIEW(false, 3027, "회원 리뷰 조회에  실패하였습니다."),
     FAILED_TO_GET_USER_MYPAGE(false, 3028, "마이페이지 조회에  실패하였습니다."),
     FAILED_TO_GET_PRODUCT(false, 3029, "상품 조회에  실패하였습니다."),
+    FAILED_TO_DELETE_DELIVRY(false, 3030, "배송지 삭제에 실패하였습니다"),
+    FAILED_TO_PATCH_DELIVRY(false, 3031, "배송지 수정에 실패하였습니다"),
+    FAILED_TO_PATCH_REUNDINFO(false, 3032, "환불 계좌 수정에 실패하였습니다"),
+    FAILED_TO_PATCH_DELIVERY_MAIN(false, 3033, "환불 계좌 수정에 실패하였습니다"),
 
 
     //colt
