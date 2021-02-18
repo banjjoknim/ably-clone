@@ -109,7 +109,7 @@ public class DeliveryController {
             return new BaseResponse<>(EMPTY_DETAIL_ADDRESS);
         }
         if(!formatChecker.isPhoneNum(param.getPhoneNum())){
-            return new BaseResponse<>(EMPTY_DETAIL_ADDRESS);
+            return new BaseResponse<>(INVALID_PHONENUM);
         }
 
         long userId;

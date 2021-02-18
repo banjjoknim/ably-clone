@@ -1,28 +1,58 @@
 package com.softsquared.template.src.payment;
 
+import com.softsquared.template.config.BaseException;
+import com.softsquared.template.config.BaseResponse;
+import com.softsquared.template.src.payment.model.PostPaymentReq;
+import com.softsquared.template.src.purchase.PurchaseController;
+import com.softsquared.template.src.purchase.PurchaseService;
+import com.softsquared.template.src.purchase.model.PostPurchaseReq;
+import com.softsquared.template.src.purchase.model.PostPurchaseRes;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.annotation.RequestScope;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.softsquared.template.config.BaseResponseStatus.SUCCESS;
 
 @RestController
 @RequestMapping("/payments")
 public class PaymentController {
 
+    private final PurchaseService purchaseService;
     @Autowired
-    public PaymentController(){}
+    public PaymentController(PurchaseService purchaseService){
+        this.purchaseService = purchaseService;
+    }
 
     @ResponseBody
     @PostMapping("/complete")
-    public String postPayment(){
-//        String imp_uid = extract_POST_value_from_url('imp_uid') //post ajax request로부터 imp_uid확인
-//
-//        payment_result = rest_api_to_find_payment(imp_uid) //imp_uid로 아임포트로부터 결제정보 조회
-//        amount_to_be_paid = query_amount_to_be_paid(payment_result.merchant_uid) //결제되었어야 하는 금액 조회. 가맹점에서는 merchant_uid기준으로 관리
+    public BaseResponse<String> postPayment(@RequestBody PostPaymentReq param){
+        String id = param.getUid();
+        int price = param.getPrice();
+        System.out.println(id+"  "+ param.getPrice());
 
-        System.out.println("hi kakaopay");
-        return "kakako";
+        //데이터가 들어왔다고 가정
+        long purId = 1;
+        ArrayList<String> options =new ArrayList<>();
+        options.add("블랙");
+        ArrayList<Integer> num = new ArrayList<>();
+        num.add(1);
+        long desId =1;
+        long paymentCode = 1;
+        int totalPrice=price;
+
+        PostPurchaseReq purchase = new PostPurchaseReq(purId, options,num,
+                desId,paymentCode,totalPrice);
+        try{
+            PostPurchaseRes postPurchaseRes = purchaseService.createPurchase(purchase,345);
+            return new BaseResponse<>(SUCCESS,Integer.toString(totalPrice));
+        }catch (BaseException e){
+            e.printStackTrace();
+            return new BaseResponse<>(e.getStatus());
+        }
     }
 
 

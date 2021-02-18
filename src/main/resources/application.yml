@@ -23,6 +23,7 @@ spring:
       hibernate:
         format_sql: true
 
+
   datasource:
     platform: mysql
     url: jdbc:mysql://ably-database-3.cikvtadhuegz.ap-northeast-2.rds.amazonaws.com/ably
