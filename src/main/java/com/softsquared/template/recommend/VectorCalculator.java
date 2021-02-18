@@ -31,7 +31,7 @@ public class VectorCalculator {
     // 두 상품 벡터 각도가 같을 때 내적 계산
     private double calculateInnerProductFromTwoScoreVector() {
         return DoubleStream.iterate(0, x -> x + 1)
-                .limit(3)
+                .limit(compareProductScoreVector.length)
                 .mapToInt(index -> (int) index)
                 .mapToDouble(index -> Math.abs(defaultProductScoreVector[index]) * Math.abs(compareProductScoreVector[index]))
                 .reduce(0, (x, y) -> x + y);
