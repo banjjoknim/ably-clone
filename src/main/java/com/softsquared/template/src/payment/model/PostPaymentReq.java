@@ -8,4 +8,5 @@ import lombok.Getter;
 public class PostPaymentReq {
     private String imp_id;
     private int imp_price;
+
 }
