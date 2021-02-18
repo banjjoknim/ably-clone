@@ -5,7 +5,7 @@ import java.util.stream.DoubleStream;
 
 public class VectorCalculator {
 
-    private final double[] defaultProductScoreVector = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+    private final double[] defaultProductScoreVector = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
     private final double[] compareProductScoreVector;
 
     public VectorCalculator(double[] compareProductScoreVector) {
