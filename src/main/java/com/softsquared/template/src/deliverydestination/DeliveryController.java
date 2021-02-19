@@ -187,9 +187,6 @@ public class DeliveryController {
             return new BaseResponse<>(INVALID_TOKEN);
         }
 
-//        if(userId!= param.getUserId()){
-//            return new BaseResponse<>(INVALID_TOKEN_USER);
-//        }
 
         try{
             String result = deliveryService.modifyMainDeliveryDestination(param,userId);
