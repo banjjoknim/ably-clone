@@ -21,12 +21,4 @@ public class ViewHistoryController {
         this.viewHistoryProvider = viewHistoryProvider;
     }
 
-    @GetMapping("")
-    public BaseResponse<Long> getLastViewedProductId(@RequestHeader(value = "X-ACCESS-TOKEN", required = false) String token) {
-        try {
-            return new BaseResponse<>(SUCCESS, viewHistoryProvider.retrieveLastViewedProductId(token));
-        } catch (BaseException e) {
-            return new BaseResponse<>(e.getStatus());
-        }
-    }
 }
