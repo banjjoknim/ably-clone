@@ -33,7 +33,7 @@ public class ViewHistoryProvider {
     }
 
     public Long retrieveLastViewedProductId(String token) throws BaseException {
-        Long userId = 0L;
+        Long userId = ZERO;
         if (token != null) {
             userId = jwtService.getUserId();
             if (userInfoRepository.findById(userId).isEmpty()) {
@@ -42,7 +42,7 @@ public class ViewHistoryProvider {
         }
         List<ViewHistory> lastViewHistory = viewHistoryRepository.findLastViewedProduct(userId);
         if (!lastViewHistory.isEmpty()) {
-            return lastViewHistory.get(0).getId().getProductId();
+            return lastViewHistory.get(ZERO.intValue()).getId().getProductId();
         }
         Optional<Product> mostRecentlyPostedProduct = productProvider.retrieveMostRecentlyPostedProduct();
         if (mostRecentlyPostedProduct.isPresent()) {
