@@ -59,6 +59,8 @@ public class ReviewService {
 
     public Long updateReview(Long reviewId, PatchReviewReq request) throws BaseException {
         Optional<Review> review = reviewRepository.findById(reviewId);
+        validateIsExists(review);
+        validateUser(review);
         if (review.isPresent()) {
             validateUser(review);
         }
@@ -80,11 +82,18 @@ public class ReviewService {
 
     public Long deleteReview(Long reviewId) throws BaseException {
         Optional<Review> review = reviewRepository.findById(reviewId);
+        validateIsExists(review);
         validateUser(review);
         reviewRepository.findById(reviewId)
                 .ifPresent(selectedReview -> reviewRepository.deleteById(reviewId));
 
         return reviewId;
+    }
+
+    private void validateIsExists(Optional<Review> review) throws BaseException {
+        if (review.isEmpty()) {
+            throw new BaseException(NOT_FOUND_REVIEW);
+        }
     }
 
     private void validateUser(Optional<Review> review) throws BaseException {
