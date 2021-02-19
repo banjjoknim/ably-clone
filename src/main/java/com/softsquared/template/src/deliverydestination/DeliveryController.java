@@ -180,12 +180,16 @@ public class DeliveryController {
         if(token == null || token.length()==0)
             return new BaseResponse<>(EMPTY_JWT);
         long userId;
-        int isMain;
+
         try{
             userId = jwtService.getUserId();
         }catch (Exception e){
             return new BaseResponse<>(INVALID_TOKEN);
         }
+
+//        if(userId!= param.getUserId()){
+//            return new BaseResponse<>(INVALID_TOKEN_USER);
+//        }
 
         try{
             String result = deliveryService.modifyMainDeliveryDestination(param,userId);

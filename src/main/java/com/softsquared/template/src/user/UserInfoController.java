@@ -43,7 +43,19 @@ public class UserInfoController {
      */
     @ResponseBody
     @GetMapping("/{userId}/purchases")
-    public BaseResponse<GetUsersPurchaseRes> getUserPurchases (@PathVariable long userId){
+    public BaseResponse<GetUsersPurchaseRes> getUserPurchases (@RequestHeader("X-ACCESS-TOKEN") String token,
+                                                               @PathVariable long userId){
+        long tokenUserId;
+        try{
+            tokenUserId = jwtService.getUserId();
+
+        }catch(Exception e){
+            return new BaseResponse<>(INVALID_TOKEN);
+        }
+        if(tokenUserId != userId){
+            return new BaseResponse<>(INVALID_TOKEN_USER);
+        }
+
         try{
             GetUsersPurchaseRes list = userInfoProvider.retrieveUserPurchases(userId);
             return new BaseResponse<>(SUCCESS,list);

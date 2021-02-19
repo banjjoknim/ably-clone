@@ -7,6 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class PatchMainDelivery {
     private long newMainDesId;
+    private long userId;
 
 
 }
