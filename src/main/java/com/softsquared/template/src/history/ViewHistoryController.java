@@ -3,7 +3,7 @@ package com.softsquared.template.src.history;
 import com.softsquared.template.DBmodel.ViewHistoryId;
 import com.softsquared.template.config.BaseException;
 import com.softsquared.template.config.BaseResponse;
-import com.softsquared.template.src.history.models.PatchHistoryReq;
+import com.softsquared.template.src.history.models.PostHistoryReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +22,7 @@ public class ViewHistoryController {
     }
 
     @PostMapping("")
-    public BaseResponse<ViewHistoryId> postViewHistory(@RequestHeader(value = "X-ACCESS-TOKEN", required = false) String token, @RequestBody PatchHistoryReq request) {
+    public BaseResponse<ViewHistoryId> postViewHistory(@RequestHeader(value = "X-ACCESS-TOKEN", required = false) String token, @RequestBody PostHistoryReq request) {
         try {
             if (request.getProductId() == null) {
                 throw new BaseException(PRODUCT_ID_CAN_NOT_BE_EMPTY);

@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class PatchHistoryReq {
+public class PostHistoryReq {
 
     private Long productId;
 }
