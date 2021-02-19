@@ -35,8 +35,7 @@ public class FavoriteProductService {
         Long userId = jwtService.getUserId();
         FavoriteProductId favoriteProductId = new FavoriteProductId(userId, productId);
         Optional<FavoriteProduct> favoriteProduct = favoriteProductRepository.findByFavoriteProductId(favoriteProductId);
-        Long userCode = favoriteProduct.get().getFavoriteProductId().getUserCode();
-        Long productCode = favoriteProduct.get().getFavoriteProductId().getProductCode();
+
 
         if (!userInfoRepository.existsById(userId)) {
             throw new BaseException(NOT_FOUND_USERS);
@@ -46,6 +45,8 @@ public class FavoriteProductService {
         }
 
         if (favoriteProduct.isPresent()) {
+            Long userCode = favoriteProduct.get().getFavoriteProductId().getUserCode();
+            Long productCode = favoriteProduct.get().getFavoriteProductId().getProductCode();
             if (favoriteProduct.get().getLiked().equals(Liked.YES)) {
                 favoriteProductRepository.updateFavoriteIsNo(userCode, productCode);
                 return favoriteProductId;
