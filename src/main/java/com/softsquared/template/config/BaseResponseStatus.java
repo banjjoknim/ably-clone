@@ -88,6 +88,7 @@ public enum BaseResponseStatus {
     MODEL_TOP_SIZE_CAN_NOT_BE_EMPTY(false, 2085, "모델 상의 사이즈를 입력해주세요."),
     MODEL_BOTTOM_SIZE_CAN_NOT_BE_EMPTY(false, 2086, "모델 하의 사이즈를 입력해주세요."),
     MODEL_SHOE_SIZE_CAN_NOT_BE_EMPTY(false, 2087, "모델 신발 사이즈를 입력해주세요."),
+    PRODUCT_ID_CAN_NOT_BE_EMPTY(false, 2088, "조회기록의 상품 번호를 입력해주세요."),
 
     //vivi
     NOT_FOUND_USERS(false, 2080, "회원가입이 되어있지 않는 회원입니다."),
