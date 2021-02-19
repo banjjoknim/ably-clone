@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+import static com.softsquared.template.config.BaseResponseStatus.NOT_FOUND_PRODUCT;
 import static com.softsquared.template.config.BaseResponseStatus.NO_AUTHORITY;
 
 @Service
@@ -73,6 +74,7 @@ public class ProductService {
 
     public Long updateProduct(Long marketId, Long productId, PatchProductReq request) throws BaseException {
         Optional<Product> product = productRepository.findById(productId);
+        validateIsExists(product);
         if (product.isPresent() && !product.get().getMarketId().equals(marketId)) {
             throw new BaseException(NO_AUTHORITY);
         }
@@ -101,6 +103,7 @@ public class ProductService {
 
     public Long deleteProduct(Long marketId, Long productId) throws BaseException {
         Optional<Product> product = productRepository.findById(productId);
+        validateIsExists(product);
         if (product.isPresent() && !product.get().getMarketId().equals(marketId)) {
             throw new BaseException(NO_AUTHORITY);
         }
@@ -110,5 +113,11 @@ public class ProductService {
         });
 
         return productId;
+    }
+
+    private void validateIsExists(Optional<Product> product) throws BaseException {
+        if (product.isEmpty()) {
+            throw new BaseException(NOT_FOUND_PRODUCT);
+        }
     }
 }
