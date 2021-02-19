@@ -14,22 +14,20 @@ import static com.softsquared.template.config.BaseResponseStatus.SUCCESS;
 @RequestMapping("/histories")
 public class ViewHistoryController {
 
-    private final ViewHistoryProvider viewHistoryProvider;
     private final ViewHistoryService viewHistoryService;
 
     @Autowired
-    public ViewHistoryController(ViewHistoryProvider viewHistoryProvider, ViewHistoryService viewHistoryService) {
-        this.viewHistoryProvider = viewHistoryProvider;
+    public ViewHistoryController(ViewHistoryService viewHistoryService) {
         this.viewHistoryService = viewHistoryService;
     }
 
-    @PostMapping("/history")
-    public BaseResponse<ViewHistoryId> patchViewHistory(@RequestHeader("X-ACCESS-TOKEN") String token, @RequestBody PatchHistoryReq request) {
+    @PostMapping("")
+    public BaseResponse<ViewHistoryId> postViewHistory(@RequestHeader(value = "X-ACCESS-TOKEN", required = false) String token, @RequestBody PatchHistoryReq request) {
         try {
             if (request.getProductId() == null) {
                 throw new BaseException(PRODUCT_ID_CAN_NOT_BE_EMPTY);
             }
-            return new BaseResponse<>(SUCCESS, viewHistoryService.updateViewHistory(token, request.getProductId()));
+            return new BaseResponse<>(SUCCESS, viewHistoryService.createViewHistory(token, request.getProductId()));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }

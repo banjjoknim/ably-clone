@@ -24,7 +24,7 @@ public class ViewHistoryService {
         this.jwtService = jwtService;
     }
 
-    public ViewHistoryId updateViewHistory(String token, Long productId) throws BaseException {
+    public ViewHistoryId createViewHistory(String token, Long productId) throws BaseException {
         Long userId = 0L;
         if (token != null) {
             userId = jwtService.getUserId();
