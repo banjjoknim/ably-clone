@@ -4,6 +4,8 @@ import com.softsquared.template.DBmodel.Product;
 import com.softsquared.template.config.BaseException;
 import com.softsquared.template.config.PageRequest;
 import com.softsquared.template.config.statusEnum.IsPublic;
+import com.softsquared.template.src.favorite.FavoriteProductProvider;
+import com.softsquared.template.src.favorite.models.GetFavoriteProductRes;
 import com.softsquared.template.src.product.ProductProvider;
 import com.softsquared.template.src.product.ProductRepository;
 import com.softsquared.template.src.product.ProductsProvider;
@@ -30,13 +32,15 @@ public class RecommendProvider {
     private final ProductProvider productProvider;
     private final ProductsQueryRepository productsQueryRepository;
     private final ProductRepository productRepository;
+    private final FavoriteProductProvider favoriteProductProvider;
 
     @Autowired
-    public RecommendProvider(ProductsProvider productsProvider, ProductProvider productProvider, ProductsQueryRepository productsQueryRepository, ProductRepository productRepository) {
+    public RecommendProvider(ProductsProvider productsProvider, ProductProvider productProvider, ProductsQueryRepository productsQueryRepository, ProductRepository productRepository, FavoriteProductProvider favoriteProductProvider) {
         this.productsProvider = productsProvider;
         this.productProvider = productProvider;
         this.productsQueryRepository = productsQueryRepository;
         this.productRepository = productRepository;
+        this.favoriteProductProvider = favoriteProductProvider;
     }
 
     public List<GetProductsRes> getRecommendedProducts(Long productId, Integer page) throws BaseException {
@@ -54,9 +58,11 @@ public class RecommendProvider {
         return getRecommendedProducts(pageable, recommendedProducts);
     }
 
+    // 후행 로직
     private List<GetProductsRes> getRecommendedProducts(PageRequest pageable, List<RecommendedProductInfo> recommendedProducts) {
         return recommendedProducts.stream()
                 .map(product -> product.getProduct().getId())
+                .filter(productId -> validateIsNotFavoriteProduct(productId))
                 .map(id -> {
                     ProductsInfo recommendedProductsInfos = productsQueryRepository.getRecommendedProductsInfosQuery(id, pageable);
                     return productsProvider.getGetProductsRes(recommendedProductsInfos);
@@ -65,6 +71,7 @@ public class RecommendProvider {
                 .subList(pageable.getPage() * pageable.getSize(), pageable.getSize());
     }
 
+    // 선행 로직
     private List<RecommendedProductInfo> getRecommendedProducts(Long productId, Optional<Product> lastViewedProduct, List<Product> products) {
         return products.stream()
                 .filter(product -> !product.getId().equals(productId))
@@ -76,6 +83,23 @@ public class RecommendProvider {
                 })
                 .sorted(comparing(RecommendedProductInfo::getSimilarityScore).reversed())
                 .collect(toList());
+    }
+
+    private boolean validateIsNotFavoriteProduct(Long productId) {
+        List<GetFavoriteProductRes> favoriteProducts;
+        try {
+            favoriteProducts = favoriteProductProvider.retrieveFavoriteProducts();
+        } catch (BaseException e) {
+            return true;
+        }
+
+        return isNotFavoriteProduct(productId, favoriteProducts);
+    }
+
+    private boolean isNotFavoriteProduct(Long productId, List<GetFavoriteProductRes> favoriteProducts) {
+        return favoriteProducts.stream()
+                .map(favoriteProduct -> favoriteProduct.getProductId())
+                .noneMatch(favoriteProductId -> favoriteProductId.equals(productId));
     }
 
 
