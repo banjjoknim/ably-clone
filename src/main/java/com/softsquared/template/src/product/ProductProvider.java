@@ -1,14 +1,17 @@
 package com.softsquared.template.src.product;
 
+import com.softsquared.template.DBmodel.Product;
 import com.softsquared.template.DBmodel.ProductDetail;
 import com.softsquared.template.config.BaseException;
 import com.softsquared.template.config.BaseResponseStatus;
+import com.softsquared.template.config.statusEnum.IsPublic;
 import com.softsquared.template.src.product.models.*;
 import com.softsquared.template.utils.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductProvider {
@@ -24,6 +27,11 @@ public class ProductProvider {
         this.productQueryRepository = productQueryRepository;
         this.productImageQueryRepository = productImageQueryRepository;
         this.jwtService = jwtService;
+    }
+
+    // 가장 최근에 등록된 상품 조회
+    public Optional<Product> retrieveMostRecentlyPostedProduct() {
+        return productRepository.findFirstByIsPublicOrderByDateCreatedDesc(IsPublic.PUBLIC);
     }
 
     public GetProductRes retrieveProduct(Long productId) throws BaseException {

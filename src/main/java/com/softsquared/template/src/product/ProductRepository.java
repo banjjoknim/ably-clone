@@ -12,5 +12,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     boolean existsByCode(String code);
 
-    Optional<Product> findFirstByIsPublicOrderByDateCreated(IsPublic isPublic);
+    Optional<Product> findFirstByIsPublicOrderByDateCreatedDesc(IsPublic isPublic);
 }

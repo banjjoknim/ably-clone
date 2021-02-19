@@ -1,4 +1,4 @@
-package com.softsquared.template.recommend;
+package com.softsquared.template.src.recommend;
 
 import com.softsquared.template.DBmodel.Product;
 import lombok.AllArgsConstructor;
