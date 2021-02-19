@@ -4,6 +4,7 @@ import com.softsquared.template.DBmodel.Product;
 import com.softsquared.template.config.BaseException;
 import com.softsquared.template.config.PageRequest;
 import com.softsquared.template.config.statusEnum.IsPublic;
+import com.softsquared.template.src.product.ProductProvider;
 import com.softsquared.template.src.product.ProductRepository;
 import com.softsquared.template.src.product.ProductsProvider;
 import com.softsquared.template.src.product.ProductsQueryRepository;
@@ -26,19 +27,21 @@ import static java.util.stream.Collectors.toList;
 public class RecommendProvider {
 
     private final ProductsProvider productsProvider;
+    private final ProductProvider productProvider;
     private final ProductsQueryRepository productsQueryRepository;
     private final ProductRepository productRepository;
 
     @Autowired
-    public RecommendProvider(ProductsProvider productsProvider, ProductsQueryRepository productsQueryRepository, ProductRepository productRepository) {
+    public RecommendProvider(ProductsProvider productsProvider, ProductProvider productProvider, ProductsQueryRepository productsQueryRepository, ProductRepository productRepository) {
         this.productsProvider = productsProvider;
+        this.productProvider = productProvider;
         this.productsQueryRepository = productsQueryRepository;
         this.productRepository = productRepository;
     }
 
     public List<GetProductsRes> getRecommendedProducts(Long productId, Integer page) throws BaseException {
         if (productId == null) {
-            productId = productRepository.findFirstByIsPublicOrderByDateCreated(IsPublic.PUBLIC).get().getId();
+            productId = productProvider.retrieveMostRecentlyPostedProduct().get().getId();
         }
         Optional<Product> lastViewedProduct = productRepository.findById(productId);
         if (lastViewedProduct.isEmpty()) {
