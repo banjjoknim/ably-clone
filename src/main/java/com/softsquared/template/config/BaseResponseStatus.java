@@ -135,6 +135,7 @@ public enum BaseResponseStatus {
     DUPLICATED_MARKET_NAME(false, 3060, "중복된 마켓 이름입니다."),
     NOT_FOUND_MARKET(false, 3061, "존재하지 않는 마켓입니다."),
     NOT_FOUND_MODEL(false, 3062, "존재하지 않는 모델입니다."),
+    NOT_HAVE_ANY_PRODUCTS(false, 3063, "상품이 단 하나도 존재하지 않습니다."),
 
 
     // 4000 : Database 오류
