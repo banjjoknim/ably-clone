@@ -80,9 +80,6 @@ public class UserInfo {
     @Column(name = "age",length = 20)
     private String age;
 
-    @Column(name = "marketId")
-    private int marketId;
-
 // for 회원가입
     public UserInfo(long userId, String email, String userName, String phoneNum, int birthday,String height, String weight,
                     String topSize, String bottomSize, String shoeSize, String refundBank, String refundName,

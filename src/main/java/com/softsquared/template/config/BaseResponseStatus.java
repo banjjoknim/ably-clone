@@ -93,6 +93,7 @@ public enum BaseResponseStatus {
     MODEL_TOP_SIZE_CAN_NOT_BE_EMPTY(false, 2085, "모델 상의 사이즈를 입력해주세요."),
     MODEL_BOTTOM_SIZE_CAN_NOT_BE_EMPTY(false, 2086, "모델 하의 사이즈를 입력해주세요."),
     MODEL_SHOE_SIZE_CAN_NOT_BE_EMPTY(false, 2087, "모델 신발 사이즈를 입력해주세요."),
+    PRODUCT_ID_CAN_NOT_BE_EMPTY(false, 2088, "조회기록에 등록될 상품 번호를 입력해주세요."),
 
     //vivi
     NOT_FOUND_USERS(false, 2080, "회원가입이 되어있지 않는 회원입니다."),
@@ -144,6 +145,7 @@ public enum BaseResponseStatus {
     DUPLICATED_MARKET_NAME(false, 3060, "중복된 마켓 이름입니다."),
     NOT_FOUND_MARKET(false, 3061, "존재하지 않는 마켓입니다."),
     NOT_FOUND_MODEL(false, 3062, "존재하지 않는 모델입니다."),
+    NOT_HAVE_ANY_PRODUCTS(false, 3063, "상품이 단 하나도 존재하지 않습니다."),
 
 
     // 4000 : Database 오류
