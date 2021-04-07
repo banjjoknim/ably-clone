@@ -1,5 +1,5 @@
 # ABLY
-라이징프로그래머 2기 모의외주 에이블리 앱 서버 클론 프로젝트입니다.
+라이징프로그래머 2기 모의 외주 에이블리 앱 서버 클론 프로젝트입니다.
 
 ![](https://images.velog.io/images/banjjoknim/post/5bb27466-9c82-4d1b-b814-ae16f62da5b8/ABLY%20cover.PNG)
 
