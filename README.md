@@ -32,7 +32,7 @@
 - 결제
 
 ## 3. 아키텍처
-![](https://images.velog.io/images/banjjoknim/post/4e9a2249-07bc-45e6-bb29-f88fb84f9f9f/ABLY%20Architecture.png)
+![](https://images.velog.io/images/banjjoknim/post/48667af9-0eb4-40a9-b6e4-1629a9b79fb8/ABLY%20Architecture.png)
 
 ## 4. ERD
 ![](https://images.velog.io/images/banjjoknim/post/bff31c95-5b15-4751-a14c-6e41e5ea8c01/image.png)
