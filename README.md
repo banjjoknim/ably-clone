@@ -6,7 +6,7 @@
 ## 0. 팀 구성
 |포지션|팀원|
 |--|--|
-|AOS|[정지현](https://github.com/jihyundev)|
+|IOS|[정지현](https://github.com/jihyundev)|
 |서버|[배재홍](https://github.com/banjjoknim)|
 |서버|[이나현](https://github.com/nahyunLee)|
 
