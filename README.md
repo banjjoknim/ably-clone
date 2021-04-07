@@ -38,4 +38,6 @@
 ![](https://images.velog.io/images/banjjoknim/post/bff31c95-5b15-4751-a14c-6e41e5ea8c01/image.png)
 
 ## 5. 시연 영상
-[YouTube](https://youtu.be/HC17ZC8US1w)
+[라이징 프로그래머 2 '에이블리' 앱 모의 외주 시연 영상](https://youtu.be/HC17ZC8US1w)
+
+[![YouTube](https://img.youtube.com/vi/HC17ZC8US1w/0.jpg)](https://youtu.be/HC17ZC8US1w)
