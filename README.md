@@ -9,8 +9,8 @@
 |서버|[이나현](https://github.com/nahyunLee)|
 
 ## 1. 사용 기술 및 라이브러리
-- `Java`
-- `Spring Boot, JPA, Spring Data JPA, Querydsl`
+- `Java, Spring Boot`
+- `JPA, Spring Data JPA, Querydsl`
 - `AWS EC2, RDS, S3, NGINX`
 - `Gradle`
 - `JWT, OAuth`
